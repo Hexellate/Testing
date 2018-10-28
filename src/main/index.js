@@ -26,10 +26,8 @@ function createWindow() {
   // Open the DevTools.
   if (isDevelopment) {
     mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.webContents.openDevTools();
   }
-
+  mainWindow.setTitle("Application Name");
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {

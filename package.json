@@ -1,7 +1,10 @@
 {
-  "name": "project name",
+  "name": "projectname",
   "version": "0.1.0",
-  "author": "author",
+  "author": {
+    "name": "Author Name",
+    "email": "email@email.com"
+  },
   "description": "description",
   "main": "dist/main.js",
   "repository": {
@@ -11,12 +14,20 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "build": "electron-webpack",
-    "dist": "npx compile && electron-builder"
+    "dist-win": "npm run clean && npm run build && npx electron-builder -w --x64 --ia32",
+    "dist-lin": "npm run clean && npm run build && npx electron-builder -l --x64 --ia32",
+    "dist-mac": "npm run clean && npm run build && npx electron-builder -m --x64 --ia32",
+    "clean": "rimraf \"dist\"",
+    "clean-npm": "rimraf \"package-lock.json\" && rimraf \"node_modules\"",
+    "rebuild-npm": "npm run clean-npm && npm install",
+    "clean-all": "npm run clean && npm run clean-npm"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.0.0",
     "clean-webpack-plugin": "^0.1.19",
+    "cross-env": "^5.2.0",
     "electron": "^3.0.6",
+    "electron-builder": "^20.28.4",
     "electron-webpack": "^2.3.1",
     "eslint": "^5.8.0",
     "node-sass": "^4.9.4",
@@ -32,5 +43,57 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "build": {
+    "appId": "com.author.application",
+    "productName": "Formatted App Name",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable"
+        },
+        {
+          "target": "zip"
+        },
+        {
+          "target": "appx"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "Shortcut Name"
+    },
+    "mac": {
+      "category": "public.app-category.utility"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
   }
 }
