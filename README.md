@@ -25,6 +25,10 @@ Assuming that the dev environment has been set up properly, you should be able t
 3. Run npm install from project root to install dependencies
 4. Make sure that files for your dev environment are excluded in the ```.gitignore``` file
 
+## Submitting Changes
+
+If you have direct access to the repo, make any major changes in a separate branch and make a pull request. If you do not have direct access to the repo, then just fork and make a pull request. DO NOT SUBMIT CODE WITH DEBUG STATEMENTS!
+
 ## Commands
 
 All commands are run with `npm run commandname` (i.e. `npm run dev`)
