@@ -1,11 +1,13 @@
 # Electron-React-Template
 
+Template project to quickly get started developing Electron apps that utilize React. Already set up for local development and distribution
+
 # Status
 
 # Features
 
 - Set up for developing a React app in Electron
-- Support for SCSS
+- Support for SCSS, Less and typescript
 - Uses webpack in build process
 - Hotloading during development
 
