@@ -2,16 +2,16 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    es6: true,
+    es6: true
   },
-  extends: ['airbnb', 'react-app', 'prettier'],
+  extends: ["airbnb", "react-app", "prettier"],
   parserOptions: {
     ecmaFeatures: {
-      jsx: true,
-    },
+      jsx: true
+    }
   },
-  plugins: ['prettier', 'react'],
+  plugins: ["prettier", "react"],
   rules: {
-    'prettier/prettier': ['error'],
-  },
+    "prettier/prettier": ["error"]
+  }
 };

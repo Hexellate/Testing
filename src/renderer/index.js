@@ -7,11 +7,11 @@ import App from "./App";
 //import * as serviceWorker from "./serviceWorker";
 
 function render() {
-    const App = require('./App').default;
-    ReactDOM.render(<App />, document.getElementById("app"));
+  const App = require("./App").default;
+  ReactDOM.render(<App />, document.getElementById("app"));
 }
 if (module.hot) {
-    module.hot.accept('./App', render);
+  module.hot.accept("./App", render);
 }
 render();
 
