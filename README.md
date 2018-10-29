@@ -36,7 +36,9 @@ If you have direct access to the repo, make any major changes in a separate bran
 
 All commands are run with `npm run commandname` (i.e. `npm run dev`)
 
-- `dev` : Launches electron for development, with hotloading and dev tools
+- `dev` : Launches both the Webpack dev environment and React-devtools
+- `webpack-dev` : Runs Webpack dev environment, with hotloading enabled
+- `react-devtools` : Opens the React devtools
 - `clean` : Removes the `dist/` directory
 - `clean-npm` : Deletes all packages and `package-lock.json`
 - `clean-all` : Runs all clean commands
@@ -61,7 +63,8 @@ project-folder/
 │  ├─ renderer/
 │  │  └─ index.js
 │  └─ common/
-└─ build/
+├─ build/
+└─ static/
 ```
 
 ### Main Process ( `src/main/` )
@@ -81,6 +84,10 @@ Common scripts that may be used for both processes
 ### Components used for distribution ( `build/` )
 
 Things like application icons used in release builds
+
+### Assets that are not packed with webpack ( `static/` )
+
+Files in this folder will not be compressed with webpack, and are accessible with the `_static` variable ([see here](https://webpack.electron.build/using-static-assets))
 
 ### Working directory for compiling ( `dist/` )
 

@@ -1,5 +1,6 @@
 import * as path from "path";
 import React from "react";
+import "react-devtools";
 import ReactDOM from "react-dom";
 import "./index.scss";
 import App from "./App";
