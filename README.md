@@ -1,4 +1,6 @@
 # Electron-React-Template
+[![Dependencies](https://david-dm.org/Hexellate/Electron-React-Template.svg?branch=master)](https://david-dm.org/Hexellate/Electron-React-Template?type=dev&branch=master)
+\
 
 Template project to quickly get started developing Electron apps that utilize React. Already set up for local development and distribution
 
