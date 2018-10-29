@@ -41,10 +41,11 @@ All commands are run with `npm run commandname` (i.e. `npm run dev`)
 - `clean-npm` : Deletes all packages and `package-lock.json`
 - `clean-all` : Runs all clean commands
 - `rebuild-npm` : Cleans all npm packages and reinstalls all packages and dependencies
-- `build` : Packs the app using electron-webpack
+- `compile` : Packs the app using electron-webpack
 - `dist-win` : Builds the Electron app for deployment on Windows (Set targets in `package.json` file)
 - `dist-lin` : Builds the Electron app for deployment on Linux
 - `dist-mac` : Builds the Electron app for deployment on MacOs
+- `build` : Builds the app for multiple platforms at once (Customize for environment)
 
 ## Path Structure
 
