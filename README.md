@@ -31,6 +31,17 @@ Assuming that the dev environment has been set up properly, you should be able t
 ## Submitting Changes
 
 If you have direct access to the repo, make any major changes in a separate branch and make a pull request. If you do not have direct access to the repo, then just fork and make a pull request. DO NOT SUBMIT CODE WITH DEBUG STATEMENTS!
+\
+\
+Please label commits with the type of change being made (i.e. `fix: fix some problem`) and separate large changes into separate commits (i.e. don't put a fix and a feature in the same commit)\
+Some examples of change types:
+
+- `fix` : Something has been fixed
+- `feat` : Added a feature or improved something
+- `doc` : Updated docs, commenting etc
+- `refactor` : Any sort of code refactoring
+- `build` : Changes related to project compile and build process
+- `ci` : Continuous Integration related changes
 
 ## Commands
 
