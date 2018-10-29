@@ -1,4 +1,5 @@
 # Electron-React-Template
+
 [![Dependencies](https://david-dm.org/Hexellate/Electron-React-Template.svg?branch=master)](https://david-dm.org/Hexellate/Electron-React-Template?type=dev&branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ea35c94d99f6ddb497f4/maintainability)](https://codeclimate.com/github/Hexellate/Electron-React-Template/maintainability)
 [![GitLab Pipeline](https://gitlab.com/Hexellate/Electron-React-Template/badges/master/pipeline.svg)](https://gitlab.com/Hexellate/Electron-React-Template/pipelines)
@@ -23,27 +24,14 @@ Assuming that the dev environment has been set up properly, you should be able t
 
 # Contributing
 
+Please see [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## setting up dev environment
 
 1. Install npm and node if not already installed (feel free to use yarn, but keep in mind that everything is set up to use npm)
 2. Clone repo to your pc
 3. Run npm install from project root to install dependencies
 4. Make sure that files for your dev environment are excluded in the ```.gitignore``` file
-
-## Submitting Changes
-
-If you have direct access to the repo, make any major changes in a separate branch and make a pull request. If you do not have direct access to the repo, then just fork and make a pull request. DO NOT SUBMIT CODE WITH DEBUG STATEMENTS!
-\
-\
-Please label commits with the type of change being made (i.e. `fix: fix some problem`) and separate large changes into separate commits (i.e. don't put a fix and a feature in the same commit)\
-Some examples of change types:
-
-- `fix` : Something has been fixed
-- `feat` : Added a feature or improved something
-- `doc` : Updated docs, commenting etc
-- `refactor` : Any sort of code refactoring
-- `build` : Changes related to project compile and build process
-- `ci` : Continuous Integration related changes
 
 ## Commands
 
