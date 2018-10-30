@@ -4,7 +4,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/ea35c94d99f6ddb497f4/maintainability)](https://codeclimate.com/github/Hexellate/Electron-React-Template/maintainability)
 [![GitLab Pipeline](https://gitlab.com/Hexellate/Electron-React-Template/badges/master/pipeline.svg)](https://gitlab.com/Hexellate/Electron-React-Template/pipelines)
 \
-This is a test for signing and automatically updating both installed and portable installations
+This is a test for automatically updating both installed and portable installations
 
 # Status
 
