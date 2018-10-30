@@ -1,10 +1,10 @@
-# Electron-React-Template
+# autoupdate-test
 
 [![Dependencies](https://david-dm.org/Hexellate/Electron-React-Template.svg?branch=master)](https://david-dm.org/Hexellate/Electron-React-Template?type=dev&branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ea35c94d99f6ddb497f4/maintainability)](https://codeclimate.com/github/Hexellate/Electron-React-Template/maintainability)
 [![GitLab Pipeline](https://gitlab.com/Hexellate/Electron-React-Template/badges/master/pipeline.svg)](https://gitlab.com/Hexellate/Electron-React-Template/pipelines)
 \
-Template project to quickly get started developing Electron apps that utilize React. Already set up for local development and distribution
+This is a test for signing and automatically updating both installed and portable installations
 
 # Status
 
