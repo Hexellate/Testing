@@ -1,0 +1,6 @@
+language: javascript
+os:
+  - linux
+  - osx
+  - windows
+script: console.log("test");
