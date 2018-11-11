@@ -52,18 +52,22 @@ All commands are run with `npm run commandname` (i.e. `npm run dev`)
 
 ## Path Structure
 
-Approximately following directory structure found [here](https://webpack.electron.build/project-structure) \
 (Structure subject to change)
 
 ```
 project-folder/
 ├─ dist/
+├─ compiled/
 ├─ src/
 │  ├─ main/
 │  │  └─ index.js
 │  ├─ renderer/
 │  │  └─ index.js
 │  └─ common/
+├─ config/
+│  ├─ canary.json
+│  ├─ next.json
+│  └─ stable.json
 ├─ build/
 └─ static/
 ```
@@ -90,9 +94,17 @@ Things like application icons used in release builds
 
 Files in this folder will not be compressed with webpack, and are accessible with the `_static` variable ([see here](https://webpack.electron.build/using-static-assets))
 
-### Working directory for compiling ( `dist/` )
+### Configurations ( `config/` )
 
-When webpack produces packed files, or when the entire application is compiled, then that stuff goes here
+Extra configurations for some things are placed here (e.g. build configs for different channels)
+
+### Project build directory ( `dist/` )
+
+Where stuff produced by webpack goes
+
+### Project compile directory ( `compiled/` )
+
+When the project is compiled into a distributable format, then that goes here
 
 # Credits
 
