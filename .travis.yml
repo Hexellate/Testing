@@ -1,9 +1,12 @@
-language: node_js
-node_js:
-  - "node"
-  - "iojs"
+language: bash
 os:
   - linux
   - osx
   - windows
-script: console.log("test");
+
+before_script:
+  -
+script:
+  -
+on_success:
+  -
