@@ -1,38 +1,48 @@
 {
   "name": "autoupdate-test",
-  "version": "0.1.0",
+  "version": "0.1.2-canary.34",
   "author": {
     "name": "Author Name",
     "email": "email@email.com"
   },
   "description": "description",
-  "main": "dist/main.js",
+  "main": "dist/main/main.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Hexellate/Electron-React-Template.git"
   },
   "scripts": {
     "dev": "npm-run-all --parallel webpack-dev react-devtools",
-    "webpack-dev": "electron-webpack dev",
+    "webpack-dev": "electron-webpack dev --remote-debugging-port=9223",
     "react-devtools": "react-devtools",
-    "compile": "electron-webpack",
-    "dist-win": "npm run clean && npm run compile && npx electron-builder -w --x64 --ia32",
-    "dist-lin": "npm run clean && npm run compile && npx electron-builder -l --x64 --ia32",
-    "dist-mac": "npm run clean && npm run compile && npx electron-builder -m --x64 --ia32",
-    "build": "npm run clean && npm run compile && npx electron-builder -wl --x64 --ia32",
-    "clean": "rimraf \"dist\"",
+    "pack": "electron-webpack",
+    "prebuild": "npm run clean && npm run pack",
+    "build-win:stable": "npx electron-builder -w --x64 --ia32 -c config/stable.json",
+    "build-win:next": "npx electron-builder -w --x64 --ia32 -c config/next.json",
+    "build-win:canary": "npx electron-builder -w --x64 --ia32 -c config/canary.json",
+    "build-lin:stable": "npx electron-builder -l --x64 --ia32 -c config/stable.json",
+    "build-lin:next": "npx electron-builder -l --x64 --ia32 -c config/next.json",
+    "build-lin:canary": "npx electron-builder -l --x64 --ia32 -c config/canary.json",
+    "build-mac:stable": "npx electron-builder -m --x64 --ia32 -c config/stable.json",
+    "build-mac:next": "npx electron-builder -m --x64 --ia32 -c config/next.json",
+    "build-mac:canary": "npx electron-builder -m --x64 --ia32 -c config/canary.json",
+    "clean": "rimraf \"dist\" && rimraf \"compiled\"",
     "clean-npm": "rimraf \"package-lock.json\" && rimraf \"node_modules\"",
     "rebuild-npm": "npm run clean-npm && npm install",
     "clean-all": "npm run clean && npm run clean-npm"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.4",
     "cross-env": "^5.2.0",
     "electron": "^3.0.6",
     "electron-builder": "^20.28.4",
     "electron-webpack": "^2.3.1",
-    "electron-webpack-ts": "^2.1.1",
     "eslint": "^5.3.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.1.0",
@@ -40,6 +50,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-react": "^7.11.0",
+    "html-webpack-plugin": "^3.2.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "node-sass": "^4.9.4",
@@ -49,65 +60,26 @@
     "react-devtools": "^3.4.2",
     "react-dom": "^16.6.0",
     "sass-loader": "^7.1.0",
-    "typescript": "^3.1.3",
+    "terser-webpack-plugin": "^1.1.0",
     "webpack": "^4.23.1",
     "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10",
+    "webpack-merge": "^4.1.4",
     "webpack-sources": "^1.3.0"
   },
   "dependencies": {
+    "electron-log": "^2.2.17",
+    "electron-updater": "^3.1.5",
     "lodash": "^4.17.11",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "redux": "^4.0.1",
+    "semver": "^5.6.0",
     "source-map-support": "^0.5.5"
   },
-  "build": {
-    "appId": "com.author.application",
-    "productName": "Formatted App Name",
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        },
-        {
-          "target": "portable"
-        },
-        {
-          "target": "zip"
-        },
-        {
-          "target": "appx"
-        }
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "shortcutName": "Shortcut Name"
-    },
-    "mac": {
-      "category": "public.app-category.utility"
-    },
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ]
+  "electronWebpack": {
+    "renderer": {
+      "webpackConfig": "webpack.renderer.additions.js"
     }
   }
 }

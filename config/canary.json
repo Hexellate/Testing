@@ -1,0 +1,51 @@
+{
+  "appId": "com.author.application.canary",
+  "productName": "Auto Updater Test - Canary",
+  "generateUpdatesFilesForAllChannels": false,
+  "detectUpdateChannel": false,
+  "includePdb": true,
+  "directories": {
+    "output": "compiled"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis-web",
+        "arch": ["x64", "ia32"]
+      }
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowElevation": true,
+    "allowToChangeInstallationDirectory": true,
+    "differentialPackage": true,
+    "artifactName": "${productName} Setup.${ext}",
+    "shortcutName": "Auto Updater Test - Canary"
+  },
+  "mac": {
+    "category": "public.app-category.utility"
+  },
+  "dmg": {
+    "contents": [
+      {
+        "x": 110,
+        "y": 150
+      },
+      {
+        "x": 240,
+        "y": 150,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ]
+  },
+  "linux": {
+    "target": ["AppImage", "deb"]
+  },
+  "publish": {
+    "provider": "generic",
+    "url": "https://gitlab.com/Hexellate/releases/raw/master/autoupdate-test/canary"
+  }
+}

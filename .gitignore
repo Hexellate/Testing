@@ -9,6 +9,7 @@ package-lock.json
 
 # production
 /dist
+/compiled
 
 #VS Code
 /.vscode

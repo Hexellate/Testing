@@ -20,7 +20,8 @@ This is a test for automatically updating both installed and portable installati
 -
 
 # Build Instructions
-Assuming that the dev environment has been set up properly, you should be able to build a dev version of the project just by running ```npm run dev``` in a terminal or commend prompt (from the project directory)
+
+Assuming that the dev environment has been set up properly, you should be able to build a dev version of the project just by running `npm run dev` in a terminal or commend prompt (from the project directory)
 
 # Contributing
 
@@ -31,7 +32,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 1. Install npm and node if not already installed (feel free to use yarn, but keep in mind that everything is set up to use npm)
 2. Clone repo to your pc
 3. Run npm install from project root to install dependencies
-4. Make sure that files for your dev environment are excluded in the ```.gitignore``` file
+4. Make sure that files for your dev environment are excluded in the `.gitignore` file
 
 ## Commands
 
@@ -44,11 +45,10 @@ All commands are run with `npm run commandname` (i.e. `npm run dev`)
 - `clean-npm` : Deletes all packages and `package-lock.json`
 - `clean-all` : Runs all clean commands
 - `rebuild-npm` : Cleans all npm packages and reinstalls all packages and dependencies
-- `compile` : Packs the app using electron-webpack
-- `dist-win` : Builds the Electron app for deployment on Windows (Set targets in `package.json` file)
-- `dist-lin` : Builds the Electron app for deployment on Linux
-- `dist-mac` : Builds the Electron app for deployment on MacOs
-- `build` : Builds the app for multiple platforms at once (Customize for environment)
+- `pack` : Packs the source for distribution
+- `prebuild` : Run before building a new version
+- Build:
+  - The build command is formatted as `build-platform:type`, where platform can be either `win`, `lin` or `mac`, for building Windows, Linux or Mac OS respectively, and type can be either `stable`, `canary` or `next`. e.g. `build-win:canary` would produce a canary version for windows. The reason for having separate commands for each type is to change the build config that is used.
 
 ## Path Structure
 
