@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 // import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import "./index.scss";
-import App from "./App";
+import App from "./app";
 import Updater from "./updater";
 
 const { windowType } = require("electron").remote.getCurrentWindow();
