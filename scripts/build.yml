@@ -4,7 +4,7 @@ parameters:
   channel: "canary"
 
 jobs:
-  - job: ${{format('{0}_Build',parameters.os)}}
+  - job: ${{format('{0}_build',parameters.os)}}
     pool:
       vmImage: ${{parameters.vmImage}}
     dependsOn: setupenv
