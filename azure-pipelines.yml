@@ -64,4 +64,4 @@ jobs:
       - template: scripts/build.yml
         parameters:
           os: "mac"
-# if branch release/*, merge changes into develop (or create pr if possible)
+# if branch release/*, and commit message includes [ci merge], merge changes into develop (or create pr if possible)
