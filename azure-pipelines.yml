@@ -5,10 +5,6 @@ trigger:
   - hotfix/*
   - feature/*
 
-variables:
-  channel: "canary"
-  branchtype: "indev" # indev or rel
-
 jobs:
   - job: setupenv
     steps:
