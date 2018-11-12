@@ -1,25 +1,17 @@
 parameters:
   os: "win"
-  vmImage: "vs2017-win2016"
-  channel: "canary"
 
-jobs:
-  - job: ${{format('{0}_build',parameters.os)}}
-    pool:
-      vmImage: ${{parameters.vmImage}}
-    dependsOn: setupenv
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "8.x"
+    displayName: "Install Node.js"
 
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "8.x"
-        displayName: "Install Node.js"
+  - script: npm install
+    displayName: "install npm packages"
 
-      - script: npm install
-        displayName: "install npm packages"
+  - script: npm run prebuild
+    displayName: "prebuild"
 
-      - script: npm run prebuild
-        displayName: "prebuild"
-
-      - script: npm run ${{format('build-{0}:{1}', parameters.os, parameters.channel)}}
-        displayName: "build"
+  - script: npm run ${{format('build-{0}:{1}', parameters.os, $(channel)}}
+    displayName: "build"

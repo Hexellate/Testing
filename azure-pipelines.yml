@@ -30,21 +30,36 @@ jobs:
       # - bash: |
       #     echo "##vso[task.setvariable variable=channel;isOutput=true]"$(channel)
 
-  - template: scripts/build.yml
-    parameters:
-      os: "win"
+  - job: win_build
+    pool:
       vmImage: "vs2017-win2016"
+    dependsOn: setupenv
+    variables:
       channel: $[dependencies.setupenv.outputs['channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "win"
 
-  - template: scripts/build.yml
-    parameters:
-      os: "lin"
+  - job: lin_build
+    pool:
       vmImage: "Ubuntu 16.04"
+    dependsOn: setupenv
+    variables:
       channel: $[dependencies.setupenv.outputs['channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "lin"
 
-  - template: scripts/build.yml
-    parameters:
-      os: "mac"
+  - job: mac_build
+    pool:
       vmImage: "macOS-10.13"
+    dependsOn: setupenv
+    variables:
       channel: $[dependencies.setupenv.outputs['channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "mac"
 # if branch release/*, merge changes into develop (or create pr if possible)
