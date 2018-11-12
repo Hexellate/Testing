@@ -10,37 +10,42 @@ jobs:
     steps:
       # set channel
       - script: |
-          @echo ##vso[task.setvariable variable=channel]canary
+          @echo ##vso[task.setvariable variable=channel;isOutput=true]canary
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
       - script: |
-          @echo ##vso[task.setvariable variable=channel]stable
+          @echo ##vso[task.setvariable variable=channel;isOutput=true]stable
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
       - script: |
-          @echo ##vso[task.setvariable variable=channel]next
+          @echo ##vso[task.setvariable variable=channel;isOutput=true]next
         condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
       # set branchtype
       - script: |
-          @echo ##vso[task.setvariable variable=branchtype]indev
+          @echo ##vso[task.setvariable variable=branchtype;isOutput=true]indev
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
       - script: |
-          @echo ##vso[task.setvariable variable=branchtype]rel
+          @echo ##vso[task.setvariable variable=branchtype;isOutput=true]rel
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+      #output variables
+      - script: echo $(channel)
+        name: echochannel
+      - script: echo $(branchtype)
+        name: echobranchtype
 
   - template: scripts/build.yml
     parameters:
       os: "win"
       vmImage: "vs2017-win2016"
-      channel: $(channel)
+      channel: $[ dependencies.setupenv.outputs['echochannel']]
 
   - template: scripts/build.yml
     parameters:
       os: "lin"
       vmImage: "Ubuntu 16.04"
-      channel: $(channel)
+      channel: $[ dependencies.setupenv.outputs['echochannel']]
 
   - template: scripts/build.yml
     parameters:
       os: "mac"
       vmImage: "macOS-10.13"
-      channel: $(channel)
+      channel: $[ dependencies.setupenv.outputs['echochannel']]
 # if branch release/*, merge changes into develop (or create pr if possible)
