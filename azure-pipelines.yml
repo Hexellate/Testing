@@ -1,18 +1,47 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+trigger:
+  - master
+  - develop
+  - release/*
+  - hotfix/*
+  - feature/*
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+variables:
+  channel: "canary"
+  branchtype: "indev" # indev or rel
 
+# set variables to identify build type
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '8.x'
-  displayName: 'Install Node.js'
+  # set channel
+  - script: |
+      @echo ##vso[task.setvariable variable=channel]canary
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+  - script: |
+      @echo ##vso[task.setvariable variable=channel]stable
+    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+  - script: |
+      @echo ##vso[task.setvariable variable=channel]next
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
+  # set branchtype
+  - script: |
+      @echo ##vso[task.setvariable variable=branchtype]indev
+    condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+  - script: |
+      @echo ##vso[task.setvariable variable=branchtype]rel
+    condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+jobs:
+  - template: scripts/build.yml
+    parameters:
+      os: "win"
+      vmImage: "vs2017-win2016"
+
+  - template: scripts/build.yml
+    parameters:
+      os: "lin"
+      vmImage: "Ubuntu 16.04"
+
+  - template: scripts/build.yml
+    parameters:
+      os: "mac"
+      vmImage: "macOS-10.13"
+# if branch release/*, merge changes into develop (or create pr if possible)
