@@ -13,5 +13,5 @@ steps:
   - script: npm run prebuild
     displayName: "prebuild"
 
-  - script: npm run ${{format('build-{0}:{1}', parameters.os, $(channel)}}
+  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel
     displayName: "build"
