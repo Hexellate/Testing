@@ -1,9 +1,11 @@
 trigger:
-  - master
-  - develop
-  - release/*
-  - hotfix/*
-  - feature/*
+  branches:
+    include:
+      - master
+      - develop
+      - release/*
+      - hotfix/*
+      - feature/*
 
 jobs:
   - job: setupenv
@@ -64,4 +66,15 @@ jobs:
       - template: scripts/build.yml
         parameters:
           os: "mac"
-# if branch release/*, and commit message includes [ci merge], merge changes into develop (or create pr if possible)
+  # continuously merge to develop if test passes
+  - job: release_merge
+    pool:
+      vmImage: "Ubuntu 16.04"
+    dependsOn:
+      - win_build
+      - lin_build
+      - mac_build
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+    steps:
+      - template: scripts/releasetodevelop.yml
+# if branch release/*,  merge changes into develop (or create pr if possible)

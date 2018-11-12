@@ -15,3 +15,6 @@ steps:
 
   - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel)
     displayName: "build"
+
+  - script: npm test
+    displayName: "test"
