@@ -7,6 +7,7 @@ jobs:
   - job: ${{format('{0}_Build',parameters.os)}}
     pool:
       vmImage: ${{parameters.vmImage}}
+    dependsOn: setupenv
 
     steps:
       - task: NodeTool@0

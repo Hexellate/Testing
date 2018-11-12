@@ -31,21 +31,18 @@ jobs:
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
 
   - template: scripts/build.yml
-    dependsOn: setupenv
     parameters:
       os: "win"
       vmImage: "vs2017-win2016"
       channel: $(channel)
 
   - template: scripts/build.yml
-    dependsOn: setupenv
     parameters:
       os: "lin"
       vmImage: "Ubuntu 16.04"
       channel: $(channel)
 
   - template: scripts/build.yml
-    dependsOn: setupenv
     parameters:
       os: "mac"
       vmImage: "macOS-10.13"
