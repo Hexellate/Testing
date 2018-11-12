@@ -10,32 +10,34 @@ jobs:
     steps:
       # set channel
       - bash: |
-          echo "##vso[task.setvariable variable=channel;isOutput=truecanary"
+          echo "##vso[task.setvariable variable=channel]canary"
         condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
       - bash: |
-          echo "##vso[task.setvariable variable=channel;isOutput=true]stable"
+          echo "##vso[task.setvariable variable=channel]stable"
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
       - bash: |
-          echo "##vso[task.setvariable variable=channel;isOutput=true]next"
+          echo "##vso[task.setvariable variable=channel]next"
         condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
       # set branchtype
       - bash: |
-          echo "##vso[task.setvariable variable=branchtype;isOutput=true]indev"
+          echo "##vso[task.setvariable variable=branchtype]indev"
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
       - bash: |
-          echo "##vso[task.setvariable variable=branchtype;isOutput=true]rel"
+          echo "##vso[task.setvariable variable=branchtype]rel"
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
-      # - bash: |
-      #     echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
-      # - bash: |
-      #     echo "##vso[task.setvariable variable=channel;isOutput=true]"$(channel)
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
+        name: echobranchtype
+      - bash: |
+          echo "##vso[task.setvariable variable=channel;isOutput=true]"$(channel)
+        name: echochannel
 
   - job: win_build
     pool:
       vmImage: "vs2017-win2016"
     dependsOn: setupenv
     variables:
-      channel: $[dependencies.setupenv.outputs['channel']]
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
       - template: scripts/build.yml
         parameters:
@@ -46,7 +48,7 @@ jobs:
       vmImage: "Ubuntu 16.04"
     dependsOn: setupenv
     variables:
-      channel: $[dependencies.setupenv.outputs['channel']]
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
       - template: scripts/build.yml
         parameters:
@@ -57,7 +59,7 @@ jobs:
       vmImage: "macOS-10.13"
     dependsOn: setupenv
     variables:
-      channel: $[dependencies.setupenv.outputs['channel']]
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
       - template: scripts/build.yml
         parameters:
