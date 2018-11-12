@@ -1,0 +1,21 @@
+parameters:
+  os: "win"
+  vmImage: "vs2017-win2016"
+  branch: "canary"
+
+jobs:
+  - job: ${{format('{0} Build',parameters.os)}}
+    pool:
+      vmImage: ${{parameters.vmImage}}
+
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "8.x"
+        displayName: "Install Node.js"
+
+      - script: npm run prebuild
+        displayName: "npm install"
+
+      - script: npm run ${{format('build-{0}:{1}', parameters.os, parameters.branch)}}
+        displayName: "npm run build"
