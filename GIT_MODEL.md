@@ -25,6 +25,7 @@ At it's core, there are two main branches, the master branch and the develop bra
 
 These support branches will have a limited lifetime, the length of which depends on the branch and will be described later. The model is nearly a waterflow based model, flowing from feature to develop to release and finally to master. The only reason it is not a waterflow model is due to changes in release branches being merged back into the develop branch, and likewise with hotfixes being merged into both master and develop/release.
 
+
 ## Branches
 
 ### **Master Branch**
