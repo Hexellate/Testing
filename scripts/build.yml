@@ -19,7 +19,7 @@ steps:
   - script: npm test
     displayName: "test"
 
-  # - bash: ls -l $(Build.SourcesDirectory)/compiled
+  - bash: ls $(Build.SourcesDirectory)
 
   - task: CopyFiles@2
     inputs:
