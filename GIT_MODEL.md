@@ -72,7 +72,7 @@ Hotfix branches are used when there is a bug of some description in the master b
 1. Features are developed in feature branches
 2. Feature branch is merged into develop branch
     - When a feature is both finished and targeted for the next release, it is merged into the develop branch.
-    -  The develop branch will be released on the canary channel.
+    - The develop branch will be released on the canary channel.
 3. Release branch is created from develop branch
     - When all features for the next release have been merged into the develop branch, a new release branch is created from the develop branch.
     - It is at this time that a release gets its version number.
