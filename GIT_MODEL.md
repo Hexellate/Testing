@@ -27,15 +27,15 @@ These support branches will have a limited lifetime, the length of which depends
 
 ## Branches
 
-### Master Branch
+### **Master Branch**
 
-The master branch will contain code in a _production-ready_ state. Any push to this branch that passes testing will automatically create a new version of the application on the **Stable** channel. This channel may NOT be changed or otherwise updated with direct commits, but may only be changed through pushes from release or hotfix branches.
+The master branch will contain code in a _production-ready_ state. Any push to this branch that passes testing and is tagged will automatically create a new version of the application on the **Stable** channel. This channel may NOT be changed or otherwise updated with direct commits, but may only be changed through pushes from release or hotfix branches.
 
-### Develop Branch
+### **Develop Branch**
 
 The Develop branch will contain code reflecting an in development version of the next release, although new features are not to be added through direct commits. This branch will be used to build the nightly releases on the **Canary** channel. If a canary build fails to compile, then it will not be released.
 
-### Feature Branches
+### **Feature Branches**
 
 |                           |                                                           |
 | ------------------------- | --------------------------------------------------------- |
@@ -43,11 +43,11 @@ The Develop branch will contain code reflecting an in development version of the
 | Must merge into:          | develop                                                   |
 | Branch naming convention: | anything except master, develop, release-\*, or hotfix-\* |
 
-Feature branches are used to develop new features, or to improve existing features for an upcoming or distant release. When a feature starts being developed, it's target release may be unknown. Feature branches exist as long as the feature is in development, and get either merged back into develop (if the feature is complete, or at least ready for release), or discarded (If the feature is being scrapped). When a feature is targeted at a future release, and not the next release, it must wait until the next release is branched off before merging with the develop branch. It is permissible to create extra branches for a feature, however they must branch off the related feature and merge back into the same branch.
+Feature branches are used to develop new features, or to improve existing features for an upcoming or distant release. When a feature starts being developed, it's target release may be unknown. Feature branches exist as long as the feature is in development, and get either merged back into develop (if the feature is complete, or at least ready for release), or discarded (If the feature is being scrapped). When a feature is targeted at a future release, and not the next release, it must wait until the next release is branched off before merging with the develop branch.
 
-When merging a feature branch into develop, the `--no-ff` flag should always be used in order to retain information about the branch. Additionally, merges should **NOT** be squashed.
+When merging a feature branch into develop, all tests must pass for the merge to be allowed. Additionally, merges should **NOT** be squashed.
 
-### Release Branches
+### **Release Branches**
 
 |                           |                    |
 | ------------------------- | ------------------ |
@@ -55,9 +55,11 @@ When merging a feature branch into develop, the `--no-ff` flag should always be 
 | Must merge into:          | develop and master |
 | Branch naming convention: | release-\*         |
 
-Release branches represent a new version that is feature complete and ready for proper release. This branch may receive bugfix commits, however it is generally in a feature-freeze, meaning that no new features should be added. Minor features such as simple usability improvements may be an exception. Commits to this branch should be continuously merged back into the develop branch. This branch will be used to automatically build releases for the **Next** channel. When this branch is deemed to be stable, it will be pushed to the master branch to create a new release on the **Stable** channel. Once the branch has been merged into the master branch, it will be deleted.
+Release branches represent a new version that is feature complete and ready for proper release. This branch may receive bugfix commits, however it is generally in a feature-freeze, meaning that no new features should be added. Minor features such as simple usability improvements may be an exception. Commits to this branch should be continuously merged back into the develop branch. This branch will be used to automatically build releases for the **Next** channel. When this branch is deemed to be stable, it will be pushed to the master branch to create a new release on the **Stable** channel. Once the branch has been merged into the master branch, it will be deleted. Additionally, there may only be one release branch at a time (i.e. before creating a new release branch, the current one must be merged into master).
 
-### Hotfix Branches
+To have a new build for **Next** created and released, prefix a commit with `[ci rel]`
+
+### **Hotfix Branches**
 
 |                           |                    |
 | ------------------------- | ------------------ |
@@ -66,6 +68,8 @@ Release branches represent a new version that is feature complete and ready for 
 | Branch naming convention: | hotfix-\*          |
 
 Hotfix branches are used when there is a bug of some description in the master branch of the repo, and are used for fixing such bugs. A hotfix will increment the patch version of the software (i.e. 1.2.3 will become 1.2.4). Additionaly, a hotfix must also be merged into the develop or release branches in order to be included in future versions. If a release branch exists, then the hotfix will be merged into release rather than develop, as the release will then be merged back into develop. Hotfix channels are deleted after they are merged.
+
+To have a hotfix merged, create a pull request for master, and another for develop/release. If the PRs pass all tests, they will be merged. Do not increment the patch yourself, this will be done automatically. It is possible that a PR to develop/release may be denied while a PR to master is still accepted, which may happen if the code in question has been rewritten or removed, thereby making the fix inapplicable.
 
 ## Release process
 
