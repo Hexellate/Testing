@@ -19,9 +19,13 @@ steps:
   - script: npm test
     displayName: "test"
 
+  - bash: |
+      ls -l $(Build.SourcesDirectory)
+      ls -l $(Agent.BuildDirectory)
+
   - task: CopyFiles@2
     inputs:
-      contents: /compiled/*
+      contents: compiled/*
       overWrite: true
       targetFolder: $(Build.ArtifactStagingDirectory)
 
