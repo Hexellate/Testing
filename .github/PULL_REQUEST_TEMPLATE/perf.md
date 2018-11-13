@@ -1,7 +1,12 @@
+---
+name: Performance
+about: Improve the performance of the application
+---
+
 ### Requirements for Contributing a Performance Improvement
 
-* Fill out the template below. Any pull request that does not include enough information to be reviewed in a timely manner may be closed at the maintainers' discretion.
-* The pull request must only affect performance of existing functionality. To contribute other changes, you must use a different template.
+- Fill out the template below. Any pull request that does not include enough information to be reviewed in a timely manner may be closed at the maintainers' discretion.
+- The pull request must only affect performance of existing functionality. To contribute other changes, you must use a different template.
 
 ### Description of the Change
 
