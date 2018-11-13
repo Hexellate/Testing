@@ -29,7 +29,8 @@
     "clean": "rimraf \"dist\" && rimraf \"compiled\"",
     "clean-npm": "rimraf \"package-lock.json\" && rimraf \"node_modules\"",
     "rebuild-npm": "npm run clean-npm && npm install",
-    "clean-all": "npm run clean && npm run clean-npm"
+    "clean-all": "npm run clean && npm run clean-npm",
+    "test": "echo no tests set up"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
@@ -69,7 +70,7 @@
   },
   "dependencies": {
     "electron-log": "^2.2.17",
-    "electron-updater": "^3.1.5",
+    "electron-updater": "^3.2.0",
     "lodash": "^4.17.11",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",

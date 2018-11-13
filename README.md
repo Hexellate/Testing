@@ -2,7 +2,7 @@
 
 [![Dependencies](https://david-dm.org/Hexellate/Electron-React-Template.svg?branch=master)](https://david-dm.org/Hexellate/Electron-React-Template?type=dev&branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ea35c94d99f6ddb497f4/maintainability)](https://codeclimate.com/github/Hexellate/Electron-React-Template/maintainability)
-[![GitLab Pipeline](https://gitlab.com/Hexellate/Electron-React-Template/badges/master/pipeline.svg)](https://gitlab.com/Hexellate/Electron-React-Template/pipelines)
+[![Build Status](https://dev.azure.com/hexellate/autoupdate-test/_apis/build/status/Hexellate.autoupdate-test)](https://dev.azure.com/hexellate/autoupdate-test/_build/latest?definitionId=1)
 \
 This is a test for automatically updating both installed and portable installations
 

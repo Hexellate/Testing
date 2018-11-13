@@ -1,18 +1,80 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+      - release/*
+      - hotfix/*
+      - feature/*
 
-pool:
-  vmImage: 'Ubuntu 16.04'
+jobs:
+  - job: setupenv
+    steps:
+      # set channel
+      - bash: |
+          echo "##vso[task.setvariable variable=channel]canary"
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+      - bash: |
+          echo "##vso[task.setvariable variable=channel]stable"
+        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+      - bash: |
+          echo "##vso[task.setvariable variable=channel]next"
+        condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
+      # set branchtype
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype]indev"
+        condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype]rel"
+        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
+        name: echobranchtype
+      - bash: |
+          echo "##vso[task.setvariable variable=channel;isOutput=true]"$(channel)
+        name: echochannel
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '8.x'
-  displayName: 'Install Node.js'
+  - job: win_build
+    pool:
+      vmImage: "vs2017-win2016"
+    dependsOn: setupenv
+    variables:
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "win"
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - job: lin_build
+    pool:
+      vmImage: "Ubuntu 16.04"
+    dependsOn: setupenv
+    variables:
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "lin"
+
+  - job: mac_build
+    pool:
+      vmImage: "macOS-10.13"
+    dependsOn: setupenv
+    variables:
+      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
+    steps:
+      - template: scripts/build.yml
+        parameters:
+          os: "mac"
+  # continuously merge to develop if test passes
+  - job: release_merge
+    pool:
+      vmImage: "Ubuntu 16.04"
+    dependsOn:
+      - win_build
+      - lin_build
+      - mac_build
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+    steps:
+      - template: scripts/releasetodevelop.yml
+# if branch release/*,  merge changes into develop (or create pr if possible)
