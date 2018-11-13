@@ -24,7 +24,7 @@ steps:
   - task: CopyFiles@2
     inputs:
       sourceFolder: "$(Build.SourcesDirectory)/compiled"
-      contents: "*"
+      contents: "**"
       overWrite: true
       # artifactName: drop-$(parameters.os)
       targetFolder: "$(Build.ArtifactStagingDirectory)"
