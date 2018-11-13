@@ -6,6 +6,11 @@ trigger:
       - release/*
       - hotfix/*
       - feature/*
+  paths:
+    exclude:
+      - .github/
+      - /*.md
+      - /*.graphml
 
 jobs:
   - job: setupenv
