@@ -13,7 +13,7 @@ steps:
   - script: npm run prebuild
     displayName: "prebuild"
 
-  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel)
+  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel) -- -c.buildVersion=$(Build.BuildId)
     displayName: "build"
 
   - script: npm test
