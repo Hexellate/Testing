@@ -18,3 +18,13 @@ steps:
 
   - script: npm test
     displayName: "test"
+
+  - task: CopyFiles@2
+    inputs:
+      contents: /compiled/*
+      overWrite: true
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
