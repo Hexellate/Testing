@@ -19,16 +19,16 @@ steps:
   - script: npm test
     displayName: "test"
 
-  - bash: ls $(Build.SourcesDirectory)
+  - bash: ls '$(Build.SourcesDirectory)'
 
   - task: CopyFiles@2
     inputs:
-      sourceFolder: $(Build.SourcesDirectory)
+      sourceFolder: "$(Build.SourcesDirectory)"
       contents: compiled/*
       overWrite: true
       # artifactName: drop-$(parameters.os)
-      targetFolder: $(Build.ArtifactStagingDirectory)
+      targetFolder: "$(Build.ArtifactStagingDirectory)"
 
   - task: PublishBuildArtifacts@1
     inputs:
-      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)"
