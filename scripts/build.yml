@@ -23,6 +23,7 @@ steps:
 
   - task: CopyFiles@2
     inputs:
+      sourceFolder: $(Build.SourcesDirectory)
       contents: compiled/*
       overWrite: true
       # artifactName: drop-$(parameters.os)
