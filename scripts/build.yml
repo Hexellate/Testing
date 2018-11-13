@@ -23,8 +23,8 @@ steps:
 
   - task: CopyFiles@2
     inputs:
-      sourceFolder: "$(Build.SourcesDirectory)"
-      contents: compiled/*
+      sourceFolder: "$(Build.SourcesDirectory)/compiled"
+      contents: "*"
       overWrite: true
       # artifactName: drop-$(parameters.os)
       targetFolder: "$(Build.ArtifactStagingDirectory)"
