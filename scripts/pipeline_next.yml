@@ -50,7 +50,7 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "win"
 
@@ -61,7 +61,7 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "lin"
 
@@ -72,7 +72,7 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "mac"
   # continuously merge to develop if test passes
@@ -85,5 +85,5 @@ jobs:
       - mac_build
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
     steps:
-      - template: scripts/releasetodevelop.yml
+      - template: releasetodevelop.yml
 # if branch release/*,  merge changes into develop (or create pr if possible)

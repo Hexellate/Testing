@@ -51,7 +51,7 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "win"
 
@@ -62,7 +62,7 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "lin"
 
@@ -73,6 +73,6 @@ jobs:
     # variables:
     #   channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "mac"
