@@ -7,8 +7,8 @@ steps:
       versionSpec: "8.x"
     displayName: "Install Node.js"
 
-  - script: npm install
-    displayName: "install npm packages"
+  - script: npm ci
+    displayName: "install npm packages with ci command"
 
   - script: npm run prebuild
     displayName: "prebuild"
