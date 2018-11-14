@@ -62,9 +62,9 @@ jobs:
           echo add package
           git add "package.json"
           newver="$(node -p 'require("./scripts/getver.js").default()')"
-          echo commit
+          echo commit to repo
           git commit -m "Bump patch ver to ${newver} ***NO_CI***"
-          echo tag
+          echo create tag "${newver}" on latest commit
           git tag "${newver}"
           echo git status
           git status
