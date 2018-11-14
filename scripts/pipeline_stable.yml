@@ -52,9 +52,9 @@ jobs:
         displayName: "Show current version"
       - bash: |
           echo git email "$(gitemail)"
-          echo git name "${env:gitname}"
-          git config --global user.email "${gitemail}"
-          git config --global user.name "${gitname}"
+          echo git name "$(gitname)"
+          git config --global user.email "$(gitemail)"
+          git config --global user.name "$(gitname)"
           git checkout master
           echo git status
           git status
@@ -70,8 +70,8 @@ jobs:
           (1>&2 echo failme)
           failOnStderr: true
       - bash: | # on merge from hotfix, bump patch
-          git config --global user.email "${gitemail}"
-          git config --global user.name "${gitname}"
+          git config --global user.email "$(gitemail)"
+          git config --global user.name "$(gitname)"
           echo commit is merge from hotfix
           git checkout master
           echo git status
@@ -95,8 +95,8 @@ jobs:
         displayName: "Bump patch version"
         condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
       - bash: | # on merge from release, remove channel info
-          git config --global user.email "${gitemail}"
-          git config --global user.name "${gitname}"
+          git config --global user.email "$(gitemail)"
+          git config --global user.name "$(gitname)"
           echo commit is merge from release
           git checkout master
           echo git status
