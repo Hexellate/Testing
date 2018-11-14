@@ -46,10 +46,12 @@ jobs:
         name: echobranchtype
       - checkout: self
         persistCredentials: true
-      - bash: |
-          semverver="$(node -p 'require("./scripts/getpackagedetails.js").default("semver")')"
-          npm install semver@${semverver}
-        displayName: "Install semver"
+      # - bash: |
+      #     semverver="$(node -p 'require("./scripts/getpackagedetails.js").default("semver")')"
+      #     npm install semver@${semverver}
+      #   displayName: "Install semver"
+      - script: npm install
+        displayName: "install npm packages"
       - bash: node -p 'require("./scripts/getver.js").default()'
         displayName: "Show current version"
       - bash: | # on merge from hotfix, bump patch
