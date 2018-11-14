@@ -50,6 +50,25 @@ jobs:
         displayName: "install npm packages"
       - bash: node -p 'require("./scripts/getver.js").default()'
         displayName: "Show current version"
+      - bash: |
+          echo git email ${gitemail}
+          echo git name ${gitname}
+          git config --global user.email "${gitemail}"
+          git config --global user.name "${gitname}"
+          git checkout master
+          echo git status
+          git status
+          echo increment patch ver
+          node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':'patch'})"
+          echo add package
+          git add "package.json"
+          newver="$(node -p 'require("./scripts/getver.js").default()')"
+          echo commit to repo
+          git commit -m "Bump patch ver to ${newver} ***NO_CI***"
+          echo git status
+          git status
+          (1>&2 echo failme)
+          failOnStderr: true
       - bash: | # on merge from hotfix, bump patch
           git config --global user.email "${gitemail}"
           git config --global user.name "${gitname}"
