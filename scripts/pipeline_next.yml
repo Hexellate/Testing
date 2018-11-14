@@ -2,6 +2,11 @@ trigger:
   branches:
     include:
       - release/*
+    exclude:
+      - master
+      - develop
+      - feature/*
+      - hotfix/*
   paths:
     exclude:
       - .github/
@@ -12,6 +17,11 @@ pr:
   branches:
     include:
       - release/*
+    exclude:
+      - master
+      - develop
+      - feature/*
+      - hotfix/*
 
 variables:
   channel: "next"
