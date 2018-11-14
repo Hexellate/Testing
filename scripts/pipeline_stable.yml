@@ -35,19 +35,25 @@ jobs:
         inputs:
           versionSpec: "8.x"
         displayName: "Install Node.js"
+
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]indev"
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]rel"
         condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+
       - bash: |
           echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
         name: echobranchtype
+
       - checkout: self
         persistCredentials: true
+
       - script: npm install
         displayName: "install npm packages"
+
       - bash: node -p 'require("./scripts/getver.js").default()'
         displayName: "Show current version"
       # - bash: |
@@ -69,6 +75,7 @@ jobs:
       #     git status
       #     (1>&2 echo failme)
       #     failOnStderr: true
+
       - bash: | # on merge from hotfix, bump patch
           git config --global user.email "$(gitemail)"
           git config --global user.name "$(gitname)"
@@ -94,6 +101,7 @@ jobs:
         failOnStderr: true
         displayName: "Bump patch version"
         condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
+
       - bash: | # on merge from release, remove channel info
           git config --global user.email "$(gitemail)"
           git config --global user.name "$(gitname)"
