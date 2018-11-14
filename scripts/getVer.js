@@ -16,5 +16,6 @@ module.exports.default = function (full) {
   } else {
     ver = `${major}.${minor}.${patch}`;
   }
+
   return ver;
 };
