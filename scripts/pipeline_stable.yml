@@ -35,7 +35,9 @@ jobs:
         inputs:
           versionSpec: "8.x"
         displayName: "Install Node.js"
-      - script: npm install --no-save semver
+      - bash: |
+          semverver="$(node -p 'require("./scripts/getpackagedetails.js").default("semver")')"
+          npm install semver@${semverver}
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]indev"
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
@@ -48,8 +50,8 @@ jobs:
       - checkout: self
         persistCredentials: true
       - bash: | # on merge from hotfix, bump patch
-          git config --global.user.email "${gitemail}"
-          git config --global.user.name "${gitname}"
+          git config --global user.email "${gitemail}"
+          git config --global user.name "${gitname}"
           echo commit is merge from hotfix
           git checkout master
           echo git status
@@ -69,8 +71,8 @@ jobs:
         failOnStderr: true
         condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
       - bash: | # on merge from release, remove channel info
-          git config --global.user.email "${gitemail}"
-          git config --global.user.name "${gitname}"
+          git config --global user.email "${gitemail}"
+          git config --global user.name "${gitname}"
           echo commit is merge from release
           git checkout master
           echo git status
