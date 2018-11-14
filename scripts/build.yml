@@ -32,12 +32,12 @@ steps:
 
   - task: DeleteFiles@1
     inputs:
-      contents: "*mac/"
+      contents: "*mac"
       sourceFolder: $(Build.ArtifactStagingDirectory)
     displayName: "Delete unpacked files"
   - task: DeleteFiles@1
     inputs:
-      contents: "*unpacked/"
+      contents: "*unpacked"
       sourceFolder: $(Build.ArtifactStagingDirectory)
     displayName: "Delete unpacked files"
 
