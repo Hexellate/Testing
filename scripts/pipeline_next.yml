@@ -1,31 +1,24 @@
 trigger:
   branches:
     include:
-      - master
-      - develop
       - release/*
-      - hotfix/*
-      - feature/*
   paths:
     exclude:
       - .github/
       - /*.md
       - /*.graphml
 
+pr:
+  branches:
+    include:
+      - release/*
+
+variables:
+  channel: "next"
+
 jobs:
   - job: setupenv
     steps:
-      # set channel
-      - bash: |
-          echo "##vso[task.setvariable variable=channel]canary"
-        condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
-      - bash: |
-          echo "##vso[task.setvariable variable=channel]stable"
-        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=channel]next"
-        condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/release/')
-      # set branchtype
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]indev"
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
@@ -35,18 +28,13 @@ jobs:
       - bash: |
           echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
         name: echobranchtype
-      - bash: |
-          echo "##vso[task.setvariable variable=channel;isOutput=true]"$(channel)
-        name: echochannel
 
   - job: win_build
     pool:
       vmImage: "vs2017-win2016"
     dependsOn: setupenv
-    variables:
-      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "win"
 
@@ -54,10 +42,8 @@ jobs:
     pool:
       vmImage: "Ubuntu 16.04"
     dependsOn: setupenv
-    variables:
-      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "lin"
 
@@ -65,10 +51,8 @@ jobs:
     pool:
       vmImage: "macOS-10.13"
     dependsOn: setupenv
-    variables:
-      channel: $[dependencies.setupenv.outputs['echochannel.channel']]
     steps:
-      - template: scripts/build.yml
+      - template: build.yml
         parameters:
           os: "mac"
   # continuously merge to develop if test passes
@@ -81,5 +65,5 @@ jobs:
       - mac_build
     condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
     steps:
-      - template: scripts/releasetodevelop.yml
+      - template: releasetodevelop.yml
 # if branch release/*,  merge changes into develop (or create pr if possible)

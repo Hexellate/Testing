@@ -13,8 +13,22 @@ steps:
   - script: npm run prebuild
     displayName: "prebuild"
 
-  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel)
+  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel) -- -c.buildVersion=$(Build.BuildId)
     displayName: "build"
 
   - script: npm test
     displayName: "test"
+
+  - bash: ls '$(Build.SourcesDirectory)'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: "$(Build.SourcesDirectory)/compiled"
+      contents: "**"
+      overWrite: true
+      # artifactName: drop-$(parameters.os)
+      targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: "$(Build.ArtifactStagingDirectory)"

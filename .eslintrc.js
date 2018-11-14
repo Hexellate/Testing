@@ -41,6 +41,7 @@ module.exports = {
     "class-methods-use-this": ["off"],
     "guard-for-in": ["off"],
     "no-restricted-syntax": ["off"],
-    "no-plusplus": ["off"]
+    "no-plusplus": ["off"],
+    "func-names": ["off"]
   }
 };

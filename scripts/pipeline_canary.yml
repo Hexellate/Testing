@@ -1,0 +1,59 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - feature/*
+  paths:
+    exclude:
+      - .github/
+      - /*.md
+      - /*.graphml
+
+pr:
+  branches:
+    include:
+      - develop
+      - feature/*
+
+variables:
+  channel: "canary"
+
+jobs:
+  - job: setupenv
+    steps:
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype]indev"
+        condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype]rel"
+        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+      - bash: |
+          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
+        name: echobranchtype
+
+  - job: win_build
+    pool:
+      vmImage: "vs2017-win2016"
+    dependsOn: setupenv
+    steps:
+      - template: build.yml
+        parameters:
+          os: "win"
+
+  - job: lin_build
+    pool:
+      vmImage: "Ubuntu 16.04"
+    dependsOn: setupenv
+    steps:
+      - template: build.yml
+        parameters:
+          os: "lin"
+
+  - job: mac_build
+    pool:
+      vmImage: "macOS-10.13"
+    dependsOn: setupenv
+    steps:
+      - template: build.yml
+        parameters:
+          os: "mac"

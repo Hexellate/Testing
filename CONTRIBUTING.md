@@ -137,7 +137,7 @@ The "canary" channel is for nightly releases of the latest features that have be
 
 ### Version Numbers
 
-Versions are in accordance with the [semver scheme](https://semver.org/) and will be identified by a number triple (i.e. 1.2.3), with an additional label and build number for pre-release channels (i.e. 1.2.3-canary.56).
+Versions for stable and next are in accordance with the [semver scheme](https://semver.org/) and will be identified by a number triple (i.e. 1.2.3), with an additional label and build number for pre-release channel (i.e. 1.2.3-next.56).
 
 The first number is the major version number and will be incremented on major changes, as well as when any API changes occur that are not backwards compatible.
 
@@ -145,7 +145,9 @@ The second number is the minor version number and will be incremented on smaller
 
 The third number is the patch or hotfix version, and will only ever be used for bugfix updates (i.e. updates that only fix bugs). This number will only be incremented on hotfixes for the stable channel, as canary and beta will use the additional build number.
 
-The label denotes the channel that the version is on, and is only used for pre-release channels (canary and next). The build number appended to the label denotes the build version, which will be incremented either nightly for canary, or for a new pre-release (next) version of a major or minor release.
+The label denotes the channel that the version is on, and is only used for the "next" channel. The build number appended to the label denotes the build version, which will be incremented for a new pre-release (next) version of a major or minor release.
+
+Internally, canary will be on the same version number as the most recent release, however canary builds should only be identified by their build number. This is due to the fact that versions are assigned when a new release channel is created, as it will not be known until that point if it should be a major or minor semver increment.
 
 ### Issue and Pull Request Labels
 
