@@ -51,8 +51,8 @@ jobs:
       - bash: node -p 'require("./scripts/getver.js").default()'
         displayName: "Show current version"
       - bash: |
-          echo git email ${gitemail}
-          echo git name ${gitname}
+          echo git email "$(gitemail)"
+          echo git name "${env:gitname}"
           git config --global user.email "${gitemail}"
           git config --global user.name "${gitname}"
           git checkout master
