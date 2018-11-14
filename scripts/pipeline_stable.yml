@@ -31,6 +31,11 @@ jobs:
     pool:
       vmImage: "vs2017-win2016"
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "8.x"
+        displayName: "Install Node.js"
+      - script: npm install --no-save semver
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]indev"
         condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
@@ -43,6 +48,8 @@ jobs:
       - checkout: self
         persistCredentials: true
       - bash: | # on merge from hotfix, bump patch
+          git config --global.user.email "${gitemail}"
+          git config --global.user.name "${gitname}"
           echo commit is merge from hotfix
           git checkout master
           echo git status
@@ -62,6 +69,8 @@ jobs:
         failOnStderr: true
         condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
       - bash: | # on merge from release, remove channel info
+          git config --global.user.email "${gitemail}"
+          git config --global.user.name "${gitname}"
           echo commit is merge from release
           git checkout master
           echo git status
