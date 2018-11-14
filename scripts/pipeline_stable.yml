@@ -19,6 +19,8 @@ variables:
 
 jobs:
   - job: setupenv
+    pool:
+      vmImage: "vs2017-win2016"
     steps:
       - bash: |
           echo "##vso[task.setvariable variable=branchtype]indev"
@@ -29,8 +31,48 @@ jobs:
       - bash: |
           echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
         name: echobranchtype
+      - checkout: self
+        persistCredentials: true
+      - bash: | # on merge from hotfix, bump patch
+          echo commit is merge from hotfix
+          git checkout master
+          echo git status
+          git status
+          echo increment patch ver
+          node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':'patch'})"
+          git add package.json
+          ver="$(node -p 'require("./scripts/getver.js").default()')"
+          git commit -m "Bump patch ver to ${ver} ***NO_CI***"
+          git tag -a $newver
+          echo git status
+          git status
+          echo git push
+          git push origin
+          echo git status
+          git status
+        failOnStderr: true
+        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), startsWith(variables['Build.SourceVersionMessage'], 'Merge branch \'hotfix/')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
+      - bash: | # on merge from release, remove channel info
+          echo commit is merge from release
+          git checkout master
+          echo git status
+          git status
+          echo increment patch ver
+          node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':''})"
+          git add package.json
+          ver="$(node -p 'require("./scripts/getver.js").default()')"
+          git commit -m "Switch channel info to stable ***NO_CI***"
+          git tag -a $newver
+          echo git status
+          git status
+          echo git push
+          git push origin
+          echo git status
+          git status
+        failOnStderr: true
+        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/release/')), startsWith(variables['Build.SourceVersionMessage'], 'Merge branch \'release/')) # Approximately matches either "Merge pull request*from*/release/*" or "Merge branch '/release/*"
 
-  # TODO if commit is merge from hotfix, increment ver, push changes and skip rest
+  # TODO if commit is merge from hotfix, increment ver, push changes and skip next commit build
 
   - job: win_build
     pool:
