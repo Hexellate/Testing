@@ -51,7 +51,7 @@ jobs:
           echo git status
           git status
         failOnStderr: true
-        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), startsWith(variables['Build.SourceVersionMessage'], "Merge branch 'hotfix/")) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
+        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), startsWith(variables['Build.SourceVersionMessage'], 'Merge branch \\'hotfix/')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
       - bash: | # on merge from release, remove channel info
           echo commit is merge from release
           git checkout master
@@ -70,7 +70,7 @@ jobs:
           echo git status
           git status
         failOnStderr: true
-        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/release/')), startsWith(variables['Build.SourceVersionMessage'], "Merge branch 'release/")) # Approximately matches either "Merge pull request*from*/release/*" or "Merge branch '/release/*"
+        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/release/')), startsWith(variables['Build.SourceVersionMessage'], 'Merge branch \\'release/')) # Approximately matches either "Merge pull request*from*/release/*" or "Merge branch '/release/*"
 
   # TODO if commit is merge from hotfix, increment ver, push changes and skip next commit build
 
