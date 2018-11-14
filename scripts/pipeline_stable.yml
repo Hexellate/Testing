@@ -99,7 +99,7 @@ jobs:
           git push --tags origin
           echo git status
           git status
-        failOnStderr: true
+        # failOnStderr: true
         displayName: "Bump patch version"
         condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
 
@@ -126,7 +126,7 @@ jobs:
           git push --tags origin
           echo git status
           git status
-        failOnStderr: true
+        # failOnStderr: true
         displayName: "Switch channel info to release"
         condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/release/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'release/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/release/*" or "Merge branch '/release/*"
 
