@@ -40,14 +40,14 @@ jobs:
           git status
           echo increment patch ver
           node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':'patch'})"
-          git add package.json
-          ver="$(node -p 'require("./scripts/getver.js").default()')"
-          git commit -m "Bump patch ver to ${ver} ***NO_CI***"
-          git tag -a $newver
+          git add "package.json"
+          newver="$(node -p 'require("./scripts/getver.js").default()')"
+          git commit -m "Bump patch ver to ${newver} ***NO_CI***"
+          git tag "${newver}"
           echo git status
           git status
           echo git push
-          git push origin
+          git push --tags origin
           echo git status
           git status
         failOnStderr: true
@@ -59,14 +59,14 @@ jobs:
           git status
           echo increment patch ver
           node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':''})"
-          git add package.json
-          ver="$(node -p 'require("./scripts/getver.js").default()')"
+          git add "package.json"
+          newver="$(node -p 'require("./scripts/getver.js").default()')"
           git commit -m "Switch channel info to stable ***NO_CI***"
-          git tag -a $newver
+          git tag "${newver}"
           echo git status
           git status
           echo git push
-          git push origin
+          git push --tags origin
           echo git status
           git status
         failOnStderr: true
