@@ -3,6 +3,10 @@ trigger:
     include:
       - develop
       - feature/*
+    exclude:
+      - master
+      - hotfix/*
+      - release/*
   paths:
     exclude:
       - .github/
@@ -14,6 +18,10 @@ pr:
     include:
       - develop
       - feature/*
+    exclude:
+      - master
+      - hotfix/*
+      - release/*
 
 variables:
   channel: "canary"

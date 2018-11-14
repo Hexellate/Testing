@@ -3,6 +3,10 @@ trigger:
     include:
       - master
       - hotfix/*
+    exclude:
+      - develop
+      - feature/*
+      - release/*
   paths:
     exclude:
       - .github/
@@ -13,6 +17,11 @@ pr:
   branches:
     include:
       - master
+      - hotfix/*
+    exclude:
+      - develop
+      - feature/*
+      - release/*
 
 variables:
   channel: "stable"
