@@ -28,6 +28,15 @@ steps:
       overWrite: true
       # artifactName: drop-$(parameters.os)
       targetFolder: "$(Build.ArtifactStagingDirectory)"
+    displayName: "Copy all compiled files"
+
+  - task: DeleteFiles@1
+    inputs:
+      contents: |
+        "*unpacked/"
+        "*mac/"
+      sourceFolder: $(Build.ArtifactStagingDirectory)
+    displayName: "Delete unpacked files"
 
   - task: PublishBuildArtifacts@1
     inputs:
