@@ -19,20 +19,24 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
       patch = 0;
       prever = 0;
       break;
+
     case "minor":
       minor++;
       patch = 0;
       prever = 0;
       break;
+
     case "patch":
       patch++;
       prever = 0;
       break;
+
     case "prerelease":
     case "pre":
       prever++;
       if (prever === "" || Number.isNaN(prever)) prever = 0;
       break;
+
     default:
       break;
   }
