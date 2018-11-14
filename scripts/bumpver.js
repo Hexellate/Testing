@@ -34,7 +34,7 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
     case "prerelease":
     case "pre":
       prever++;
-      if (prever === "" || Number.isNaN(prever)) prever = 0;
+      if (Number.isNaN(prever)) prever = 0;
       break;
 
     default:
