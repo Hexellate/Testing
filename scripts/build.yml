@@ -41,6 +41,7 @@ steps:
       sourceFolder: $(Build.ArtifactStagingDirectory)
     displayName: "Delete unpacked files"
   - bash: |
+      cd $(Build.ArtifactStagingDirectory)
       mkdir "windows"
       mkdir "mac"
       mkdir "linux"
@@ -60,6 +61,7 @@ steps:
       mv *x86_64.AppImage "linux/"
       mv *i386.AppImage "linux-ia32/"
 
+      cd $(Build.SourcesDirectory)
       # correct path mappings
       node -e "require('./scripts/setdistpaths.js').default('$(Build.ArtifactStagingDirectory)')"
       # node -e "require('./scripts/setdistpaths.js').default('$(pwd)')"

@@ -23,7 +23,7 @@ module.exports.default = function (directory) {
           pkg.packages[j].path = `${folder}/${pkg.packages[j].path}`;
         }
       }
-      console.log(pkg);
+      // console.log(pkg);
       fs.writeFileSync(`${directory}/${files[i]}.yml`, yaml.safeDump(pkg));
     }
   }
