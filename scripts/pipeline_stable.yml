@@ -89,7 +89,7 @@ jobs:
           git add "package.json"
           newver="$(node -p 'require("./scripts/getver.js").default()')"
           echo commit to repo
-          git commit -m "Bump patch ver to ${newver} ***NO_CI***"
+          git commit -m "[$(Build.DefinitionName)]Bump patch ver to ${newver} ***NO_CI***"
           echo create tag "${newver}" on latest commit
           git tag "${newver}"
           echo git status
@@ -116,7 +116,7 @@ jobs:
           git add "package.json"
           newver="$(node -p 'require("./scripts/getver.js").default()')"
           echo commit
-          git commit -m "Switch channel info to stable ***NO_CI***"
+          git commit -m "[$(Build.DefinitionName)]Switch channel info to stable ***NO_CI***"
           echo tag
           git tag "${newver}"
           echo git status

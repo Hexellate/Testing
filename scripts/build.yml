@@ -40,6 +40,30 @@ steps:
       contents: "*unpacked"
       sourceFolder: $(Build.ArtifactStagingDirectory)
     displayName: "Delete unpacked files"
+  - bash: |
+      mkdir "windows"
+      mkdir "mac"
+      mkdir "linux"
+      mkdir "linux-ia32"
+
+      # move windows
+      mv nsis-web/latest.yml $pwd
+      mv nsis-web/* "windows/"
+      rm nsis-web/
+
+      # move mac
+      mv *.dmg "mac/"
+      mv *.dmg.blockmap "mac/"
+      mv *mac.zip "mac/"
+
+      # move linux
+      mv *x86_64.AppImage "linux/"
+      mv *i386.AppImage "linux-ia32/"
+
+      # correct path mappings
+      node -e "require('./scripts/setdistpaths.js').default('$(Build.ArtifactStagingDirectory)')"
+      # node -e "require('./scripts/setdistpaths.js').default('$(pwd)')"
+    displayName: "Move artifact files and correct mappings"
 
   - task: PublishBuildArtifacts@1
     inputs:
