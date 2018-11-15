@@ -48,7 +48,7 @@ steps:
       mkdir "linux-ia32"
 
       # move windows
-      mv nsis-web/latest.yml $pwd
+      mv nsis-web/latest.yml $(pwd)
       mv nsis-web/* "windows/"
       rm nsis-web/
 
