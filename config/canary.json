@@ -21,7 +21,7 @@
     "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
     "differentialPackage": true,
-    "artifactName": "${productName} Setup.${ext}",
+    "artifactName": "${productName} Setup ${version}.${ext}",
     "shortcutName": "Auto Updater Test - Canary"
   },
   "mac": {
@@ -43,6 +43,9 @@
   },
   "linux": {
     "target": ["AppImage"]
+  },
+  "appimage": {
+    "category": "Utility"
   },
   "publish": {
     "provider": "generic",
