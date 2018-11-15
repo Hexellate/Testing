@@ -44,7 +44,7 @@
   "linux": {
     "target": ["AppImage"]
   },
-  "appimage": {
+  "appImage": {
     "category": "Utility"
   },
   "publish": {
