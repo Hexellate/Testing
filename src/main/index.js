@@ -41,9 +41,14 @@ const providerBase = {
 autoUpdater.autoDownload = false;
 {
   const provider = providerBase;
-  provider.url = `${providerBase.url}/${
-    versionDetails.appVersion.prerelease[0]
-  }`;
+  if (versionDetails.appVersion.prerelease === []) {
+    provider.url = `${providerBase.url}/stable`;
+  } else {
+    provider.url = `${providerBase.url}/${
+      versionDetails.appVersion.prerelease[0]
+    }`;
+  }
+
   autoUpdater.setFeedURL(provider);
   versionDetails.provider = provider;
 }

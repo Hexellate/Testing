@@ -42,10 +42,10 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   }
 
   let newver;
-  if (channel === "") {
+  if (channel === "" || channel === "stable") {
     newver = `${major}.${minor}.${patch}`;
-  } else if (channel === "stable") {
-    newver = `${major}.${minor}.${patch}-${channel}`;
+    // } else if (channel === "stable") {
+    //   newver = `${major}.${minor}.${patch}-${channel}`;
   } else {
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
