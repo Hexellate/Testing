@@ -90,8 +90,8 @@ jobs:
           newver="$(node -p 'require("./scripts/getver.js").default()')"
           echo commit to repo
           git commit -m "[$(Build.DefinitionName)]Bump patch ver to ${newver} ***NO_CI***"
-          echo create tag "${newver}" on latest commit
-          git tag "${newver}"
+          echo create tag "v${newver}" on latest commit
+          git tag "v${newver}"
           echo git status
           git status
           echo git push
@@ -117,8 +117,8 @@ jobs:
           newver="$(node -p 'require("./scripts/getver.js").default()')"
           echo commit
           git commit -m "[$(Build.DefinitionName)]Switch channel info to stable ***NO_CI***"
-          echo tag
-          git tag "${newver}"
+          echo create tag "v${newver}" on latest commit
+          git tag "v${newver}"
           echo git status
           git status
           echo git push
