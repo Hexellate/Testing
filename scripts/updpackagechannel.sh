@@ -9,14 +9,15 @@
 
 # for builds that are not pull-requests, corrects any invalid channel info
 printenv
-branch=$(Build.SourceBranchName)
-echo "$(git_project_email)"
-echo "$(git_project_author)"
+echo reprint
+branch=$(BUILD_SOURCEBRANCHNAME)
+echo "$(GIT_PROJECT_EMAIL)"
+echo "$(GIT_PROJECT_AUTHOR)"
 echo "$(branch)"
-echo "$(Build.Reason)"
-echo "$(channel)"
-git config --global user.email "$(git_project_email)"
-git config --global user.name "$(git_project_author)"
+echo "$(BUILD_REASON)"
+echo "$(CHANNEL)"
+git config --global user.email "$(GIT_PROJECT_EMAIL)"
+git config --global user.name "$(GIT_PROJECT_AUTHOR)"
 # echo commit is merge from release
 
 git checkout $(branch)
@@ -44,8 +45,8 @@ then
   echo git status
   git status
   echo git push
-  git push origin
-  git push --tags origin
+  #git push origin
+  #git push --tags origin
 
   echo git status
   git status
