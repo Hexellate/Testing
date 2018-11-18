@@ -32,7 +32,8 @@ jobs:
   - job: setupenv
     steps:
       - bash: | # Switch channel info if incorrect
-          ./updpackagechannel.sh
+          chmod u+x /scripts/updpackagechannel.sh
+          ./scripts/updpackagechannel.sh
         # failOnStderr: true
         displayName: "Switch channel info to $(channel)"
 
