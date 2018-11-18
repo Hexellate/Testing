@@ -20,7 +20,7 @@ steps:
         (1>&2 echo ERROR: Channel in package.json = "$(pkgchannel)" while pipeline channel = "$(channel)" )
       fi
     failOnStderr: true
-    condition: ne("$(Build.Reason)", "PullRequest")
+    condition: ne('$(Build.Reason)', 'PullRequest')
 
     # Bump transient version
   - bash: | # set prever to build number for canary and next
