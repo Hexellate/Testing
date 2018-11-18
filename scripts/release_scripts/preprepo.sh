@@ -10,11 +10,11 @@ cd $(System.DefaultWorkingDirectory)
 mkdir project_repo
 cd project_repo
 
-git config --global user.email "$(git_email)"
-git config --global user.name "$(git_author)"
+git config --global user.email "$(git_project_email)"
+git config --global user.name "$(git_project_author)"
 
 git init
-git remote add -f origin $(git_url)
+git remote add -f origin $(git_project_url)
 git pull
 git checkout $(branch)
 echo git status

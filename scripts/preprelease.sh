@@ -1,6 +1,6 @@
 # Build process: # TODO: branch
 #
-# Predefined vars: git_email, git_author, git_project
+# Predefined vars: git_email, git_author, git_project_name, git_project_url, git_project_owner
 #
 # start setup job >> channel
 # For release, automatically merge into develop?
@@ -40,8 +40,8 @@
 
 # TODO: Use correct working directory
 
-git config --global user.email "$(git_email)"
-git config --global user.name "$(git_author)"
+git config --global user.email "$(git_project_email)"
+git config --global user.name "$(git_project_author)"
 echo commit is merge from hotfix
 git checkout master # TODO: Check out correct branch
 echo git status

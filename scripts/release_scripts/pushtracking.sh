@@ -10,8 +10,8 @@ cd $(System.DefaultWorkingDirectory)
 mkdir tracking_repo
 cd tracking_repo
 
-#git config --global user.email "$(git_email)"
-#git config --global user.name "$(git_author)"
+git config --global user.email "$(git_tracking_email)"
+git config --global user.name "$(git_tracking_author)"
 
 git init
 git remote add -f origin $(git_tracking_url)

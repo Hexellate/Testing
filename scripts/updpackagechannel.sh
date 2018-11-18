@@ -8,12 +8,12 @@
 #
 
 # for builds that are not pull-requests, corrects any invalid channel info
-git config --global user.email "$(git_email)"
-git config --global user.name "$(git_author)"
+git config --global user.email "$(git_project_email)"
+git config --global user.name "$(git_project_author)"
 # echo commit is merge from release
 
 branch=$(Build.SourceBranchName)
-
+# TODO: Go through all variables AGAIN to ensure git_*_author is referenced
 git checkout $(branch)
 echo git status
 git status

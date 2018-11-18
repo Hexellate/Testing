@@ -95,7 +95,7 @@ steps:
 
       cd "$(Build.SourcesDirectory)"
       # correct path mappings
-      node -e "require('./scripts/setdistpaths.js').default({'directory':'$(Build.ArtifactStagingDirectory)/release', 'author':$(git_author), 'projectname':$(git_project)})"
+      node -e "require('./scripts/setdistpaths.js').default({'directory':'$(Build.ArtifactStagingDirectory)/release', 'author':$(git_project_owner), 'projectname':$(git_project_name)})"
       # node -e "require('./scripts/setdistpaths.js').default('$(pwd)')"
     displayName: "Move artifact files and correct mappings"
 
