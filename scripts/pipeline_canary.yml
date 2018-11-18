@@ -1,3 +1,5 @@
+# TODO: On release pipeline, update version info(?) and tag release
+
 trigger:
   branches:
     include:

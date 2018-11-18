@@ -56,11 +56,22 @@ steps:
       contents: "*mac"
       sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
     displayName: "Delete unpacked files"
+
   - task: DeleteFiles@1
     inputs:
       contents: "*unpacked"
       sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
     displayName: "Delete unpacked files"
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: "$(Build.SourcesDirectory)/scripts/release_scripts"
+      contents: "**"
+      overWrite: true
+      # artifactName: drop-$(parameters.os)
+      targetFolder: "$(Build.ArtifactStagingDirectory)/pipe"
+    displayName: "Copy pipe scripts"
+
   - bash: |
       cd "$(Build.ArtifactStagingDirectory)/release"
       mkdir "windows"
@@ -84,9 +95,14 @@ steps:
 
       cd "$(Build.SourcesDirectory)"
       # correct path mappings
-      node -e "require('./scripts/setdistpaths.js').default('$(Build.ArtifactStagingDirectory)')"
+      node -e "require('./scripts/setdistpaths.js').default({'directory':'$(Build.ArtifactStagingDirectory)/release', 'author':$(git_author), 'projectname':$(git_project)})"
       # node -e "require('./scripts/setdistpaths.js').default('$(pwd)')"
     displayName: "Move artifact files and correct mappings"
+
+  - bash: |
+      cd "$(Build.SourcesDirectory)"
+      node -e "require('./scripts/setpipe.js').default({'dir':'$(Build.ArtifactStagingDirectory)/pipe', 'version':'$(version)', 'branch':'$(branch)', 'tag':'$(tag)', 'channel':'$(channel)')"
+    displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
     inputs:

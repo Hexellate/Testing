@@ -1,30 +1,46 @@
 const fs = require("fs");
 const yaml = require("js-yaml");
 
-module.exports.default = function (directory) {
+module.exports.default = function ({
+  directory,
+  author,
+  projectname // ,
+  // release // tag name
+} = {}) {
   const files = ["latest-mac", "latest-linux", "latest-linux-ia32", "latest"];
-  const newdirs = ["mac", "linux", "linux-ia32", "windows"];
+  const raw = fs.readFileSync(`./package.json`);
+  const pkg = JSON.parse(raw);
+
+  const prependURL = `https://github.com/${author}/${projectname}/releases/download/v${
+    pkg.version
+  }`;
+
+  // update each yml tracking file with github releases url
   for (const i in files) {
     console.log(`${directory}/${files[i]}.yml`);
-    if (fs.existsSync(`${directory}/${files[i]}.yml`)) {
-      const raw = fs.readFileSync(`${directory}/${files[i]}.yml`);
-      const pkg = yaml.safeLoad(raw);
 
-      const folder = newdirs[i];
-      // if (files[i] === files[3]) {
-      //   folder = "latest-windows";
-      // }
-      pkg.path = `${folder}/${pkg.path}`;
-      for (const j in pkg.files) {
-        pkg.files[j].url = `${folder}/${pkg.files[j].url}`;
+    // only run if file actually exists
+    if (fs.existsSync(`${directory}/${files[i]}.yml`)) {
+      const distFileRaw = fs.readFileSync(`${directory}/${files[i]}.yml`);
+      const distFile = yaml.safeLoad(distFileRaw);
+
+      // update root path
+      distFile.path = `${prependURL}/${distFile.path}`;
+      // update all files entries
+      for (const j in distFile.files) {
+        distFile.files[j].url = `${prependURL}/${distFile.files[j].url}`;
       }
+
+      // update all package entries for windows
       if (files[i] === files[3]) {
-        for (const j in pkg.packages) {
-          pkg.packages[j].path = `${folder}/${pkg.packages[j].path}`;
+        for (const j in distFile.packages) {
+          distFile.packages[j].path = `${prependURL}/${
+            distFile.packages[j].path
+          }`;
         }
       }
-      // console.log(pkg);
-      fs.writeFileSync(`${directory}/${files[i]}.yml`, yaml.safeDump(pkg));
+      // console.log(distFile);
+      fs.writeFileSync(`${directory}/${files[i]}.yml`, yaml.safeDump(distFile));
     }
   }
   return 0;
