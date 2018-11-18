@@ -8,16 +8,21 @@
 #
 
 # for builds that are not pull-requests, corrects any invalid channel info
+branch=$(Build.SourceBranchName)
+echo "$(git_project_email)"
+echo "$(git_project_author)"
+echo "$(branch)"
+echo "$(Build.Reason)"
+echo "$(channel)"
 git config --global user.email "$(git_project_email)"
 git config --global user.name "$(git_project_author)"
 # echo commit is merge from release
 
-branch=$(Build.SourceBranchName)
-# TODO: Go through all variables AGAIN to ensure git_*_author is referenced
 git checkout $(branch)
 echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
+echo "$(pkgchannel)"
 
 if [[ [["$(pkgchannel)" != "$(channel)"]] && [["$(Build.Reason)" != "PullRequest"]] && ! [[ [["$(branch)" =~ ^hotfix/.*$]] || [["$(branch)" =~ ^feature/.*$]] ]] ]]
 # If channel is different, not pull request and not hotfix or feature TODO: double check that this will evaluate correctly
