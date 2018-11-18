@@ -8,6 +8,7 @@
 #
 
 # for builds that are not pull-requests, corrects any invalid channel info
+printenv
 branch=$(Build.SourceBranchName)
 echo "$(git_project_email)"
 echo "$(git_project_author)"
