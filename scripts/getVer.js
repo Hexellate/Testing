@@ -9,8 +9,11 @@ module.exports.default = function (comp) {
   const major = semver.major(pkg.version);
   const minor = semver.minor(pkg.version);
   const patch = semver.patch(pkg.version);
-  const channel = semver.prerelease(pkg.version)[0];
-  const prever = semver.prerelease(pkg.version)[1];
+  let channel = "stable";
+  let prever = "";
+  if (semver.prerelease(pkg.version) !== null) {
+    [channel, prever] = semver.prerelease(pkg.version);
+  }
 
   let ver;
   switch (comp) {
