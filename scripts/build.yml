@@ -7,19 +7,40 @@ steps:
       versionSpec: "8.x"
     displayName: "Install Node.js"
 
-  - script: npm install
-    displayName: "install npm packages"
+  - bash: npm install
+    displayName: "Install npm packages"
 
-  - script: npm run prebuild
+  - bash: npm run prebuild
     displayName: "prebuild"
+  - bash: |
+      pkgchannel=$(node -e "require('./scripts/getver.js').default("channel")")
+      if[$(channel)!=$(pkgchannel)]
+      then
+        (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
+        (1>&2 echo ERROR: Channel in package.json = "$(pkgchannel)" while pipeline channel = "$(channel)" )
+      fi
+    failOnStderr: true
+    condition: ne("$(Build.Reason)", "PullRequest")
 
-  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel) -- -c.buildVersion=$(Build.BuildId)
-    displayName: "build"
+    # Bump transient version
+  - bash: | # set prever to build number for canary and next
+      node -e "require('./scripts/setver.js').default({'channel':$(channel),'comp':'pre', 'val':$(Build.BuildId)})"
+    displayName: "Set prerelease version for canary and next"
+    condition: or(eq($(channel), "canary"), eq($(channel), "next"))
 
-  - script: npm test
-    displayName: "test"
+  - bash: npm run "build-$(parameters.os):$(channel)" -- -c.buildVersion=$(Build.BuildId)
+    displayName: "Build binaries"
 
-  - bash: ls '$(Build.SourcesDirectory)'
+  - bash: npm test
+    displayName: "Run tests"
+
+  - bash: ls -l '$(Build.SourcesDirectory)'
+
+  - bash: |
+      cd "$(Build.ArtifactStagingDirectory)"
+      mkdir "release" # actual release binaries
+      mkdir "pipe" # used to pass information to release pipeline
+    displayName: "Create release and pipe folders"
 
   - task: CopyFiles@2
     inputs:
@@ -27,21 +48,21 @@ steps:
       contents: "**"
       overWrite: true
       # artifactName: drop-$(parameters.os)
-      targetFolder: "$(Build.ArtifactStagingDirectory)"
+      targetFolder: "$(Build.ArtifactStagingDirectory)/release"
     displayName: "Copy all compiled files"
 
   - task: DeleteFiles@1
     inputs:
       contents: "*mac"
-      sourceFolder: $(Build.ArtifactStagingDirectory)
+      sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
     displayName: "Delete unpacked files"
   - task: DeleteFiles@1
     inputs:
       contents: "*unpacked"
-      sourceFolder: $(Build.ArtifactStagingDirectory)
+      sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
     displayName: "Delete unpacked files"
   - bash: |
-      cd "$(Build.ArtifactStagingDirectory)"
+      cd "$(Build.ArtifactStagingDirectory)/release"
       mkdir "windows"
       mkdir "mac"
       mkdir "linux"
@@ -70,3 +91,4 @@ steps:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: "$(Build.ArtifactStagingDirectory)"
+    displayName: "Publish artifacts"

@@ -29,15 +29,10 @@ variables:
 jobs:
   - job: setupenv
     steps:
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]indev"
-        condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]rel"
-        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
-        name: echobranchtype
+      - bash: | # Switch channel info if incorrect
+          ./updpackagechannel.sh
+        # failOnStderr: true
+        displayName: "Switch channel info to $(channel)"
 
   - job: win_build
     pool:
