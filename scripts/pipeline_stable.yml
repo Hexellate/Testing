@@ -87,9 +87,6 @@ jobs:
       #   condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
 
       - bash: | # Switch channel info if incorrect
-          ls -l
-          ls -l scripts/
-          ls -l /scripts/
           chmod u+x scripts/updpackagechannel.sh
           ./scripts/updpackagechannel.sh
         # failOnStderr: true
