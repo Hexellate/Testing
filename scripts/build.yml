@@ -44,14 +44,14 @@ steps:
       tag="v${version}"
       # echo '##vso[task.setvariable variable=version]$(version)'
       # echo '##vso[task.setvariable variable=tag]$(tag)'
-      # echo '##vso[task.setvariable variable=version2]${version}'
-      # echo '##vso[task.setvariable variable=tag2]${tag}'
+      echo '##vso[task.setvariable variable=version2]$(version)'
+      echo '##vso[task.setvariable variable=tag2]$(tag)'
     displayName: "Set tag and version env vars"
 
   - bash: |
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
-      echo $(version)
-      echo $(tag)
+      echo ${version}
+      echo ${tag}
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
