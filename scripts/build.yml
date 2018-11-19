@@ -46,7 +46,8 @@ steps:
         then
           OS="lin"
       fi
-      printenv
+      echo $(OS)
+      echo ${OS}
       npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"
 
