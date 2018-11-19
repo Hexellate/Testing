@@ -26,7 +26,7 @@ steps:
   - bash: | # set prever to build number for canary and next
       node -e "require('./scripts/setver.js').default({'channel':$(channel),'comp':'pre', 'val':$(Build.BuildId)})"
     displayName: "Set prerelease version for canary and next"
-    condition: or(eq($(channel), "canary"), eq($(channel), "next"))
+    condition: or(eq('$(channel)', "canary"), eq('$(channel)', "next"))
 
   - bash: npm run "build-$(parameters.os):$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"

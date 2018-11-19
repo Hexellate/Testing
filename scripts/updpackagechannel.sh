@@ -38,10 +38,11 @@ then
 
   echo add package
   git add "package.json"
+  git diff --cached "package.json"
 
   newver="$(node -p 'require("./scripts/getver.js").default("full")')"
   echo commit
-  git commit -m "[$(Build.DefinitionName)]Switch channel info to ${CHANNEL} ***NO_CI***"
+  git commit -m "[${BUILD_DEFINITIONNAME}]Switch channel info to ${CHANNEL} ***NO_CI***"
 
   # echo create tag "v${newver}" on latest commit
   # git tag "v${newver}"
