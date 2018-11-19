@@ -11,6 +11,9 @@
 printenv
 echo reprint
 branch=$(BUILD_SOURCEBRANCHNAME)
+echo "$(BUILD_SOURCEBRANCHNAME)"
+echo "$BUILD_SOURCEBRANCHNAME"
+echo "${BUILD_SOURCEBRANCHNAME}"
 echo "$(GIT_PROJECT_EMAIL)"
 echo "$(GIT_PROJECT_AUTHOR)"
 echo "$(branch)"
