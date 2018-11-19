@@ -13,6 +13,7 @@ module.exports.default = function ({
   // const pkg = JSON.parse(raw);
   console.log(`${dir}`);
   console.log(`${dir2}`);
+  console.log(`${dir2.replace("\\", "/")}`);
   fs.writeFileSync(`${dir}/version`, version);
   if (branch !== "none") fs.writeFileSync(`${dir}/branch`, branch);
   if (tag !== "none") fs.writeFileSync(`${dir}/tag`, tag);
