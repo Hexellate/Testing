@@ -50,10 +50,12 @@ steps:
       # echo '##vso[task.setvariable variable=tag]$(tag)'
       echo '##vso[task.setvariable variable=version2]${version}'
       echo '##vso[task.setvariable variable=tag2]${tag}'
+      printenv
     displayName: "Set tag and version env vars"
 
   - bash: |
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
+      printenv
       echo ${version}
       echo ${tag}
       echo $(version)
