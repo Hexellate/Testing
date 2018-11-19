@@ -52,6 +52,10 @@ steps:
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
       echo ${version}
       echo ${tag}
+      echo ${version2}
+      echo ${tag2}
+      echo $(version2)
+      echo $(tag2)
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
