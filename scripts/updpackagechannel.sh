@@ -13,13 +13,6 @@ echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
 
-# echo ${pkgchannel}
-# echo ${channel}
-# echo $channel
-# echo ${CHANNEL}
-# echo ${BUILD_REASON}
-# echo ${branch}
-# printenv
 if [[ ("${pkgchannel}" != "${CHANNEL}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
 then
   echo switch version tag to ${branch}
@@ -36,7 +29,7 @@ then
   echo git status
   git status
   echo git push
-  #git push origin
+  git push origin
 else
   echo Already on ${CHANNEL} channel
 fi

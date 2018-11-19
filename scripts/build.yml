@@ -19,6 +19,7 @@ steps:
     displayName: "prebuild"
   - bash: |
       echo $(pwd)
+      ls -l
       pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
       if [[ "$(channel)" != "${pkgchannel}" ]]
       then
@@ -119,7 +120,7 @@ steps:
 
   - bash: |
       cd "$(Build.SourcesDirectory)"
-      node -e "require('./scripts/setpipe.js').default({'dir':'$(Build.ArtifactStagingDirectory)/pipe', 'version':'$(version)', 'branch':'$(branch)', 'tag':'$(tag)', 'channel':'$(channel)')"
+      node -e "require('./scripts/setpipe.js').default({'dir':'$(Build.ArtifactStagingDirectory)/pipe', 'version':'$(version)', 'branch':'$(branch)', 'tag':'$(tag)', 'channel':'$(channel)'})"
     displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
