@@ -13,7 +13,7 @@ steps:
   - bash: npm run prebuild
     displayName: "prebuild"
   - bash: |
-      pkgchannel=$(node -e "require('./scripts/getver.js').default("channel")")
+      pkgchannel=$(node -e "require('./scripts/getver.js').default('channel')")
       if[$(channel)!=$(pkgchannel)]
       then
         (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
@@ -21,6 +21,7 @@ steps:
       fi
     failOnStderr: true
     condition: ne('$(Build.Reason)', 'PullRequest')
+    displayName: "Validate channel info"
 
     # Bump transient version
   - bash: | # set prever to build number for canary and next
