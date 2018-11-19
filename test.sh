@@ -16,17 +16,21 @@
 #   else
 #     echo nay
 # fi
-AGENT_OS="Windows_NT"
 
-if [[ "${AGENT_OS}" == "Darwin" ]]
-  then
-    OS="mac"
-  elif [[ "${AGENT_OS}" == "Windows_NT" ]]
-  then
-    OS="win"
-  elif [[ "${AGENT_OS}" == "Linux" ]]
-  then
-    OS="lin"
-fi
-echo $(OS)
-echo ${OS}
+# AGENT_OS="Windows_NT"
+
+# if [[ "${AGENT_OS}" == "Darwin" ]]
+#   then
+#     OS="mac"
+#   elif [[ "${AGENT_OS}" == "Windows_NT" ]]
+#   then
+#     OS="win"
+#   elif [[ "${AGENT_OS}" == "Linux" ]]
+#   then
+#     OS="lin"
+# fi
+# echo $(OS)
+# echo ${OS}
+
+BUILD_ARTIFACTSTAGINGDIRECTORY="d:\a\1\a"
+echo ${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}
