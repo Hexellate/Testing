@@ -37,7 +37,7 @@ steps:
     displayName: "Set prerelease version for canary and next"
     condition: or(eq('$(channel)', 'canary'), eq('$(channel)', 'next'))
 
-  - bash: npm run "build-${parameters.os}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
+  - bash: npm run "build-${PARAMETERS_OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"
 
   - bash: npm test

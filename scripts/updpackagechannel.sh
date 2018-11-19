@@ -40,7 +40,7 @@ then
   echo git status
   git status
   echo git push
-  git push origin
+  #git push origin
   #git push --tags origin
 
   echo git status
