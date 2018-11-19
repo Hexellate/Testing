@@ -27,7 +27,7 @@ steps:
       if [[ "${channel}" != "${pkgchannel}" ]]
       then
         (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
-        (1>&2 echo ERROR: Channel in package.json = "${pkgchannel}" while pipeline channel = "${channel}" )
+        (1>&2 echo ERROR: Channel in package.json = \"${pkgchannel}\" while pipeline channel = \"$(channel)\" )
       fi
     failOnStderr: true
     condition: ne('$(Build.Reason)', 'PullRequest')
