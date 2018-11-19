@@ -13,8 +13,8 @@ steps:
   - bash: npm run prebuild
     displayName: "prebuild"
   - bash: |
-      pkgchannel=$(node -e "require('./scripts/getver.js').default('channel')")
-      echo $(node -e "require('./scripts/getver.js').default('channel')")
+      pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
+      echo $(node -p "require('./scripts/getver.js').default('channel')")
       echo "$(pkgchannel)"
       echo "${pkgchannel}"
       echo "$pkgchannel"
