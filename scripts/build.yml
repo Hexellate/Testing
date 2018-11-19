@@ -40,8 +40,8 @@ steps:
     condition: or(eq('$(channel)', 'canary'), eq('$(channel)', 'next'))
 
   - bash: |
-      export version="$(node -p 'require("./scripts/getver.js").default()')"
-      export tag="v${version}"
+      export version=$(node -p 'require("./scripts/getver.js").default()')
+      export tag=v${version}
       echo $(version)
       echo ${version}
       echo $(tag)
