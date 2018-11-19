@@ -9,6 +9,7 @@ module.exports.default = function (comp) {
   const major = semver.major(pkg.version);
   const minor = semver.minor(pkg.version);
   const patch = semver.patch(pkg.version);
+
   let channel = "stable";
   let prever = "";
   if (semver.prerelease(pkg.version) != null) {
