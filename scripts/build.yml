@@ -122,7 +122,7 @@ steps:
 
   - bash: |
       cd "$(Build.SourcesDirectory)"
-      node -e "require('./scripts/setpipe.js').default({'dir':'${Build.ArtifactStagingDirectory}/pipe', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
+      node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY}/pipe', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
     displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
