@@ -13,14 +13,14 @@ echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
 
-echo ${pkgchannel}
-echo ${channel}
-echo $channel
-echo ${CHANNEL}
-echo ${BUILD_REASON}
-echo ${branch}
-printenv
-if [[ ("${pkgchannel}" != "${channel}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
+# echo ${pkgchannel}
+# echo ${channel}
+# echo $channel
+# echo ${CHANNEL}
+# echo ${BUILD_REASON}
+# echo ${branch}
+# printenv
+if [[ ("${pkgchannel}" != "${CHANNEL}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
 then
   echo switch version tag to ${branch}
   node -e "require('./scripts/bumpver.js').default({'channel':'${CHANNEL}','bump':''})"
