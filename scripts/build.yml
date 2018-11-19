@@ -22,8 +22,6 @@ steps:
     displayName: "prebuild"
   - bash: |
       pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
-      echo "$(channel)"
-      echo "${pkgchannel}"
       if [[ "$(channel)" != "${pkgchannel}" ]]
       then
         (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
@@ -39,7 +37,7 @@ steps:
     displayName: "Set prerelease version for canary and next"
     condition: or(eq('$(channel)', 'canary'), eq('$(channel)', 'next'))
 
-  - bash: npm run "build-$(parameters.os):$(channel)" -- -c.buildVersion=$(Build.BuildId)
+  - bash: npm run "build-${parameters.os}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"
 
   - bash: npm test
