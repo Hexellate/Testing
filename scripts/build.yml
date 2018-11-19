@@ -41,6 +41,8 @@ steps:
       printenv
       npm run "build-${PARAMETERS_OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"
+    env:
+      PARAMETERS_OS: $(parameters.os) # Apparently this is not automatically parsed to the script ¯\_(ツ)_/¯
 
   - bash: npm test
     displayName: "Run tests"
