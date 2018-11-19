@@ -122,7 +122,6 @@ steps:
 
   - bash: |
       cd "$(Build.SourcesDirectory)"
-      echo "${BUILD_ARTIFACTSTAGINGDIRECTORY}"
       node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY}/pipe', 'dir2':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
     displayName: "Set pipe info"
 
