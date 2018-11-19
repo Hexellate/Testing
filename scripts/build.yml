@@ -50,7 +50,8 @@ steps:
 
   - bash: |
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
-
+      echo $(version)
+      echo $(tag)
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
