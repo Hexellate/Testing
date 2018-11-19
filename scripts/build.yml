@@ -4,6 +4,12 @@ parameters:
 steps:
   - checkout: self
     persistCredentials: true
+
+  - bash: |
+      branch=${BUILD_SOURCEBRANCHNAME}
+      git checkout ${branch}
+    displayName: "Checkout latest commit on branch"
+
   - task: NodeTool@0
     inputs:
       versionSpec: "8.x"
