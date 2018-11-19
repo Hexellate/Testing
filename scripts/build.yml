@@ -42,6 +42,10 @@ steps:
   - bash: |
       version="$(node -p 'require("./scripts/getver.js").default()')"
       tag="v${version}"
+      echo $(version)
+      echo ${version}
+      echo $(tag)
+      echo ${tag}
       # echo '##vso[task.setvariable variable=version]$(version)'
       # echo '##vso[task.setvariable variable=tag]$(tag)'
       echo '##vso[task.setvariable variable=version2]${version}'
@@ -52,6 +56,8 @@ steps:
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
       echo ${version}
       echo ${tag}
+      echo $(version)
+      echo $(tag)
       echo ${version2}
       echo ${tag2}
       echo $(version2)
