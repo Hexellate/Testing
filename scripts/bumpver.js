@@ -9,8 +9,12 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  // const channel = semver.prerelease(pkg.version)[0];
-  let prever = semver.prerelease(pkg.version)[1];
+  // let channel = "stable";
+  let prever = 0;
+  if (semver.prerelease(pkg.version) != null) {
+    // [channel, prever] = semver.prerelease(pkg.version);
+    [, prever] = semver.prerelease(pkg.version);
+  }
 
   switch (bump) {
     case "major":
