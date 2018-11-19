@@ -29,7 +29,7 @@ then
   echo git status
   git status
   echo git push
-  git push origin
+  #git push origin
 else
   echo Already on ${CHANNEL} channel
 fi
