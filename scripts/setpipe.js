@@ -10,9 +10,9 @@ module.exports.default = function ({
 } = {}) {
   // const raw = fs.readFileSync("./package.json");
   // const pkg = JSON.parse(raw);
-  fs.writeFileSync(`${dir}/version`, version);
-  if (branch !== "none") fs.writeFileSync(`${dir}/branch`, branch);
-  if (tag !== "none") fs.writeFileSync(`${dir}/tag`, tag);
-  if (channel !== "none") fs.writeFileSync(`${dir}/channel`, channel);
+  fs.writeFileSync(`${dir}/pipe/version`, version);
+  if (branch !== "none") fs.writeFileSync(`${dir}/pipe/branch`, branch);
+  if (tag !== "none") fs.writeFileSync(`${dir}/pipe/tag`, tag);
+  if (channel !== "none") fs.writeFileSync(`${dir}/pipe/channel`, channel);
   return 0;
 };
