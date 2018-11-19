@@ -9,40 +9,39 @@
 
 # for builds that are not pull-requests, corrects any invalid channel info
 #printenv
-echo reprint
+# echo reprint
 branch=${BUILD_SOURCEBRANCHNAME}
 #echo "$(BUILD_SOURCEBRANCHNAME)"
 #echo "$BUILD_SOURCEBRANCHNAME"
 #echo "${BUILD_SOURCEBRANCHNAME}"
-echo ${BUILD_SOURCEBRANCHNAME}
-echo ${Build.SourceBranchName}
-echo "${GIT_PROJECT_EMAIL}"
-echo "${GIT_PROJECT_AUTHOR}"
-echo "${branch}"
-echo "${BUILD_REASON}"
+# echo ${BUILD_SOURCEBRANCHNAME}
+# echo "${GIT_PROJECT_EMAIL}"
+# echo "${GIT_PROJECT_AUTHOR}"
+# echo "${branch}"
+# echo "${BUILD_REASON}"
 echo "${CHANNEL}"
-git config --global user.email "$(GIT_PROJECT_EMAIL)"
-git config --global user.name "$(GIT_PROJECT_AUTHOR)"
+git config --global user.email "${GIT_PROJECT_EMAIL}"
+git config --global user.name "${GIT_PROJECT_AUTHOR}"
 # echo commit is merge from release
 
-git checkout $(branch)
+git checkout ${branch}
 echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
-echo "$(pkgchannel)"
+echo "${pkgchannel}"
 
-if [[ [["$(pkgchannel)" != "$(channel)"]] && [["$(Build.Reason)" != "PullRequest"]] && ! [[ [["$(branch)" =~ ^hotfix/.*$]] || [["$(branch)" =~ ^feature/.*$]] ]] ]]
+if [[ [["${pkgchannel}" != "${CHANNEL}"]] && [["${BUILD_REASON}" != "PullRequest"]] && ! [[ [["${branch}" =~ ^hotfix/.*$]] || [["${branch}" =~ ^feature/.*$]] ]] ]]
 # If channel is different, not pull request and not hotfix or feature TODO: double check that this will evaluate correctly
 then
-  echo switch version tag to $(branch)
-  node -e "require('./scripts/bumpver.js').default({'channel':'$(channel)','bump':''})"
+  echo switch version tag to ${branch}
+  node -e "require('./scripts/bumpver.js').default({'channel':'${CHANNEL}','bump':''})"
 
   echo add package
   git add "package.json"
 
   newver="$(node -p 'require("./scripts/getver.js").default("full")')"
   echo commit
-  git commit -m "[$(Build.DefinitionName)]Switch channel info to $(channel) ***NO_CI***"
+  git commit -m "[$(Build.DefinitionName)]Switch channel info to ${CHANNEL} ***NO_CI***"
 
   # echo create tag "v${newver}" on latest commit
   # git tag "v${newver}"
@@ -56,5 +55,5 @@ then
   echo git status
   git status
 else
-  echo Already on $(channel) channel
+  echo Already on ${CHANNEL} channel
 fi
