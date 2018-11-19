@@ -18,11 +18,11 @@ steps:
   - bash: npm run prebuild
     displayName: "prebuild"
   - bash: |
-      printenv
-      cd $(Build.Repository.LocalPath)
-      echo $(pwd)
-      ls -l
-      pkgchannel=$(node -p "require('$(pwd)/scripts/getver.js').default('channel')")
+      # printenv
+      # cd $(Build.Repository.LocalPath)
+      # echo $(pwd)
+      # ls -l
+      pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
       if [[ "$(channel)" != "${pkgchannel}" ]]
       then
         (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
