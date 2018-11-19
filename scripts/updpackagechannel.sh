@@ -4,6 +4,7 @@
 
 # for builds that are not pull-requests, corrects any invalid channel info
 branch=${BUILD_SOURCEBRANCHNAME}
+echo ${channel}
 git config --global user.email "${GIT_PROJECT_EMAIL}"
 git config --global user.name "${GIT_PROJECT_AUTHOR}"
 
@@ -13,13 +14,12 @@ git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
 
 echo ${pkgchannel}
-echo $(channel)
-echo "$(channel)"
 echo ${channel}
-echo "${channel}"
+echo $channel
+echo ${CHANNEL}
 echo ${BUILD_REASON}
 echo ${branch}
-
+printenv
 if [[ ("${pkgchannel}" != "${channel}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
 then
   echo switch version tag to ${branch}
