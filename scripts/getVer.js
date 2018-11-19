@@ -11,13 +11,9 @@ module.exports.default = function (comp) {
   const patch = semver.patch(pkg.version);
   let channel = "stable";
   let prever = "";
-  // console.log(`version: ${semver.prerelease(pkg.version)}`);
   if (semver.prerelease(pkg.version) != null) {
     [channel, prever] = semver.prerelease(pkg.version);
   }
-
-  // console.log(`channel: ${channel}`);
-  // console.log(`prever: ${prever}`);
 
   let ver;
   switch (comp) {
