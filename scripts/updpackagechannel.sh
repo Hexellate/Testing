@@ -8,17 +8,7 @@
 #
 
 # for builds that are not pull-requests, corrects any invalid channel info
-#printenv
-# echo reprint
 branch=${BUILD_SOURCEBRANCHNAME}
-#echo "$(BUILD_SOURCEBRANCHNAME)"
-#echo "$BUILD_SOURCEBRANCHNAME"
-#echo "${BUILD_SOURCEBRANCHNAME}"
-# echo ${BUILD_SOURCEBRANCHNAME}
-# echo "${GIT_PROJECT_EMAIL}"
-# echo "${GIT_PROJECT_AUTHOR}"
-# echo "${branch}"
-# echo "${BUILD_REASON}"
 echo "${CHANNEL}"
 git config --global user.email "${GIT_PROJECT_EMAIL}"
 git config --global user.name "${GIT_PROJECT_AUTHOR}"
