@@ -13,6 +13,11 @@ echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
 
+echo pkgchannel
+echo channel
+echo BUILD_REASON
+echo branch
+
 if [[ ("${pkgchannel}" != "${channel}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
 then
   echo switch version tag to ${branch}

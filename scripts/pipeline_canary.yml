@@ -43,8 +43,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "win"
 
   - job: lin_build
     pool:
@@ -52,8 +50,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "lin"
 
   - job: mac_build
     pool:
@@ -61,5 +57,3 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "mac"
