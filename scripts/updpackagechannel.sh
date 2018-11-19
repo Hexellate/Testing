@@ -29,8 +29,8 @@ echo git status
 git status
 pkgchannel="$(node -p 'require("./scripts/getver.js").default("channel")')"
 echo "${pkgchannel}"
-
-if [[ [["${pkgchannel}" != "${CHANNEL}"]] && [["${BUILD_REASON}" != "PullRequest"]] && ! [[ [["${branch}" =~ ^hotfix/.*$]] || [["${branch}" =~ ^feature/.*$]] ]] ]]
+isfeatorfix=[[ "${branch}" =~ ^hotfix/.*$ || "${branch}" =~ ^feature/.*$ ]]
+if [[ [["${pkgchannel}" != "${CHANNEL}"]] && [["${BUILD_REASON}" != "PullRequest"]] && ! ${isfeatorfix} ]]
 # If channel is different, not pull request and not hotfix or feature TODO: double check that this will evaluate correctly
 then
   echo switch version tag to ${branch}
