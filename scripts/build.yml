@@ -4,7 +4,7 @@ steps:
 
   - bash: |
       branch=${BUILD_SOURCEBRANCHNAME}
-      echo '##vso[task.setvariable variable=branch]$(branch)'
+      # echo '##vso[task.setvariable variable=branch]$(branch)'
       git checkout ${branch}
     displayName: "Checkout latest commit on branch"
 
@@ -42,10 +42,10 @@ steps:
   - bash: |
       version="$(node -p 'require("./scripts/getver.js").default()')"
       tag="v${version}"
-      echo '##vso[task.setvariable variable=version]$(version)'
-      echo '##vso[task.setvariable variable=tag]$(tag)'
-      echo '##vso[task.setvariable variable=version2]${version}'
-      echo '##vso[task.setvariable variable=tag2]${tag}'
+      # echo '##vso[task.setvariable variable=version]$(version)'
+      # echo '##vso[task.setvariable variable=tag]$(tag)'
+      # echo '##vso[task.setvariable variable=version2]${version}'
+      # echo '##vso[task.setvariable variable=tag2]${tag}'
     displayName: "Set tag and version env vars"
 
   - bash: |
