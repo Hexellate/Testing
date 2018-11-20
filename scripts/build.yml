@@ -31,7 +31,7 @@ steps:
     displayName: "prebuild"
   - bash: |
       pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
-      if [[ "$(channel)" != "${pkgchannel}" ]]
+      if [[ ("$(channel)" != "${pkgchannel}") && ("${BUILD_REASON}" != "PullRequest")]]
       then
         (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
         (1>&2 echo ERROR: Channel in package.json = \"${pkgchannel}\" while pipeline channel = \"$(channel)\" )
