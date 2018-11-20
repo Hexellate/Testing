@@ -1,12 +1,7 @@
 const fs = require("fs");
 const yaml = require("js-yaml");
 
-module.exports.default = function ({
-  directory,
-  author,
-  projectname // ,
-  // release // tag name
-} = {}) {
+module.exports.default = function ({ directory, author, projectname } = {}) {
   const files = ["latest-mac", "latest-linux", "latest-linux-ia32", "latest"];
   const raw = fs.readFileSync(`./package.json`);
   const pkg = JSON.parse(raw);
