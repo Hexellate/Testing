@@ -31,10 +31,23 @@ variables:
 jobs:
   - job: setupenv
     steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "8.x"
+        displayName: "Install Node.js"
+
+      - checkout: self
+        persistCredentials: true
+
+      - script: npm install
+        displayName: "install npm packages"
+
+      - bash: node -p 'require("./scripts/getver.js").default()'
+        displayName: "Show current version"
+
       - bash: | # Switch channel info if incorrect
           chmod u+x /scripts/updpackagechannel.sh
           ./scripts/updpackagechannel.sh
-        # failOnStderr: true
         displayName: "Switch channel info to $(channel)"
 
   - job: win_build
