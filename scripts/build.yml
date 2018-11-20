@@ -34,40 +34,13 @@ steps:
     displayName: "Validate channel info"
 
     # Bump transient version
-  # - bash: | # set prever to build number for canary and next
-  #     node -e "require('./scripts/setver.js').default({'channel':$(channel),'comp':'pre', 'val':$(Build.BuildId)})"
-  #   displayName: "Set prerelease version for canary and next"
-  #   condition: or(eq('$(channel)', 'canary'), eq('$(channel)', 'next'))
   - bash: |
       chmod u+x scripts/transientbumpver.sh
       ./scripts/transientbumpver.sh
     displayName: "Bump transient version"
 
-  # - bash: |
-  #     version=$(node -p 'require("./scripts/getver.js").default()')
-  #     tag=v${version}
-  #     echo $(version)
-  #     echo ${version}
-  #     echo $(tag)
-  #     echo ${tag}
-  #     # echo '##vso[task.setvariable variable=version]$(version)'
-  #     # echo '##vso[task.setvariable variable=tag]$(tag)'
-  #     echo '##vso[task.setvariable variable=version2]${version}'
-  #     echo '##vso[task.setvariable variable=tag2]${tag}'
-  #     printenv
-  #   displayName: "Set tag and version env vars"
-
   - bash: |
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
-      # printenv
-      # echo ${version}
-      # echo ${tag}
-      # echo $(version)
-      # echo $(tag)
-      # echo ${version2}
-      # echo ${tag2}
-      # echo $(version2)
-      # echo $(tag2)
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
@@ -144,12 +117,10 @@ steps:
       cd "$(Build.SourcesDirectory)"
       # correct path mappings
       node -e "require('./scripts/setdistpaths.js').default({'directory':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}/release', 'author':'$(git_project_owner)', 'projectname':'$(git_project_name)'})"
-      # node -e "require('./scripts/setdistpaths.js').default('$(pwd)')"
     displayName: "Move artifact files and correct mappings"
 
   - bash: |
       cd "$(Build.SourcesDirectory)"
-      printenv
       branch=${BUILD_SOURCEBRANCHNAME}
       version=$(node -p 'require("./scripts/getver.js").default()')
       tag=v${version}

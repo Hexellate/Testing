@@ -22,7 +22,7 @@ then
   git add "package.json"
   git diff --cached "package.json"
 
-  newver="$(node -p 'require("./scripts/getver.js").default("full")')"
+  # newver="$(node -p 'require("./scripts/getver.js").default("full")')"
   echo commit
   git commit -m "[${BUILD_DEFINITIONNAME}]Switch channel info to ${CHANNEL} ***NO_CI***"
 
