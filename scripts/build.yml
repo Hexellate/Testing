@@ -39,31 +39,31 @@ steps:
     displayName: "Set prerelease version for canary and next"
     condition: or(eq('$(channel)', 'canary'), eq('$(channel)', 'next'))
 
-  - bash: |
-      version=$(node -p 'require("./scripts/getver.js").default()')
-      tag=v${version}
-      echo $(version)
-      echo ${version}
-      echo $(tag)
-      echo ${tag}
-      # echo '##vso[task.setvariable variable=version]$(version)'
-      # echo '##vso[task.setvariable variable=tag]$(tag)'
-      echo '##vso[task.setvariable variable=version2]${version}'
-      echo '##vso[task.setvariable variable=tag2]${tag}'
-      printenv
-    displayName: "Set tag and version env vars"
+  # - bash: |
+  #     version=$(node -p 'require("./scripts/getver.js").default()')
+  #     tag=v${version}
+  #     echo $(version)
+  #     echo ${version}
+  #     echo $(tag)
+  #     echo ${tag}
+  #     # echo '##vso[task.setvariable variable=version]$(version)'
+  #     # echo '##vso[task.setvariable variable=tag]$(tag)'
+  #     echo '##vso[task.setvariable variable=version2]${version}'
+  #     echo '##vso[task.setvariable variable=tag2]${tag}'
+  #     printenv
+  #   displayName: "Set tag and version env vars"
 
   - bash: |
       # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
-      printenv
-      echo ${version}
-      echo ${tag}
-      echo $(version)
-      echo $(tag)
-      echo ${version2}
-      echo ${tag2}
-      echo $(version2)
-      echo $(tag2)
+      # printenv
+      # echo ${version}
+      # echo ${tag}
+      # echo $(version)
+      # echo $(tag)
+      # echo ${version2}
+      # echo ${tag2}
+      # echo $(version2)
+      # echo $(tag2)
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
@@ -146,6 +146,9 @@ steps:
   - bash: |
       cd "$(Build.SourcesDirectory)"
       printenv
+      branch=${BUILD_SOURCEBRANCHNAME}
+      version=$(node -p 'require("./scripts/getver.js").default()')
+      tag=v${version}
       node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
     displayName: "Set pipe info"
 
