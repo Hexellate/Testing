@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Imports: channel. build_sourcebranchname, git_project_email, git_project_author, build_definitionname
-
 # for builds that are not pull-requests, corrects any invalid channel info
 shopt -s extglob
 branch=${BUILD_SOURCEBRANCH}
@@ -27,7 +25,6 @@ then
   git add "package.json"
   git diff --cached "package.json"
 
-  # newver="$(node -p 'require("./scripts/getver.js").default("full")')"
   echo commit
   git commit -m "[${BUILD_DEFINITIONNAME}]Switch channel info to ${CHANNEL} ***NO_CI***"
 
