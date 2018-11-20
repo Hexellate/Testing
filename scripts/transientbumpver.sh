@@ -8,7 +8,6 @@
 printenv
 echo Current version: $(node -p 'require("./scripts/getver.js").default("full")')
 if [[ ("${CHANNEL}" == "stable") && ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) ]]
-# if [[ ("${pkgchannel}" != "${CHANNEL}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
 then
   node -e "require('./scripts/bumpver.js').default({'channel':'$(channel)','bump':'patch'})"
 
