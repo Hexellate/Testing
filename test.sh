@@ -1,36 +1,12 @@
 #!/bin/bash
-#pkgchannel="stable"
-# pkgchannel="dankmeme"
-# channel="stable"
-# branch="develop/test"
-# #branch="master"
-# #BUILD_REASON="PullRequest"
-# BUILD_REASON="CI"
-# # echo pkgchannel
-# # echo channel
-# # echo branch
-# # echo BUILD_REASON
-# if [[ ("${pkgchannel}" != "${channel}" && "${BUILD_REASON}" != "PullRequest") &&  !(${branch} =~ ^hotfix/.* || ${branch} =~ ^feature/.*)  ]]
-#   then
-#     echo yay
-#   else
-#     echo nay
-# fi
-
-# AGENT_OS="Windows_NT"
-
-# if [[ "${AGENT_OS}" == "Darwin" ]]
-#   then
-#     OS="mac"
-#   elif [[ "${AGENT_OS}" == "Windows_NT" ]]
-#   then
-#     OS="win"
-#   elif [[ "${AGENT_OS}" == "Linux" ]]
-#   then
-#     OS="lin"
-# fi
-# echo $(OS)
-# echo ${OS}
-
-BUILD_ARTIFACTSTAGINGDIRECTORY="d:\a\1\a"
-echo ${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}
+CHANNEL="stable"
+BUILD_SOURCEVERSIONMESSAGE="Merge branch 'hotfix/teststuffs' into develop"
+# BUILD_SOURCEVERSIONMESSAGE="Merge branch 'hotfix/teststuffs'"
+# BUILD_SOURCEVERSIONMESSAGE="[Build stable]Bump patch ver to 0.2.3 ***NO_CI***"
+# BUILD_SOURCEVERSIONMESSAGE="Merge pull request #14 from Hexellate/hotfix/fixhotfix"
+if [[ ("${CHANNEL}" == "stable") && ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) ]]
+then
+echo yay
+else
+echo nay
+fi
