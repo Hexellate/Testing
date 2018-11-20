@@ -14,7 +14,7 @@ steps:
         echo ${branch}
         git checkout ${branch}
       else
-        echo This is a pull request build. Checkout is redundant (and will fail)
+        echo "This is a pull request build. Checkout is redundant (and will fail)"
       fi
       shopt -u extglob
     displayName: "Checkout latest commit on branch"
