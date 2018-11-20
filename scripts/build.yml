@@ -3,7 +3,11 @@ steps:
     persistCredentials: true
 
   - bash: |
-      branch=${BUILD_SOURCEBRANCHNAME}
+      shopt -s extglob
+      branch=${BUILD_SOURCEBRANCH}
+      branch=${branch/refs\/?(heads|pull)\//}
+      branch=${branch/+([0-9])\//}
+      shopt -u extglob
       git checkout ${branch}
     displayName: "Checkout latest commit on branch"
 
