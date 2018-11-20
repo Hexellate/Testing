@@ -4,7 +4,6 @@ steps:
 
   - bash: |
       branch=${BUILD_SOURCEBRANCHNAME}
-      # echo '##vso[task.setvariable variable=branch]$(branch)'
       git checkout ${branch}
     displayName: "Checkout latest commit on branch"
 
@@ -19,10 +18,6 @@ steps:
   - bash: npm run prebuild
     displayName: "prebuild"
   - bash: |
-      # printenv
-      # cd $(Build.Repository.LocalPath)
-      # echo $(pwd)
-      # ls -l
       pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
       if [[ "$(channel)" != "${pkgchannel}" ]]
       then
@@ -40,7 +35,6 @@ steps:
     displayName: "Bump transient version"
 
   - bash: |
-      # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
