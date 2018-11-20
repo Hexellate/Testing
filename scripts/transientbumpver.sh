@@ -12,7 +12,7 @@ fi
 
 if [[ ("${CHANNEL}" == "next") || ("${CHANNEL}" == "canary") ]]
 then
-  node -e "require('./scripts/setver.js').default({'channel':'${CHANNEL}','comp':'pre', 'val':'$(BUILD_BUILDID)''})"
+  node -e "require('./scripts/setver.js').default({'channel':'${CHANNEL}','comp':'pre', 'val':'${BUILD_BUILDID}'})"
 
   #newver="$(node -p 'require("./scripts/getver.js").default("full")')"
   echo Set prerelease info: $(node -p 'require("./scripts/getver.js").default("full")')
