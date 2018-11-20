@@ -29,22 +29,23 @@ variables:
 jobs:
   - job: setupenv
     steps:
-      # - bash: |
-      #     echo "##vso[task.setvariable variable=branchtype]indev"
-      #   condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "8.x"
+        displayName: "Install Node.js"
 
-      # - bash: |
-      #     echo "##vso[task.setvariable variable=branchtype]rel"
-      #   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+      - checkout: self
+        persistCredentials: true
 
-      # - bash: |
-      #     echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
-      #   name: echobranchtype
+      - script: npm install
+        displayName: "install npm packages"
+
+      - bash: node -p 'require("./scripts/getver.js").default()'
+        displayName: "Show current version"
 
       - bash: | # Switch channel info if incorrect
           chmod u+x /scripts/updpackagechannel.sh
           ./scripts/updpackagechannel.sh
-        # failOnStderr: true
         displayName: "Switch channel info to $(channel)"
 
   - job: win_build
@@ -67,15 +68,3 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-  # continuously merge to develop if test passes
-  - job: release_merge
-    pool:
-      vmImage: "Ubuntu 16.04"
-    dependsOn:
-      - win_build
-      - lin_build
-      - mac_build
-    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
-    steps:
-      - template: releasetodevelop.yml
-# if branch release/*,  merge changes into develop (or create pr if possible)
