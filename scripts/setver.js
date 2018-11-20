@@ -13,7 +13,6 @@ module.exports.default = function ({
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  // const channel = semver.prerelease(pkg.version)[0];
   let prever = semver.prerelease(pkg.version)[1];
 
   switch (comp) {
@@ -35,10 +34,10 @@ module.exports.default = function ({
       if (Number.isNaN(prever)) prever = 0;
       break;
     case "full":
-      major = semver.major(value);
-      minor = semver.minor(value);
-      patch = semver.patch(value);
-      prever = semver.prerelease(value)[1];
+      major = semver.major(val);
+      minor = semver.minor(val);
+      patch = semver.patch(val);
+      [, prever] = semver.prerelease(val);
       if (Number.isNaN(prever)) prever = 0;
       break;
     default:
@@ -48,8 +47,6 @@ module.exports.default = function ({
   let newver;
   if (channel === "" || channel === "stable") {
     newver = `${major}.${minor}.${patch}`;
-    // } else if (channel === "stable") {
-    //   newver = `${major}.${minor}.${patch}-${channel}`;
   } else {
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }

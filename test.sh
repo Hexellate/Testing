@@ -13,10 +13,3 @@ then
 else
   echo nay
 fi
-
-# branch=${branch/refs\/?(heads|pull)\//}
-# echo ${branch}
-# branch=${branch/+([0-9])\//}
-# echo ${branch}
-# shopt -u extglob
-#
