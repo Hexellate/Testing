@@ -5,10 +5,16 @@ steps:
   - bash: |
       shopt -s extglob
       branch=${BUILD_SOURCEBRANCH}
-      branch=${branch/refs\/?(heads|pull)\//}
-      branch=${branch/+([0-9])\//}
+      echo ${branch}
+      if [[ ! (${branch} =~ refs/pull/[0-9]*/merge) ]]
+      then
+        branch=${branch/refs\/?(heads|pull)\//}
+        echo ${branch}
+        branch=${branch/+([0-9])\//}
+        echo ${branch}
+        git checkout ${branch}
+      fi
       shopt -u extglob
-      git checkout ${branch}
     displayName: "Checkout latest commit on branch"
 
   - task: NodeTool@0
