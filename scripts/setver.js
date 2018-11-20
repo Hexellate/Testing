@@ -1,7 +1,11 @@
 const semver = require("semver");
 const fs = require("fs");
 
-module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
+module.exports.default = function ({
+  channel = "",
+  comp = "patch",
+  val = 0
+} = {}) {
   const raw = fs.readFileSync("./package.json");
   const pkg = JSON.parse(raw);
 
@@ -9,38 +13,34 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  // let channel = "stable";
-  let prever = 0;
-  if (semver.prerelease(pkg.version) != null) {
-    // [channel, prever] = semver.prerelease(pkg.version);
-    [, prever] = semver.prerelease(pkg.version);
-  }
+  // const channel = semver.prerelease(pkg.version)[0];
+  let prever = semver.prerelease(pkg.version)[1];
 
-  switch (bump) {
+  switch (comp) {
     case "major":
-      major++;
-      minor = 0;
-      patch = 0;
-      prever = 0;
+      major = val;
       break;
 
     case "minor":
-      minor++;
-      patch = 0;
-      prever = 0;
+      minor = val;
       break;
 
     case "patch":
-      patch++;
-      prever = 0;
+      patch = val;
       break;
 
     case "prerelease":
     case "pre":
-      prever++;
+      prever = val;
       if (Number.isNaN(prever)) prever = 0;
       break;
-
+    case "full":
+      major = semver.major(value);
+      minor = semver.minor(value);
+      patch = semver.patch(value);
+      prever = semver.prerelease(value)[1];
+      if (Number.isNaN(prever)) prever = 0;
+      break;
     default:
       break;
   }
@@ -53,7 +53,10 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   } else {
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
-  console.log(`Bump ${pkg.version} to ${newver}`);
+  if (comp === "full") {
+    newver = val;
+  }
+  console.log(`change ${pkg.version} to ${newver}`);
   pkg.version = newver;
   fs.writeFileSync("./package.json", JSON.stringify(pkg, null, 2));
   return 0;

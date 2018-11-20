@@ -3,6 +3,10 @@ trigger:
     include:
       - master
       - hotfix/*
+    exclude:
+      - develop
+      - feature/*
+      - release/*
   paths:
     exclude:
       - .github/
@@ -13,6 +17,11 @@ pr:
   branches:
     include:
       - master
+      - hotfix/*
+    exclude:
+      - develop
+      - feature/*
+      - release/*
 
 variables:
   channel: "stable"
@@ -20,57 +29,68 @@ variables:
 jobs:
   - job: setupenv
     pool:
-      vmImage: "vs2017-win2016"
+      vmImage: "macOS-10.13"
     steps:
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]indev"
-        condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]rel"
-        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
-        name: echobranchtype
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "8.x"
+        displayName: "Install Node.js"
+
+        # These are currently unused
+      # - bash: |
+      #     echo "##vso[task.setvariable variable=branchtype]indev"
+      #   condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
+
+      # - bash: |
+      #     echo "##vso[task.setvariable variable=branchtype]rel"
+      #   condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
+
+      # - bash: |
+      #     echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
+      #   name: echobranchtype
+
       - checkout: self
         persistCredentials: true
-      - bash: | # on merge from hotfix, bump patch
-          echo commit is merge from hotfix
-          git checkout master
-          echo git status
-          git status
-          echo increment patch ver
-          node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':'patch'})"
-          git add "package.json"
-          newver="$(node -p 'require("./scripts/getver.js").default()')"
-          git commit -m "Bump patch ver to ${newver} ***NO_CI***"
-          git tag "${newver}"
-          echo git status
-          git status
-          echo git push
-          git push --tags origin
-          echo git status
-          git status
-        failOnStderr: true
-        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
-      - bash: | # on merge from release, remove channel info
-          echo commit is merge from release
-          git checkout master
-          echo git status
-          git status
-          echo increment patch ver
-          node -e "require('./scripts/bumpver.js').default({'channel':'stable','bump':''})"
-          git add "package.json"
-          newver="$(node -p 'require("./scripts/getver.js").default()')"
-          git commit -m "Switch channel info to stable ***NO_CI***"
-          git tag "${newver}"
-          echo git status
-          git status
-          echo git push
-          git push --tags origin
-          echo git status
-          git status
-        failOnStderr: true
-        condition: or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/release/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'release/'))) # Approximately matches either "Merge pull request*from*/release/*" or "Merge branch '/release/*"
+
+      - script: npm install
+        displayName: "install npm packages"
+
+      - bash: node -p 'require("./scripts/getver.js").default()'
+        displayName: "Show current version"
+
+      # - bash:
+      #     | # on merge from hotfix, bump patch TODO: Move ALL tagging to release pipeline
+      #     git config --global user.email "$(gitemail)"
+      #     git config --global user.name "$(gitname)"
+      #     echo commit is merge from hotfix
+      #     git checkout master
+      #     echo git status
+      #     git status
+      #     echo increment patch ver
+      #     node -e "require('./scripts/bumpver.js').default({'channel':'$(channel)','bump':'patch'})"
+      #     echo add package
+      #     git add "package.json"
+      #     newver="$(node -p 'require("./scripts/getver.js").default()')"
+      #     echo commit to repo
+      #     git commit -m "[$(Build.DefinitionName)]Bump patch ver to ${newver} ***NO_CI***"
+      #     echo create tag "v${newver}" on latest commit
+      #     git tag "v${newver}"
+      #     echo git status
+      #     git status
+      #     echo git push
+      #     git push origin
+      #     git push --tags origin
+      #     echo git status
+      #     git status
+      #   # failOnStderr: true
+      #   displayName: "Bump patch version"
+      #   condition: and(or(and(startsWith(variables['Build.SourceVersionMessage'], 'Merge pull request'), contains(variables['Build.SourceVersionMessage'], 'from'), contains(variables['Build.SourceVersionMessage'], '/hotfix/')), and(startsWith(variables['Build.SourceVersionMessage'], 'Merge branch '), contains(variables['Build.SourceVersionMessage'], 'hotfix/'))), ne(variables['Build.Reason'], 'PullRequest')) # Approximately matches either "Merge pull request*from*/hotfix/*" or "Merge branch '/hotfix/*"
+
+      - bash: | # Switch channel info if incorrect
+          chmod u+x scripts/updpackagechannel.sh
+          ./scripts/updpackagechannel.sh
+        # failOnStderr: true
+        displayName: "Switch channel info to $(channel)"
 
   # TODO if someone can do better conditions, then pls do
 
@@ -80,8 +100,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "win"
 
   - job: lin_build
     pool:
@@ -89,8 +107,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "lin"
 
   - job: mac_build
     pool:
@@ -98,5 +114,3 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "mac"

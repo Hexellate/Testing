@@ -1,8 +1,14 @@
+# TODO: On release pipeline, update version info(?) and tag release
+
 trigger:
   branches:
     include:
       - develop
       - feature/*
+    exclude:
+      - master
+      - hotfix/*
+      - release/*
   paths:
     exclude:
       - .github/
@@ -14,6 +20,10 @@ pr:
     include:
       - develop
       - feature/*
+    exclude:
+      - master
+      - hotfix/*
+      - release/*
 
 variables:
   channel: "canary"
@@ -21,15 +31,11 @@ variables:
 jobs:
   - job: setupenv
     steps:
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]indev"
-        condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype]rel"
-        condition: or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
-      - bash: |
-          echo "##vso[task.setvariable variable=branchtype;isOutput=true]"$(branchtype)
-        name: echobranchtype
+      - bash: | # Switch channel info if incorrect
+          chmod u+x /scripts/updpackagechannel.sh
+          ./scripts/updpackagechannel.sh
+        # failOnStderr: true
+        displayName: "Switch channel info to $(channel)"
 
   - job: win_build
     pool:
@@ -37,8 +43,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "win"
 
   - job: lin_build
     pool:
@@ -46,8 +50,6 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "lin"
 
   - job: mac_build
     pool:
@@ -55,5 +57,3 @@ jobs:
     dependsOn: setupenv
     steps:
       - template: build.yml
-        parameters:
-          os: "mac"

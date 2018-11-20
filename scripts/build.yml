@@ -1,34 +1,133 @@
-parameters:
-  os: "win"
-
 steps:
+  - checkout: self
+    persistCredentials: true
+
+  - bash: |
+      branch=${BUILD_SOURCEBRANCHNAME}
+      # echo '##vso[task.setvariable variable=branch]$(branch)'
+      git checkout ${branch}
+    displayName: "Checkout latest commit on branch"
+
   - task: NodeTool@0
     inputs:
       versionSpec: "8.x"
     displayName: "Install Node.js"
 
-  - script: npm install
-    displayName: "install npm packages"
+  - bash: npm install
+    displayName: "Install npm packages"
 
-  - script: npm run prebuild
+  - bash: npm run prebuild
     displayName: "prebuild"
+  - bash: |
+      # printenv
+      # cd $(Build.Repository.LocalPath)
+      # echo $(pwd)
+      # ls -l
+      pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
+      if [[ "$(channel)" != "${pkgchannel}" ]]
+      then
+        (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
+        (1>&2 echo ERROR: Channel in package.json = \"${pkgchannel}\" while pipeline channel = \"$(channel)\" )
+      fi
+    failOnStderr: true
+    condition: ne('$(Build.Reason)', 'PullRequest')
+    displayName: "Validate channel info"
 
-  - script: npm run ${{format('build-{0}:', parameters.os)}}$(channel) -- -c.buildVersion=$(Build.BuildId)
-    displayName: "build"
+    # Bump transient version
+  - bash: |
+      chmod u+x scripts/transientbumpver.sh
+      ./scripts/transientbumpver.sh
+    displayName: "Bump transient version"
 
-  - script: npm test
-    displayName: "test"
+  - bash: |
+      # Apparently parameters aren't passed to the script ¯\_(ツ)_/¯
+      if [[ "${AGENT_OS}" == "Darwin" ]]
+        then
+          OS="mac"
+        elif [[ "${AGENT_OS}" == "Windows_NT" ]]
+        then
+          OS="win"
+        elif [[ "${AGENT_OS}" == "Linux" ]]
+        then
+          OS="lin"
+      fi
+      npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
+    displayName: "Build binaries"
 
-  - bash: ls '$(Build.SourcesDirectory)'
+  - bash: npm test
+    displayName: "Run tests"
+
+  - bash: ls -l '$(Build.SourcesDirectory)'
+
+  - bash: |
+      cd "$(Build.ArtifactStagingDirectory)"
+      mkdir "release" # actual release binaries
+      mkdir "pipe" # used to pass information to release pipeline
+    displayName: "Create release and pipe folders"
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: "$(Build.SourcesDirectory)/compiled"
       contents: "**"
       overWrite: true
-      # artifactName: drop-$(parameters.os)
-      targetFolder: "$(Build.ArtifactStagingDirectory)"
+      targetFolder: "$(Build.ArtifactStagingDirectory)/release"
+    displayName: "Copy all compiled files"
+
+  - task: DeleteFiles@1
+    inputs:
+      contents: "*mac"
+      sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
+    displayName: "Delete unpacked files"
+
+  - task: DeleteFiles@1
+    inputs:
+      contents: "*unpacked"
+      sourceFolder: "$(Build.ArtifactStagingDirectory)/release"
+    displayName: "Delete unpacked files"
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: "$(Build.SourcesDirectory)/scripts/release_scripts"
+      contents: "**"
+      overWrite: true
+      targetFolder: "$(Build.ArtifactStagingDirectory)/pipe"
+    displayName: "Copy pipe scripts"
+
+  - bash: |
+      cd "$(Build.ArtifactStagingDirectory)/release"
+      mkdir "windows"
+      mkdir "mac"
+      mkdir "linux"
+      mkdir "linux-ia32"
+
+      # move windows
+      mv nsis-web/latest.yml $(pwd)
+      mv nsis-web/* "windows/"
+      rm nsis-web/
+
+      # move mac
+      mv *.dmg "mac/"
+      mv *.dmg.blockmap "mac/"
+      mv *mac.zip "mac/"
+
+      # move linux
+      mv *x86_64.AppImage "linux/"
+      mv *i386.AppImage "linux-ia32/"
+
+      cd "$(Build.SourcesDirectory)"
+      # correct path mappings
+      node -e "require('./scripts/setdistpaths.js').default({'directory':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}/release', 'author':'$(git_project_owner)', 'projectname':'$(git_project_name)'})"
+    displayName: "Move artifact files and correct mappings"
+
+  - bash: |
+      cd "$(Build.SourcesDirectory)"
+      branch=${BUILD_SOURCEBRANCHNAME}
+      version=$(node -p 'require("./scripts/getver.js").default()')
+      tag=v${version}
+      node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
+    displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: "$(Build.ArtifactStagingDirectory)"
+    displayName: "Publish artifacts"
