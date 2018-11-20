@@ -3,7 +3,11 @@ steps:
     persistCredentials: true
 
   - bash: |
-      branch=${BUILD_SOURCEBRANCHNAME}
+      shopt -s extglob
+      branch=${BUILD_SOURCEBRANCH}
+      branch=${branch/refs\/?(heads|pull)\//}
+      branch=${branch/+([0-9])\//}
+      shopt -u extglob
       # echo '##vso[task.setvariable variable=branch]$(branch)'
       git checkout ${branch}
     displayName: "Checkout latest commit on branch"
