@@ -48,7 +48,7 @@ jobs:
         displayName: "Show current version"
 
       - bash: | # Switch channel info if incorrect
-          chmod u+x /scripts/updpackagechannel.sh
+          chmod u+x scripts/updpackagechannel.sh
           ./scripts/updpackagechannel.sh
         displayName: "Switch channel info to $(channel)"
 
