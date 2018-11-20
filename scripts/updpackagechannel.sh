@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Imports: channel. build_sourcebranchname, git_project_email, git_project_author, build_definitionname
-
 # for builds that are not pull-requests, corrects any invalid channel info
 shopt -s extglob
 branch=${BUILD_SOURCEBRANCH}
