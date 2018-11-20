@@ -34,6 +34,13 @@ module.exports.default = function ({
       prever = val;
       if (Number.isNaN(prever)) prever = 0;
       break;
+    case "full":
+      major = semver.major(value);
+      minor = semver.minor(value);
+      patch = semver.patch(value);
+      prever = semver.prerelease(value)[1];
+      if (Number.isNaN(prever)) prever = 0;
+      break;
     default:
       break;
   }
