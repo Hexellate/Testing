@@ -8,8 +8,9 @@ module.exports.default = function ({
   tag = "none",
   channel = "none"
 } = {}) {
-  // const raw = fs.readFileSync("./package.json");
-  // const pkg = JSON.parse(raw);
+  const raw = fs.readFileSync("./package.json");
+  const pkg = JSON.parse(raw);
+  fs.writeFileSync(`${dir}/pipe/fullversion`, pkg.version);
   fs.writeFileSync(`${dir}/pipe/version`, version);
   if (branch !== "none") fs.writeFileSync(`${dir}/pipe/branch`, branch);
   if (tag !== "none") fs.writeFileSync(`${dir}/pipe/tag`, tag);
