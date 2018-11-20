@@ -3,9 +3,11 @@
 # Imports: channel. build_sourcebranchname, git_project_email, git_project_author, build_definitionname
 
 # for builds that are not pull-requests, corrects any invalid channel info
+shopt -s extglob
 branch=${BUILD_SOURCEBRANCH}
-branch=${branch/refs\/head\//}
-branch=${branch/refs\/pull\//}
+branch=${branch/refs\/?(heads|pull)\//}
+branch=${branch/+([0-9])\//}
+shopt -u extglob
 echo ${branch}
 echo ${CHANNEL}
 git config --global user.email "${GIT_PROJECT_EMAIL}"
