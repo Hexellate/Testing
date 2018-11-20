@@ -30,6 +30,8 @@ variables:
 
 jobs:
   - job: setupenv
+    pool:
+      vmImage: "macOS-10.13"
     steps:
       - task: NodeTool@0
         inputs:
