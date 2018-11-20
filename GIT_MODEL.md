@@ -63,7 +63,7 @@ To create a release branch, locally branch off the latest commit on develop and 
 
 To update a release branch, push commits to the branch in accordance with the guidelines of release branches outlined above. If a release version is approved by an admin for distribution, the changes must then be merged into develop where applicable (i.e. if a feature has been rewritten in develop, then it shouldn't be merged). Merges back into develop must be done with a pull request. Approval of a build will create a new commit with an updated prerelease component, which will also be tagged with the version of the build. This commit should be included in the aforementioned merge.
 
-To finalize a release branch, merge all remaining changes into develop where applicable, followed by a pull request into master. If the pull request passes all tests, has no merge conflicts and is approved by the reviewer(s), then the branch may be merged at an administrator's discretion. Following this, the CI server will strip the prerelease component from the version, and will produce a build for the stable channel. This build may then be approved for distribution by an admin of the CI server, at which point the latest commit will be tagged, and the build will be distributed.
+To finalize a release branch, merge all remaining changes into develop where applicable, followed by a pull request into master. If the pull request passes all tests, has no merge conflicts and is approved by the reviewer(s), then the branch may be merged at an administrator's discretion. Following this, a manual build must be triggered on the CI serverm which will strip the prerelease component from the version, and will produce a build for the stable channel. This build may then be approved for distribution by an admin of the CI server, at which point the latest commit will be tagged, and the build will be distributed.
 
 ### **Hotfix Branches**
 
@@ -95,7 +95,9 @@ To have a hotfix merged, create a pull request for master, and another for devel
 4. Bugfixing on release branch
     - The release branch will now receive only bugfixes, all of which are continuously merged back into the develop branch.
 5. Release merged into master branch
-    - Once a release branch has been deemed stable, it will be merged with the master branch and tagged with the version number.
+    - Once a release branch has been deemed stable, it will be merged with the master branch.
+    - A build must be triggered manually at this point.
+    - If the build succeeds, and is approved for release, then the version will be updated in the repo and the latest commit will be tagged.
     - The master branch will be released on the stable channel.
 6. Hotfixing stable channel bugs
     - If a bug is found in the stable channel, a hotfix branch will be created, where the bug will be fixed.
