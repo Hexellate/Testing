@@ -4,7 +4,8 @@
 
 # for builds that are not pull-requests, corrects any invalid channel info
 branch=${BUILD_SOURCEBRANCHNAME}
-echo ${channel}
+echo ${branch}
+echo ${CHANNEL}
 git config --global user.email "${GIT_PROJECT_EMAIL}"
 git config --global user.name "${GIT_PROJECT_AUTHOR}"
 
