@@ -31,8 +31,9 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 1. Install npm and node if not already installed (feel free to use yarn, but keep in mind that everything is set up to use npm)
 2. Clone repo to your pc
-3. Run npm install from project root to install dependencies
-4. Make sure that files for your dev environment are excluded in the `.gitignore` file
+3. Create a feature branch off develop, or a hotfix off master. (see [GIT_MODEL.md](GIT_MODEL.md))
+4. Run npm install from project root to install dependencies
+5. Make sure that files for your dev environment are excluded in the `.gitignore` file
 
 ## Commands
 
