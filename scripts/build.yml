@@ -48,7 +48,7 @@ steps:
   - bash: |
       chmod u+x scripts/transientbumpver.sh
       ./scripts/transientbumpver.sh
-    displayName: "Bump transient version"
+    displayName: "Set transient version"
 
   - bash: |
       if [[ "${AGENT_OS}" == "Darwin" ]]
@@ -132,7 +132,7 @@ steps:
   - bash: |
       cd "$(Build.SourcesDirectory)"
       branch=${BUILD_SOURCEBRANCHNAME}
-      version=$(node -p 'require("./scripts/getver.js").default()')
+      version=$(node -p 'require("./scripts/getver.js").default("full")')
       tag=v${version}
       node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)', 'commit':'$(Build.SourceVersion)'})"
     displayName: "Set pipe info"
