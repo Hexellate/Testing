@@ -27,49 +27,49 @@ variables:
   channel: "stable"
 
 jobs:
-  - job: setupenv
-    pool:
-      vmImage: "macOS-10.13"
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: "8.x"
-        displayName: "Install Node.js"
+  # - job: setupenv
+  #   pool:
+  #     vmImage: "macOS-10.13"
+  #   steps:
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: "8.x"
+  #       displayName: "Install Node.js"
 
-      - checkout: self
-        persistCredentials: true
+  #     - checkout: self
+  #       persistCredentials: true
 
-      - script: npm install
-        displayName: "install npm packages"
+  #     - script: npm install
+  #       displayName: "install npm packages"
 
-      - bash: node -p 'require("./scripts/getver.js").default()'
-        displayName: "Show current version"
+  #     - bash: node -p 'require("./scripts/getver.js").default()'
+  #       displayName: "Show current version"
 
-      # - bash: | # Switch channel info if incorrect
-      #     chmod u+x scripts/updpackagechannel.sh
-      #     ./scripts/updpackagechannel.sh
-      #   displayName: "Switch channel info to $(channel)"
-      #
-      # - bash: | # Can't remember what this was for XD
-      #     echo $(patch)
+  #     # - bash: | # Switch channel info if incorrect
+  #     #     chmod u+x scripts/updpackagechannel.sh
+  #     #     ./scripts/updpackagechannel.sh
+  #     #   displayName: "Switch channel info to $(channel)"
+  #     #
+  #     # - bash: | # Can't remember what this was for XD
+  #     #     echo $(patch)
 
   - job: win_build
     pool:
       vmImage: "vs2017-win2016"
-    dependsOn: setupenv
+    # dependsOn: setupenv
     steps:
       - template: build.yml
 
   - job: lin_build
     pool:
       vmImage: "Ubuntu 16.04"
-    dependsOn: setupenv
+    # dependsOn: setupenv
     steps:
       - template: build.yml
 
   - job: mac_build
     pool:
       vmImage: "macOS-10.13"
-    dependsOn: setupenv
+    # dependsOn: setupenv
     steps:
       - template: build.yml
