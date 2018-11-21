@@ -18,6 +18,10 @@ This document will outline the guidelines for contributing to this project, incl
 
 [Additional Notes](#additional-notes)
 
+* [Channels](#channels)
+* [Version Numbers](#version_numbers)
+* [Issue and Pull Request Labels](#issue_and_pull_request_labels)
+
 ## Code of Conduct
 
 See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
@@ -106,12 +110,12 @@ The ESLint config in repository is already configured to use this styleguide. An
 
 **Note**: As ESLint contains lots of options, there may be some which are configured incorrectly. If you come across a particular rule which you think is configured wrong, feel free to contact me.
 
-#### Other JS guidelines not covered by ESLint:
+#### General JS guidelines:
 
 * **Use ES6 features wherever possible**, such as destructuring, template strings, block scoping and arrow functions.
 * **Always use `const` for variables**, unless you expect it to change, in which case `let` should be used. Under no circumstances should `var` be used.
 * **Do not use function prototypes as classes**, instead use an actual class
-* **Use promises instead of callbacks** for asynchronous requests
+* **Use promises instead of callbacks** for asynchronous requests where possible
 * **Classes should use uppercase** for the first letter (i.e. `ClassName`, not `className`)
 * **Use unix style line endings** (i.e. cr or \n, instead of cr lf or \r\n)
 
