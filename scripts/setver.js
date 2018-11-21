@@ -19,9 +19,9 @@ module.exports.default = function ({
   if (semver.prerelease(pkg.version) != null) {
     [, prever] = semver.prerelease(pkg.version);
   }
-
-  if ((comp = "full" && coerce)) {
-    val = semver.coerce(val);
+  let converted = val;
+  if (comp === "full" && coerce) {
+    converted = semver.coerce(val);
   }
 
   switch (comp) {
@@ -43,11 +43,12 @@ module.exports.default = function ({
       if (Number.isNaN(prever)) prever = 0;
       break;
     case "full":
-      major = semver.major(val);
-      minor = semver.minor(val);
-      patch = semver.patch(val);
-      if (semver.prerelease(val) != null) {
-        [, prever] = semver.prerelease(val);
+      // This stuff is *probably* redundant
+      major = semver.major(converted);
+      minor = semver.minor(converted);
+      patch = semver.patch(converted);
+      if (semver.prerelease(converted) != null) {
+        [, prever] = semver.prerelease(converted);
       }
       if (Number.isNaN(prever)) prever = 0;
       break;
@@ -62,7 +63,7 @@ module.exports.default = function ({
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
   if (comp === "full") {
-    newver = val;
+    newver = converted;
   }
   console.log(`change ${pkg.version} to ${newver}`);
   pkg.version = newver;
