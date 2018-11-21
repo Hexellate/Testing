@@ -12,7 +12,6 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   // let channel = "stable";
   let prever = 0;
   if (semver.prerelease(pkg.version) != null) {
-    // [channel, prever] = semver.prerelease(pkg.version);
     [, prever] = semver.prerelease(pkg.version);
   }
 
