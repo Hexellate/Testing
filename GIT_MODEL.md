@@ -5,9 +5,10 @@ This document will describe the model being used for creating and using branches
 ## Table Of Contents
 
 - [Model Overview](model-overview)
-- [Branches](branches)
+- [Core Branches](core_branches)
   - [Master Branch](master-branch)
   - [Develop Branch](develop-branch)
+- [Support Branches](support_branches)
   - [Feature Branch](feature-branch)
   - [Release Branch](release-branch)
   - [Hotfix Branch](hotfix-branch)
@@ -25,15 +26,17 @@ At it's core, there are two main branches, the master branch and the develop bra
 
 These support branches will have a limited lifetime, the length of which depends on the branch and will be described later. The model is nearly a waterflow based model, flowing from feature to develop to release and finally to master. The only reason it is not a waterflow model is due to changes in release branches being merged back into the develop branch, and likewise with hotfixes being merged into both master and develop/release.
 
-## Branches
+## Core Branches
 
 ### **Master Branch**
 
-The master branch will contain code in a _production-ready_ state. If a successful build from this branch is approved for distribution, then it will be distributed on the **Stable** channel. This channel may NOT be changed or otherwise updated with direct commits, but may only be changed through pushes from release or hotfix branches.
+The master branch will contain code in a _production-ready_ state. If a successful build from this branch is approved for distribution, then it will be distributed on the **Stable** channel. This channel may NOT be changed or otherwise updated with direct commits, but may only be changed through pull requests from release or hotfix branches.
 
 ### **Develop Branch**
 
-The Develop branch will contain code reflecting an in development version of the next release, although new features are not to be added through direct commits. This branch will be used to build the nightly releases on the **Canary** channel. The build that is released will be the most recent successful build from the canary channel, assuming that any changes have occurred.
+The Develop branch will contain code reflecting an in development version of the next release, although new features should not be added through direct commits. This branch will be used to build the nightly releases on the **Canary** channel. The build that is released will be the most recent successful build from the canary channel, assuming that any changes have occurred.
+
+## Support Branches
 
 ### **Feature Branches**
 
@@ -59,11 +62,17 @@ To have a feature branch merged into develop, firstly ensure that your branch is
 
 Release branches represent a new version that is feature complete and ready for proper release. This branch may receive bugfix commits, however it is generally in a feature-freeze, meaning that no new features should be added. Minor features such as simple usability improvements may be an exception. Commits to this branch should be continuously merged back into the develop branch. This branch will be used to automatically build releases for the **Next** channel. When this branch is deemed to be stable, it will be pushed to the master branch to create a new release on the **Stable** channel. Once the branch has been merged into the master branch, it will be deleted. Additionally, there may only be one release branch at a time (i.e. before creating a new release branch, the current one must be merged into master).
 
-To create a release branch, locally branch off the latest commit on develop and create a commit that updates the version to the correct semver version. (If the prerelease tag is not changed, it will be automatically changed by the CI server.). Push this branch to origin, triggering a build by the CI server. If the build passes, then the branch must be immediately merged back into develop, otherwise the build must be made to pass and then merged to develop. Release branches should only be created by an administrator.
+#### Creating a release branch:
 
-To update a release branch, push commits to the branch in accordance with the guidelines of release branches outlined above. If a release version is approved by an admin for distribution, the changes must then be merged into develop where applicable (i.e. if a feature has been rewritten in develop, then it shouldn't be merged). Merges back into develop must be done with a pull request. Approval of a build will create a new commit with an updated prerelease component, which will also be tagged with the version of the build. This commit should be included in the aforementioned merge.
+To create a release branch, locally branch off the latest commit on develop and create a commit that updates the version to the correct semver version. (Do not include any prerelease tags, as these will be added transiently by the CI server.). Push this branch to origin, triggering a build by the CI server. If the build passes, then the branch must be immediately merged back into develop, otherwise the build must be made to pass and then merged to develop. Release branches should only be created by an administrator.
 
-To finalize a release branch, merge all remaining changes into develop where applicable, followed by a pull request into master. If the pull request passes all tests, has no merge conflicts and is approved by the reviewer(s), then the branch may be merged at an administrator's discretion. Following this, a manual build must be triggered on the CI serverm which will strip the prerelease component from the version, and will produce a build for the stable channel. This build may then be approved for distribution by an admin of the CI server, at which point the latest commit will be tagged, and the build will be distributed.
+#### Updating a release branch:
+
+To update a release branch, push commits to the branch in accordance with the guidelines of release branches outlined above. If a release version is approved by an admin for distribution, the changes must then be merged into develop where applicable (i.e. if a feature has been rewritten in develop, then it shouldn't be merged). Merges back into develop must be done with a pull request. Approval of a build will tag the associated commit with the version of the build.
+
+#### Finishing a release branch:
+
+To finalize a release branch, merge all remaining changes into develop where applicable, followed by a pull request into master. If the pull request passes all tests, has no merge conflicts and is approved by the reviewer(s), then the branch may be merged at an administrator's discretion. Following this, a manual build must be triggered on the CI server, which will produce a build for the stable channel. This build may then be approved for distribution by an admin of the CI server, at which point the associated commit will be tagged, and the build will be distributed.
 
 ### **Hotfix Branches**
 
@@ -79,7 +88,7 @@ To create a hotfix, branch off the latest commit on master, and commit the assoc
 
 **Do not increment the patch yourself, this will be done automatically.** If a hotfix has incremented the patch, then it WILL be rejected.
 
-To have a hotfix merged, create a pull request for master, and another for develop, or instead for release if one exists. DO NOT resolve conflicts yourself, as this must be done after the fix has been merged into master, but before merging into release or develop. Instead any conflicts will be corrected by an administrator. For each pull request, if it passes all tests, and is deemed an appropriate fix by a reviewer, then it may be merged at an admin's discretion.  It is possible that a PR to develop/release may be denied while a PR to master is still accepted, which may happen if the code in question has been rewritten or removed, thereby making the fix inapplicable.
+To have a hotfix merged, create a pull request for master, and another for develop, or instead for release if one exists. DO NOT resolve conflicts yourself, as this must be done after the fix has been merged into master, but before merging into release or develop. Instead, any conflicts will be corrected by an administrator. For each pull request, if it passes all tests, and is deemed an appropriate fix by a reviewer, then it may be merged at an admin's discretion.  It is possible that a PR to develop/release may be denied while a PR to master is still accepted, which may happen if the code in question has been rewritten or removed, thereby making the fix inapplicable.
 
 ## Release process
 
@@ -90,14 +99,15 @@ To have a hotfix merged, create a pull request for master, and another for devel
 3. Release branch is created from develop branch
     - When all features for the next release have been merged into the develop branch, a new release branch is created from the develop branch.
     - It is at this time that a release gets its version number.
-    - From this point on, the develop branch will represent the next release.
+    - From this point on, the develop branch will represent the following release.
     - This release branch will be released on the next channel.
+    - If a fix has been committed to develop, that is relevant to the release, then the commit may be cherrypicked (although such fixes should be made to the release branch instead).
 4. Bugfixing on release branch
     - The release branch will now receive only bugfixes, all of which are continuously merged back into the develop branch.
 5. Release merged into master branch
     - Once a release branch has been deemed stable, it will be merged with the master branch.
     - A build must be triggered manually at this point.
-    - If the build succeeds, and is approved for release, then the version will be updated in the repo and the latest commit will be tagged.
+    - If the build succeeds, and is approved for release, then the commit associated with the build will be tagged.
     - The master branch will be released on the stable channel.
 6. Hotfixing stable channel bugs
     - If a bug is found in the stable channel, a hotfix branch will be created, where the bug will be fixed.
