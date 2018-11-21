@@ -7,12 +7,16 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
 
   // Version parts
   let major = semver.major(pkg.version);
+  console.log(major);
   let minor = semver.minor(pkg.version);
+  console.log(minor);
   let patch = semver.patch(pkg.version);
+  console.log(patch);
   let prever = 0;
   if (semver.prerelease(pkg.version) != null) {
     [, prever] = semver.prerelease(pkg.version);
   }
+  console.log(prever);
 
   switch (bump) {
     case "major":
