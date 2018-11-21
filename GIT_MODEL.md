@@ -88,7 +88,7 @@ To create a hotfix, branch off the latest commit on master, and commit the assoc
 
 **Do not increment the patch yourself, this will be done automatically.** If a hotfix has incremented the patch, then it WILL be rejected.
 
-To have a hotfix merged, create a pull request for master, and another for develop, or instead for release if one exists. DO NOT resolve conflicts yourself, as this must be done after the fix has been merged into master, but before merging into release or develop. Instead, any conflicts will be corrected by an administrator. For each pull request, if it passes all tests, and is deemed an appropriate fix by a reviewer, then it may be merged at an admin's discretion.  It is possible that a PR to develop/release may be denied while a PR to master is still accepted, which may happen if the code in question has been rewritten or removed, thereby making the fix inapplicable.
+To have a hotfix merged, create a pull request for master, and another for develop, or instead for release if one exists. DO NOT resolve conflicts or update to develop/release yourself, as this must be done after the fix has been merged into master, but before merging into release or develop. Instead, any conflicts will be corrected by an administrator, as well as updating the branch to release/develop. For each pull request, if it passes all tests, and is deemed an appropriate fix by a reviewer, then it may be merged at an admin's discretion.  It is possible that a PR to develop/release may be denied while a PR to master is still accepted, which may happen if the code in question has been rewritten or removed, thereby making the fix inapplicable.
 
 ## Release process
 
