@@ -2,7 +2,7 @@
 
 echo Current version: $(node -p 'require("./scripts/getver.js").default("full")')
 
-if [[ ("${CHANNEL}" == "stable") && ( ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) || (${BUILD_REASON} == "Manual" && ${FORCEPATCH} == "true" ) ) ]]
+if [[ ("${CHANNEL}" == "stable") && ( ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) || ( ${FORCEPATCH} == "true" ) ) ]]
 then
   prevtag=$(git describe --tags --abbrev=0)
   echo ${prevtag}
