@@ -6,7 +6,8 @@ module.exports.default = function ({
   version = "",
   branch = "none",
   tag = "none",
-  channel = "none"
+  channel = "none",
+  commit = "none"
 } = {}) {
   const raw = fs.readFileSync("./package.json");
   const pkg = JSON.parse(raw);
@@ -15,5 +16,6 @@ module.exports.default = function ({
   if (branch !== "none") fs.writeFileSync(`${dir}/pipe/branch`, branch);
   if (tag !== "none") fs.writeFileSync(`${dir}/pipe/tag`, tag);
   if (channel !== "none") fs.writeFileSync(`${dir}/pipe/channel`, channel);
+  if (commit !== "none") fs.writeFileSync(`${dir}/pipe/commit`, commit);
   return 0;
 };
