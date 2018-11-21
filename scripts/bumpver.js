@@ -9,7 +9,6 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  // let channel = "stable";
   let prever = 0;
   if (semver.prerelease(pkg.version) != null) {
     [, prever] = semver.prerelease(pkg.version);
@@ -47,8 +46,6 @@ module.exports.default = function ({ channel = "", bump = "patch" } = {}) {
   let newver;
   if (channel === "" || channel === "stable") {
     newver = `${major}.${minor}.${patch}`;
-    // } else if (channel === "stable") {
-    //   newver = `${major}.${minor}.${patch}-${channel}`;
   } else {
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
