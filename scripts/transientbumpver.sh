@@ -1,11 +1,9 @@
 #!/bin/bash
 
 printenv
-
 echo Current version: $(node -p 'require("./scripts/getver.js").default("full")')
-# Need to add something to force patch increment even if not merge from hotfix
-# (maybe a queue time variable for manual builds?)
-if [[ ("${CHANNEL}" == "stable") && ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) ]]
+
+if [[ ("${CHANNEL}" == "stable") && ( ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merge pull request \#[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch \'hotfix\/.*\')$) || (${BUILD_REASON} == "Manual" && ${forcepatch} == "true" ) ) ]]
 then
   prevtag=$(git describe --tags --abbrev=0)
   echo ${prevtag}
