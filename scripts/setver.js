@@ -42,16 +42,16 @@ module.exports.default = function ({
       prever = val;
       if (Number.isNaN(prever)) prever = 0;
       break;
-    case "full":
-      // This stuff is *probably* redundant
-      major = semver.major(converted);
-      minor = semver.minor(converted);
-      patch = semver.patch(converted);
-      if (semver.prerelease(converted) != null) {
-        [, prever] = semver.prerelease(converted);
-      }
-      if (Number.isNaN(prever)) prever = 0;
-      break;
+    // case "full":
+    //   // This stuff is *probably* redundant
+    //   major = converted.major;
+    //   minor = converted.minor;
+    //   patch = converted.patch;
+    //   if (converted.prerelease != null) {
+    //     [, prever] = converted.prerelease;
+    //   }
+    //   if (Number.isNaN(prever)) prever = 0;
+    //   break;
     default:
       break;
   }
@@ -63,7 +63,7 @@ module.exports.default = function ({
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
   if (comp === "full") {
-    newver = converted;
+    newver = converted.raw;
   }
   console.log(`change ${pkg.version} to ${newver}`);
   pkg.version = newver;
