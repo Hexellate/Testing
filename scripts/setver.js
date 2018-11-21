@@ -4,7 +4,8 @@ const fs = require("fs");
 module.exports.default = function ({
   channel = "",
   comp = "patch",
-  val = 0
+  val = 0,
+  coerce = true
 } = {}) {
   const raw = fs.readFileSync("./package.json");
   const pkg = JSON.parse(raw);
@@ -17,6 +18,10 @@ module.exports.default = function ({
   let prever = "";
   if (semver.prerelease(pkg.version) != null) {
     [, prever] = semver.prerelease(pkg.version);
+  }
+
+  if ((comp = "full" && coerce)) {
+    val = semver.coerce(val);
   }
 
   switch (comp) {

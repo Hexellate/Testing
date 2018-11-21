@@ -7,10 +7,12 @@ if [[ ("${CHANNEL}" == "stable") && ( ("${BUILD_SOURCEVERSIONMESSAGE}" =~ ^(Merg
 then
   prevtag=$(git describe --tags --abbrev=0)
   # echo ${prevtag}
-  patchver=$(npx semver -i patch "${prevtag}")
+  # patchver=$(npx semver -i patch "${prevtag}")
   # echo ${patchver}
-  # node -e "require('./scripts/bumpver.js').default({'channel':'${CHANNEL}','bump':'patch'})"
-  node -e "require('./scripts/setver.js').default({'channel':'${CHANNEL}','comp':'full','val':'${patchver}'})"
+
+  # node -e "require('./scripts/setver.js').default({'channel':'${CHANNEL}','comp':'full','val':'${patchver}'})"
+  node -e "require('./scripts/setver.js').default({'channel':'${CHANNEL}','comp':'full','val':'${prevtag}','coerce':'true'})"
+  node -e "require('./scripts/bumpver.js').default({'channel':'${CHANNEL}','bump':'patch'})"
 
   echo Bump patch to: $(node -p 'require("./scripts/getver.js").default("full")')
 fi
