@@ -134,7 +134,7 @@ steps:
       branch=${BUILD_SOURCEBRANCHNAME}
       version=$(node -p 'require("./scripts/getver.js").default()')
       tag=v${version}
-      node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)'})"
+      node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)', 'commit':'$(Build.SourceVersion)'})"
     displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
