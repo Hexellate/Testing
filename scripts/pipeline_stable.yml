@@ -49,9 +49,9 @@ jobs:
       #     chmod u+x scripts/updpackagechannel.sh
       #     ./scripts/updpackagechannel.sh
       #   displayName: "Switch channel info to $(channel)"
-
-      - bash: |
-          echo $(patch)
+      #
+      # - bash: | # Can't remember what this was for XD
+      #     echo $(patch)
 
   - job: win_build
     pool:
