@@ -13,7 +13,11 @@ module.exports.default = function ({
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  let prever = semver.prerelease(pkg.version)[1];
+  // let prever = semver.prerelease(pkg.version)[1];
+  let prever = "";
+  if (semver.prerelease(pkg.version) != null) {
+    [, prever] = semver.prerelease(pkg.version);
+  }
 
   switch (comp) {
     case "major":
@@ -37,7 +41,9 @@ module.exports.default = function ({
       major = semver.major(val);
       minor = semver.minor(val);
       patch = semver.patch(val);
-      [, prever] = semver.prerelease(val);
+      if (semver.prerelease(val) != null) {
+        [, prever] = semver.prerelease(val);
+      }
       if (Number.isNaN(prever)) prever = 0;
       break;
     default:
