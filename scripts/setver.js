@@ -42,16 +42,6 @@ module.exports.default = function ({
       prever = val;
       if (Number.isNaN(prever)) prever = 0;
       break;
-    // case "full":
-    //   // This stuff is *probably* redundant
-    //   major = converted.major;
-    //   minor = converted.minor;
-    //   patch = converted.patch;
-    //   if (converted.prerelease != null) {
-    //     [, prever] = converted.prerelease;
-    //   }
-    //   if (Number.isNaN(prever)) prever = 0;
-    //   break;
     default:
       break;
   }
