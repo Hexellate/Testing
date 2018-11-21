@@ -2,22 +2,22 @@ steps:
   - checkout: self
     persistCredentials: true
 
-  - bash: |
-      shopt -s extglob
-      branch=${BUILD_SOURCEBRANCH}
-      echo ${branch}
-      if [[ ! (${branch} =~ refs/pull/[0-9]*/merge) ]]
-      then
-        branch=${branch/refs\/?(heads|pull)\//}
-        echo ${branch}
-        branch=${branch/+([0-9])\//}
-        echo ${branch}
-        git checkout ${branch}
-      else
-        echo "This is a pull request build. Checkout is redundant (and will fail)"
-      fi
-      shopt -u extglob
-    displayName: "Checkout latest commit on branch"
+  # - bash: |
+  #     shopt -s extglob
+  #     branch=${BUILD_SOURCEBRANCH}
+  #     echo ${branch}
+  #     if [[ ! (${branch} =~ refs/pull/[0-9]*/merge) ]]
+  #     then
+  #       branch=${branch/refs\/?(heads|pull)\//}
+  #       echo ${branch}
+  #       branch=${branch/+([0-9])\//}
+  #       echo ${branch}
+  #       git checkout ${branch}
+  #     else
+  #       echo "This is a pull request build. Checkout is redundant (and will fail)"
+  #     fi
+  #     shopt -u extglob
+  #   displayName: "Checkout latest commit on branch"
 
   - task: NodeTool@0
     inputs:
