@@ -4,7 +4,8 @@ const fs = require("fs");
 module.exports.default = function ({
   channel = "",
   comp = "patch",
-  val = 0
+  val = 0,
+  coerce = true
 } = {}) {
   const raw = fs.readFileSync("./package.json");
   const pkg = JSON.parse(raw);
@@ -13,7 +14,15 @@ module.exports.default = function ({
   let major = semver.major(pkg.version);
   let minor = semver.minor(pkg.version);
   let patch = semver.patch(pkg.version);
-  let prever = semver.prerelease(pkg.version)[1];
+  // let prever = semver.prerelease(pkg.version)[1];
+  let prever = "";
+  if (semver.prerelease(pkg.version) != null) {
+    [, prever] = semver.prerelease(pkg.version);
+  }
+  let converted = val;
+  if (comp === "full" && coerce) {
+    converted = semver.coerce(val);
+  }
 
   switch (comp) {
     case "major":
@@ -33,13 +42,6 @@ module.exports.default = function ({
       prever = val;
       if (Number.isNaN(prever)) prever = 0;
       break;
-    case "full":
-      major = semver.major(val);
-      minor = semver.minor(val);
-      patch = semver.patch(val);
-      [, prever] = semver.prerelease(val);
-      if (Number.isNaN(prever)) prever = 0;
-      break;
     default:
       break;
   }
@@ -51,7 +53,7 @@ module.exports.default = function ({
     newver = `${major}.${minor}.${patch}-${channel}.${prever}`;
   }
   if (comp === "full") {
-    newver = val;
+    newver = converted.raw;
   }
   console.log(`change ${pkg.version} to ${newver}`);
   pkg.version = newver;
