@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 
 # Set git used details
 git config --global user.email "${git_tracking_email}"
