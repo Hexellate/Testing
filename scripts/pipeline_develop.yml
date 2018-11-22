@@ -1,11 +1,12 @@
-# This is for CI builds of the develop branch only, which are to be possibly released as canary
+# This is for CI builds of develop and develop PRs
+# Ironically, this script does not actually run for the develop branch itself
 
 trigger:
   branches:
     include:
-      - develop
-    exclude:
       - feature/*
+    exclude:
+      - develop
       - master
       - hotfix/*
       - release/*
@@ -15,7 +16,15 @@ trigger:
       - /*.md
       - /*.graphml
 
-pr: none
+pr:
+  branches:
+    include:
+      - develop
+      - feature/*
+    exclude:
+      - master
+      - hotfix/*
+      - release/*
 
 variables:
   channel: "canary"
