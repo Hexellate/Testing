@@ -1,43 +1,35 @@
 #!/bin/bash
 
-# pull repo
-# bump version in repo
-# tag repo
-# push repo
-
-# TODO: cd to git working directory
-cd $(System.DefaultWorkingDirectory)
-mkdir tracking_repo
-cd tracking_repo
-
+# Set git used details
 git config --global user.email "$(git_tracking_email)"
 git config --global user.name "$(git_tracking_author)"
 
+# Get repo
+cd $(System.DefaultWorkingDirectory)
+mkdir tracking_repo
+cd tracking_repo
 git init
 git remote add -f origin $(git_tracking_url)
-git pull
 git checkout master
+
 echo git status
 git status
 
-# add all tracking files to correct place in repo
-cp -p $(System.DefaultWorkingDirectory)/_Build-stable/drop/release/*.yml $(System.DefaultWorkingDirectory)/tracking_repo/$(project)/$(channel)
+# Copy tracking files to repo
+cd "$(System.DefaultWorkingDirectory)/$(artifactp)/drop/release/"
+cp *.yml "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
+ls -l "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
 
-#echo increment patch ver
-#node -e "require('./scripts/bumpver.js').default({'channel':'$(channel)','bump':'patch'})"
-#echo add package
-#git add "package.json"
-#newver="$(node -p 'require("./scripts/getver.js").default()')"
+cd "$(System.DefaultWorkingDirectory)/tracking_repo"
+
+# Commit and push repo
 echo commit to repo
-git commit -a -m "[$(Release.DefinitionName)]Auto-deploy build $(Release.Artifacts._Build-stable.BuildNumber) for $(System.TeamProject)"
-# echo create tag "${tag}" on latest commit
-# git tag "${tag}"
-echo git status
-git status
-echo git push
-git push origin
-# git push --tags origin
+git add "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
+git commit -m "[$(Build.DefinitionName)]update tracking files for $(git_project_name) $(tag) $(channel)"
+
 echo git status
 git status
 
-# TODO: cd to regular working directory
+git push
+echo git status
+git status

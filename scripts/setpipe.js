@@ -3,16 +3,16 @@ const fs = require("fs");
 
 module.exports.default = function ({
   dir = "../pipe",
-  version = "",
+  version = "none",
   branch = "none",
   tag = "none",
   channel = "none",
   commit = "none"
 } = {}) {
-  const raw = fs.readFileSync("./package.json");
-  const pkg = JSON.parse(raw);
-  fs.writeFileSync(`${dir}/pipe/fullversion`, pkg.version);
-  fs.writeFileSync(`${dir}/pipe/version`, version);
+  // const raw = fs.readFileSync("./package.json");
+  // const pkg = JSON.parse(raw);
+  // fs.writeFileSync(`${dir}/pipe/fullversion`, pkg.version);
+  if (branch !== "none") fs.writeFileSync(`${dir}/pipe/version`, version);
   if (branch !== "none") fs.writeFileSync(`${dir}/pipe/branch`, branch);
   if (tag !== "none") fs.writeFileSync(`${dir}/pipe/tag`, tag);
   if (channel !== "none") fs.writeFileSync(`${dir}/pipe/channel`, channel);
