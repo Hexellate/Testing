@@ -17,7 +17,7 @@ git status
 
 # Copy tracking files to repo
 cd "$(System.DefaultWorkingDirectory)/$(artifactp)/drop/release/"
-cp *.yml "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
+cp -- *.yml "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
 ls -l "$(System.DefaultWorkingDirectory)/tracking_repo/$(git_project_name)/updates/$(channel)"
 
 cd "$(System.DefaultWorkingDirectory)/tracking_repo"
