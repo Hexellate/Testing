@@ -18,6 +18,10 @@ This document will outline the guidelines for contributing to this project, incl
 
 [Additional Notes](#additional-notes)
 
+* [Channels](#channels)
+* [Version Numbers](#version_numbers)
+* [Issue and Pull Request Labels](#issue_and_pull_request_labels)
+
 ## Code of Conduct
 
 See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
@@ -106,12 +110,12 @@ The ESLint config in repository is already configured to use this styleguide. An
 
 **Note**: As ESLint contains lots of options, there may be some which are configured incorrectly. If you come across a particular rule which you think is configured wrong, feel free to contact me.
 
-#### Other JS guidelines not covered by ESLint:
+#### General JS guidelines:
 
 * **Use ES6 features wherever possible**, such as destructuring, template strings, block scoping and arrow functions.
 * **Always use `const` for variables**, unless you expect it to change, in which case `let` should be used. Under no circumstances should `var` be used.
 * **Do not use function prototypes as classes**, instead use an actual class
-* **Use promises instead of callbacks** for asynchronous requests
+* **Use promises instead of callbacks** for asynchronous requests where possible
 * **Classes should use uppercase** for the first letter (i.e. `ClassName`, not `className`)
 * **Use unix style line endings** (i.e. cr or \n, instead of cr lf or \r\n)
 
@@ -137,7 +141,7 @@ The "canary" channel is for nightly releases of the latest features that have be
 
 ### Version Numbers
 
-Versions for stable and next are in accordance with the [semver scheme](https://semver.org/) and will be identified by a number triple (i.e. 1.2.3), with an additional label and build number for pre-release channel (i.e. 1.2.3-next.56).
+Versions for stable and next are in accordance with the [semver scheme](https://semver.org/) and will be identified by a number triple (i.e. 1.2.3), with an additional label and build number for pre-release channels (i.e. 1.2.3-next.56).
 
 The first number is the major version number and will be incremented on major changes, as well as when any API changes occur that are not backwards compatible.
 
@@ -145,9 +149,13 @@ The second number is the minor version number and will be incremented on smaller
 
 The third number is the patch or hotfix version, and will only ever be used for bugfix updates (i.e. updates that only fix bugs). This number will only be incremented on hotfixes for the stable channel, as canary and beta will use the additional build number.
 
-The label denotes the channel that the version is on, and is only used for the "next" channel. The build number appended to the label denotes the build version, which will be incremented for a new pre-release (next) version of a major or minor release.
+The label denotes the channel that the version is on, and is only used for the "next" and "canary" channels. The build number appended to the label denotes the build version, which will be incremented for a new pre-release version of a major or minor release.
 
-Internally, canary will be on the same version number as the most recent release, however canary builds should only be identified by their build number. This is due to the fact that versions are assigned when a new release channel is created, as it will not be known until that point if it should be a major or minor semver increment.
+Internally, canary will be on the same version number as the most recent release on the next channel, however canary builds should only be identified by their build number. This is due to the fact that versions are assigned when a new release channel is created, as it will not be known until that point if it should be a major or minor semver increment.
+
+#### A note on version numbers in repo:
+
+You may have noticed that none of the branches have a pre-release component. This is intentional! The pre-release component and build are assigned to a build transiently by the CI server, meaning less merge conflicts! This also applies to the patch value in the master channel, as the CI server will pull the most recent tag on the master branch, and bump the patch version of that for a build.
 
 ### Issue and Pull Request Labels
 
