@@ -19,15 +19,15 @@ git status
 
 # Copy tracking files to repo
 cd "${SYSTEM_DEFAULTWORKINGDIRECTORY}/${ARTIFACTP}/drop/release/"
-cp -- *.yml "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/$(channel)"
-ls -l "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/$(channel)"
+cp -- *.yml "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/${CHANNEL}"
+ls -l "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/${CHANNEL}"
 
 cd "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo"
 
 # Commit and push repo
 echo commit to repo
-git add "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/$(channel)"
-git commit -m "[${BUILD_DEFINITIONNAME}]update tracking files for ${GIT_PROJECT_NAME} ${tag} $(channel)"
+git add "${SYSTEM_DEFAULTWORKINGDIRECTORY}/tracking_repo/${GIT_PROJECT_NAME}/updates/${CHANNEL}"
+git commit -m "[${BUILD_DEFINITIONNAME}]update tracking files for ${GIT_PROJECT_NAME} ${TAG} ${CHANNEL}"
 
 echo git status
 git status
