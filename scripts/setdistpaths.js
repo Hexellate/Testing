@@ -21,9 +21,11 @@ module.exports.default = function ({ directory, author, projectname } = {}) {
 
       // update root path
       distFile.path = `${prependURL}/${distFile.path}`;
+      distFile.path = distFile.path.replace(/\s/g, ".");
       // update all files entries
       for (const j in distFile.files) {
         distFile.files[j].url = `${prependURL}/${distFile.files[j].url}`;
+        distFile.files[j].url = distFile.files[j].url.replace(/\s/g, ".");
       }
 
       // update all package entries for windows
@@ -32,6 +34,10 @@ module.exports.default = function ({ directory, author, projectname } = {}) {
           distFile.packages[j].path = `${prependURL}/${
             distFile.packages[j].path
           }`;
+          distFile.packages[j].path = distFile.packages[j].path.replace(
+            /\s/g,
+            "."
+          );
         }
       }
       // console.log(distFile);
