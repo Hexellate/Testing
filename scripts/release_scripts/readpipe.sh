@@ -1,7 +1,5 @@
 #!/bin/bash
 
-printenv
-
 echo "##vso[task.setvariable variable=tag]$(<${SYSTEM_DEFAULTWORKINGDIRECTORY}/${ARTIFACTP}/drop/pipe/tag)"
 echo "##vso[task.setvariable variable=commit]$(<${SYSTEM_DEFAULTWORKINGDIRECTORY}/${ARTIFACTP}/drop/pipe/commit)"
 echo "##vso[task.setvariable variable=version]$(<${SYSTEM_DEFAULTWORKINGDIRECTORY}/${ARTIFACTP}/drop/pipe/version)"
