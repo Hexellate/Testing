@@ -55,6 +55,10 @@ steps:
       ./scripts/transientbumpver.sh
     displayName: "Set transient version"
 
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: "Hexellate_codesign.p12"
+
   - bash: |
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
