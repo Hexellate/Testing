@@ -1,3 +1,8 @@
+# New steps to implement:
+# Set name in package to "autoupdate-test_branch"
+# Set nsisweb update url for each version installer (to allow it to work properly)
+# More files to move around for offline installer
+
 steps:
   - checkout: self
     persistCredentials: true

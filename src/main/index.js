@@ -8,7 +8,8 @@ import Log from "electron-log";
 /** Process initialization */
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-
+console.log(process.env.NODE_ENV);
+console.log(isDevelopment);
 // initialize log
 Log.transports.file.appName = "test";
 Log.transports.file.level = "debug";
@@ -167,12 +168,16 @@ ipcMain.on("getVer", (event) => {
 ipcMain.on("getUpd", (event) => {
   autoUpdater.checkForUpdates().then((prom) => {
     versionDetails.promise = prom;
+    versionDetails.cancellationToken = versionDetails.promise.cancellationToken;
     ipcSendVer(event.sender);
   });
 });
 
 ipcMain.on("dlUpd", () => {
-  autoUpdater.downloadUpdate();
+  autoUpdater.downloadUpdate().then((prom) => {
+    versionDetails.promise = prom;
+    versionDetails.hasdlpromisereturned = true;
+  });
   versionDetails.status = "progressing";
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
@@ -232,7 +237,6 @@ autoUpdater.on("update-downloaded", (info) => {
   versionDetails.isDownloaded = true;
   versionDetails.updateInfo = info;
   versionDetails.status = "downloaded";
-  versionDetails.updateInfo = info;
   Log.debug(`downloaded: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
