@@ -54,7 +54,7 @@ steps:
       fi
       echo Build Starting!
       npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
-      echo Build Finished!
+      # echo Build Finished! I think this line causes it to not recognise a failure
     displayName: "Build binaries"
     env:
       WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
@@ -111,7 +111,7 @@ steps:
       mv nsis-web/latest.yml $(pwd)
       mv nsis-web/* "windows/"
       mv *.exe "windows/"
-      mv *.blockmap "windows/"
+      mv *.exe.blockmap "windows/"
       rm nsis-web/
 
       # move mac
