@@ -1,1 +1,23 @@
 * text eol=lf
+
+# Binary files MUST be included here, but files will default to text
+
+# Documents
+*.md text
+*.sh text
+*.json text
+*.js text
+*.html text
+*.scss text
+*.yml text
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.tif binary
+*.tiff binary
+*.ico binary
+*.svg binary
+*.eps binary
