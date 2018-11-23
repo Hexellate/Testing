@@ -35,6 +35,9 @@ steps:
       node -e "require('./scripts/updadjust.js').default({'tag':'{tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
       printenv
     displayName: "Reconfigure package.json for autoupdate"
+    env:
+      WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
+      WIN_CSC_LINK: $(WIN_CSC_LINK)
 
   - task: DownloadSecureFile@1
     inputs:
