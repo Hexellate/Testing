@@ -30,7 +30,7 @@ module.exports.default = function ({
       channels[i]
     ].nsisWeb.appPackageUrl = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
   }
-
+  console.log(JSON.stringify(files, null, 2));
   fs.writeFileSync("./package.json", JSON.stringify(files.pkg, null, 2));
   fs.writeFileSync("./canary.json", JSON.stringify(files.canary, null, 2));
   fs.writeFileSync("./next.json", JSON.stringify(files.next, null, 2));
