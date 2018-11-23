@@ -13,7 +13,7 @@ module.exports = {
   },
   "plugins": ["react"],
   "rules": {
-    "linebreak-style": ["off", "unix"],
+    "linebreak-style": ["warn", "unix"],
     "semi": ["error", "always"],
     "semi-spacing": ["warn", { "before": false, "after": true }],
     "no-extra-semi": ["error"],
