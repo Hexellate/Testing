@@ -2,7 +2,19 @@
 
 # Binary files MUST be included here, but files will default to text
 
-# Documents
+
+
+# Special Documents
+*.doc	 diff=astextplain
+*.DOC	 diff=astextplain
+*.docx diff=astextplain
+*.DOCX diff=astextplain
+*.pdf  diff=astextplain
+*.PDF	 diff=astextplain
+*.rtf	 diff=astextplain
+*.RTF	 diff=astextplain
+
+# Other documents
 *.md text
 *.sh text
 *.json text
