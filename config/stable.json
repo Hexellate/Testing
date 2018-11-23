@@ -12,17 +12,24 @@
       {
         "target": "nsis-web",
         "arch": ["x64", "ia32"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64", "ia32"]
       }
     ]
   },
   "nsis": {
     "oneClick": false,
-    "perMachine": true,
+    "perMachine": false,
     "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
     "differentialPackage": true,
     "artifactName": "${productName} Setup ${version}.${ext}",
     "shortcutName": "Auto Updater Test"
+  },
+  "nsisWeb": {
+    "artifactName": "${productName} Web Setup ${version}.${ext}"
   },
   "mac": {
     "category": "public.app-category.utility"
