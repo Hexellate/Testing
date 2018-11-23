@@ -1,23 +1,11 @@
+# New steps to implement:
+# Set name in package to "autoupdate-test_branch"
+# Set nsisweb update url for each version installer (to allow it to work properly)
+# More files to move around for offline installer
+
 steps:
   - checkout: self
     persistCredentials: true
-
-  # - bash: |
-  #     shopt -s extglob
-  #     branch=${BUILD_SOURCEBRANCH}
-  #     echo ${branch}
-  #     if [[ ! (${branch} =~ refs/pull/[0-9]*/merge) ]]
-  #     then
-  #       branch=${branch/refs\/?(heads|pull)\//}
-  #       echo ${branch}
-  #       branch=${branch/+([0-9])\//}
-  #       echo ${branch}
-  #       git checkout ${branch}
-  #     else
-  #       echo "This is a pull request build. Checkout is redundant (and will fail)"
-  #     fi
-  #     shopt -u extglob
-  #   displayName: "Checkout latest commit on branch"
 
   - task: NodeTool@0
     inputs:
@@ -29,16 +17,7 @@ steps:
 
   - bash: npm run prebuild
     displayName: "prebuild"
-  # - bash: |
-  #     pkgchannel=$(node -p "require('./scripts/getver.js').default('channel')")
-  #     if [[ ("$(channel)" != "${pkgchannel}") && ("${BUILD_REASON}" != "PullRequest")]]
-  #     then
-  #       (1>&2 echo ERROR: Channel information in package.json does not match pipeline:)
-  #       (1>&2 echo ERROR: Channel in package.json = \"${pkgchannel}\" while pipeline channel = \"$(channel)\" )
-  #     fi
-  #   failOnStderr: true
-  #   condition: ne('$(Build.Reason)', 'PullRequest')
-  #   displayName: "Validate channel info"
+
   - bash: | # Switch channel info if incorrect
       chmod u+x scripts/updpackagechannel.sh
       ./scripts/updpackagechannel.sh
@@ -51,6 +30,18 @@ steps:
     displayName: "Set transient version"
 
   - bash: |
+      version=$(node -p 'require("./scripts/getver.js").default("full")')
+      tag=v${version}
+      node -e "require('./scripts/updadjust.js').default({'tag':'${tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
+
+    displayName: "Reconfigure package.json for autoupdate"
+
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: "Hexellate_codesign.p12"
+
+  - bash: |
+      printenv
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
@@ -61,8 +52,13 @@ steps:
         then
           OS="lin"
       fi
+      echo Build Starting!
       npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
+      # echo Build Finished! I think this line causes it to not recognise a failure
     displayName: "Build binaries"
+    env:
+      WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
+      WIN_CSC_LINK: $(WIN_CSC_LINK)
 
   - bash: npm test
     displayName: "Run tests"
@@ -111,8 +107,11 @@ steps:
       mkdir "linux-ia32"
 
       # move windows
+      rm latest.yml
       mv nsis-web/latest.yml $(pwd)
       mv nsis-web/* "windows/"
+      mv *.exe "windows/"
+      mv *.exe.blockmap "windows/"
       rm nsis-web/
 
       # move mac
@@ -130,6 +129,8 @@ steps:
     displayName: "Move artifact files and correct mappings"
 
   - bash: |
+      echo ${version}
+      echo ${tag}
       cd "$(Build.SourcesDirectory)"
       branch=${BUILD_SOURCEBRANCHNAME}
       version=$(node -p 'require("./scripts/getver.js").default("full")')
