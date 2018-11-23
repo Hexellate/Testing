@@ -1,7 +1,5 @@
 #!/bin/bash
 
-printenv
-
 # Set git used details
 git config --global user.email "${GIT_TRACKING_EMAIL}"
 git config --global user.name "${GIT_TRACKING_AUTHOR}"
