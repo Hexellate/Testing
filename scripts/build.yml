@@ -32,7 +32,7 @@ steps:
   - bash: |
       version=$(node -p 'require("./scripts/getver.js").default("full")')
       tag=v${version}
-      node -e "require('./scripts/updadjust.js').default({'tag':'{tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
+      node -e "require('./scripts/updadjust.js').default({'tag':'${tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
 
     displayName: "Reconfigure package.json for autoupdate"
 
@@ -52,7 +52,9 @@ steps:
         then
           OS="lin"
       fi
+      echo Build Starting!
       npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
+      echo Build Finished!
     displayName: "Build binaries"
     env:
       WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
