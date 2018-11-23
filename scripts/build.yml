@@ -33,17 +33,15 @@ steps:
       version=$(node -p 'require("./scripts/getver.js").default("full")')
       tag=v${version}
       node -e "require('./scripts/updadjust.js').default({'tag':'{tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
-      printenv
+
     displayName: "Reconfigure package.json for autoupdate"
-    env:
-      WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
-      WIN_CSC_LINK: $(WIN_CSC_LINK)
 
   - task: DownloadSecureFile@1
     inputs:
       secureFile: "Hexellate_codesign.p12"
 
   - bash: |
+      printenv
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
@@ -56,6 +54,9 @@ steps:
       fi
       npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
     displayName: "Build binaries"
+    env:
+      WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
+      WIN_CSC_LINK: $(WIN_CSC_LINK)
 
   - bash: npm test
     displayName: "Run tests"
