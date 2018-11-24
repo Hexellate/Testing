@@ -25,7 +25,7 @@
     "perMachine": false,
     "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
-    "differentialPackage": true,
+    "differentialPackage": false,
     "artifactName": "${productName} Setup ${version}.${ext}",
     "shortcutName": "Auto Updater Test - Next"
   },
