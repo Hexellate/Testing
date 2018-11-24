@@ -29,8 +29,7 @@
     "shortcutName": "Auto Updater Test - Canary"
   },
   "nsisWeb": {
-    "artifactName": "${productName} Web Setup ${version}.${ext}",
-    "appPackageUrl": "Set at build time"
+    "artifactName": "${productName} Web Setup ${version}.${ext}"
   },
   "mac": {
     "category": "public.app-category.utility"
