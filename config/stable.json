@@ -56,6 +56,6 @@
   },
   "publish": {
     "provider": "generic",
-    "url": "https://raw.githubusercontent.com/Hexellate/tracking/master/autoupdate-test/updates/stable"
+    "url": "Set at build time"
   }
 }

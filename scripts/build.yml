@@ -29,7 +29,7 @@ steps:
       tag=v${version}
       node -e "require('./scripts/updadjust.js').default({'tag':'${tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
 
-    displayName: "Reconfigure package.json for autoupdate"
+    displayName: "Set configuration for autoupdate"
 
   - task: DownloadSecureFile@1
     inputs:
