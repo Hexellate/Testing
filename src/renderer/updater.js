@@ -1,7 +1,7 @@
 import { ipcRenderer } from "electron";
 import React, { Component } from "react";
 // import logo from "./logo.svg";
-import "./App.scss";
+import "./app.scss";
 
 export default class App extends Component {
   constructor(props) {
