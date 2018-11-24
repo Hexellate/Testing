@@ -29,6 +29,9 @@ module.exports.default = function ({
     files[
       channels[i]
     ].nsisWeb.appPackageUrl = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
+    files[
+      channels[i]
+    ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
   }
   console.log(JSON.stringify(files, null, 2));
   fs.writeFileSync("./package.json", JSON.stringify(files.pkg, null, 2));
