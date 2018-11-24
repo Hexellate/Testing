@@ -57,6 +57,7 @@
   },
   "publish": {
     "provider": "generic",
-    "url": "Set at build time"
+    "url": "Set at build time",
+    "useMultipleRangeRequest": true
   }
 }

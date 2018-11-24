@@ -37,7 +37,8 @@ const versionDetails = {
 const providerBase = {
   "provider": "generic",
   "url":
-    "https://raw.githubusercontent.com/Hexellate/tracking/master/autoupdate-test/updates"
+    "https://raw.githubusercontent.com/Hexellate/tracking/master/autoupdate-test/updates",
+  "useMultipleRangeRequest": true
 };
 
 autoUpdater.autoDownload = false;
