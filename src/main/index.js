@@ -8,14 +8,54 @@ import Log from "electron-log";
 /** Process initialization */
 
 const isDevelopment = process.env.NODE_ENV !== "production";
-console.log(process.env.NODE_ENV);
-console.log(isDevelopment);
+
+{
+  // Generate and set application name
+  let tmpName = "Auto Updater Test";
+  if (autoUpdater.currentVersion.prerelease !== []) {
+    switch (autoUpdater.currentVersion.prerelease[0]) {
+      case "canary":
+        tmpName += " - canary";
+        break;
+      case "next":
+        tmpName += " - next";
+        break;
+      default:
+        tmpName += "";
+        break;
+    }
+  }
+  app.setName(tmpName);
+}
+try {
+  app.setPath("userData", Path.join(app.getPath("appData"), app.getName()));
+  app.setPath("logs", Path.join(app.getPath("userData"), "Logs", "latest.log"));
+} catch (err) {
+  Log.error(`${err.name}: ${err.message}`);
+  app.exit(1);
+}
+
 // initialize log
-Log.transports.file.appName = "test";
+autoUpdater.logger = require("electron-log");
+
+Log.transports.file.file = app.getPath("logs");
+autoUpdater.logger.transports.file.level = "debug";
+// Log.transports.file.appName = "test";
 Log.transports.file.level = "debug";
 Log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-const logPath = Path.dirname(Log.transports.file.findLogPath());
-Log.transports.file.file = Path.join(logPath, "latest.log");
+// const logPath = Path.dirname(Log.transports.file.findLogPath());
+// Log.transports.file.file = Path.join(logPath, "latest.log");
+
+// Log.info(`Begin Log`);
+Log.info(`Begin log for application: ${app.getName()}`);
+Log.info(
+  `${
+    app.isPackaged
+      ? "App is packaged, likely a production environment."
+      : "App is NOT packaged!"
+  }`
+);
+Log.info(`Logging to ${Log.transports.file.file}`);
 
 // initialize updater
 const versionDetails = {
@@ -56,13 +96,11 @@ autoUpdater.autoDownload = false;
   versionDetails.provider = provider;
 }
 
-// Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
-const windows = [];
-
-Log.info(`Begin Log`);
-Log.info(`Logging to ${Log.transports.file.file}`);
 Log.info(`Environment:`);
 Log.info(versionDetails);
+
+// Keep a global reference of the window object, if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
+const windows = [];
 
 const ipcSendVer = (sender) => {
   sender.send("getVer", versionDetails);
@@ -144,8 +182,8 @@ app.on("will-quit", (event) => {
 ipcMain.on("changeWindow", (event, arg) => {
   createWindow(arg);
   BrowserWindow.fromWebContents(event.sender).close();
-  Log.debug(arg);
-  Log.debug(event);
+  // Log.debug(arg);
+  // Log.debug(event);
 });
 
 ipcMain.on("resizeWindow", (event, arg) => {
@@ -200,7 +238,7 @@ ipcMain.on("installUpdate", () => {
 
 autoUpdater.on("checking-for-update", () => {
   versionDetails.status = "checking";
-  Log.debug(`checking: ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`checking: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
 
@@ -208,7 +246,7 @@ autoUpdater.on("update-available", (info) => {
   versionDetails.status = "available";
   versionDetails.updateInfo = info;
   versionDetails.hasUpdate = true;
-  Log.debug(`available: ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`available: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
 
@@ -216,21 +254,21 @@ autoUpdater.on("update-not-available", (info) => {
   versionDetails.status = "notAvailable";
   versionDetails.updateInfo = info;
   versionDetails.hasUpdate = false;
-  Log.debug(`not available: ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`not available: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
 
 autoUpdater.on("error", (error) => {
   versionDetails.status = "error";
   versionDetails.error = error;
-  Log.debug(`error: , ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`error: , ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
 
 autoUpdater.on("download-progress", (progressObj) => {
   versionDetails.status = "progressing";
   versionDetails.progressInfo = progressObj;
-  Log.debug(`progressing: ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`progressing: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
 
@@ -238,6 +276,6 @@ autoUpdater.on("update-downloaded", (info) => {
   versionDetails.isDownloaded = true;
   versionDetails.updateInfo = info;
   versionDetails.status = "downloaded";
-  Log.debug(`downloaded: ${JSON.stringify(versionDetails, null, 2)}`);
+  // Log.debug(`downloaded: ${JSON.stringify(versionDetails, null, 2)}`);
   ipcBroadcast({ "channel": "updaterChangeStatus" });
 });
