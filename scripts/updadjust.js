@@ -29,14 +29,20 @@ module.exports.default = function ({
     files[
       channels[i]
     ].nsisWeb.appPackageUrl = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
-    files[
-      channels[i]
-    ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
+    // files[
+    //   channels[i]
+    // ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
   }
   console.log(JSON.stringify(files, null, 2));
   fs.writeFileSync("./package.json", JSON.stringify(files.pkg, null, 2));
-  fs.writeFileSync("./canary.json", JSON.stringify(files.canary, null, 2));
-  fs.writeFileSync("./next.json", JSON.stringify(files.next, null, 2));
-  fs.writeFileSync("./stable.json", JSON.stringify(files.stable, null, 2));
+  fs.writeFileSync(
+    "./config/canary.json",
+    JSON.stringify(files.canary, null, 2)
+  );
+  fs.writeFileSync("./config/next.json", JSON.stringify(files.next, null, 2));
+  fs.writeFileSync(
+    "./config/stable.json",
+    JSON.stringify(files.stable, null, 2)
+  );
   return 0;
 };
