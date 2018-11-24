@@ -25,7 +25,7 @@
     "perMachine": false,
     "allowElevation": true,
     "allowToChangeInstallationDirectory": true,
-    "differentialPackage": false,
+    "differentialPackage": true,
     "artifactName": "${productName} Setup ${version}.${ext}",
     "shortcutName": "Auto Updater Test - Canary"
   },
