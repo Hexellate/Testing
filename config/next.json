@@ -58,6 +58,6 @@
   "publish": {
     "provider": "generic",
     "url": "Set at build time",
-    "useMultipleRangeRequest": true
+    "useMultipleRangeRequest": false
   }
 }
