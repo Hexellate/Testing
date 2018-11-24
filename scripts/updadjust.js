@@ -25,10 +25,6 @@ module.exports.default = function ({
   // This is because even though appId is changed per channel, electron still seems to use a folder based on the project name.
 
   for (const i in channels) {
-    // files[channels[i]].nsisWeb.appPackageUrl = "https://github.com/Hexellate/autoupdate-test/releases/download/v0.5.0-canary.330/autoupdate-test-0.5.0-canary.330-x64.nsis.7z";
-    // files[
-    //   channels[i]
-    // ].nsisWeb.appPackageUrl = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
     files[
       channels[i]
     ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
