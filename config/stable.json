@@ -1,6 +1,5 @@
 {
   "appId": "com.author.application",
-  "productName": "Auto Updater Test",
   "generateUpdatesFilesForAllChannels": false,
   "detectUpdateChannel": false,
   "includePdb": false,

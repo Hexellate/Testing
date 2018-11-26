@@ -1,6 +1,5 @@
 {
   "appId": "com.author.application.canary",
-  "productName": "Auto Updater Test - Canary",
   "generateUpdatesFilesForAllChannels": false,
   "detectUpdateChannel": false,
   "includePdb": true,

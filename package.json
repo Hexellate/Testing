@@ -1,5 +1,6 @@
 {
   "name": "autoupdate-test",
+  "productName": "Auto Update Test",
   "version": "0.5.0-canary.273",
   "author": {
     "name": "Daniel Nichols",
