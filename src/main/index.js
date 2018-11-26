@@ -34,7 +34,6 @@ try {
   Log.error(`${err.name}: ${err.message}`);
   app.exit(1);
 }
-
 // initialize log
 autoUpdater.logger = require("electron-log");
 

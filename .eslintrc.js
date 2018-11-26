@@ -42,6 +42,7 @@ module.exports = {
     "guard-for-in": ["off"],
     "no-restricted-syntax": ["off"],
     "no-plusplus": ["off"],
-    "func-names": ["off"]
+    "func-names": ["off"],
+    "no-shadow": ["warn", { "builtinGlobals": true }]
   }
 };
