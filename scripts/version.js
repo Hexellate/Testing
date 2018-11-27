@@ -23,7 +23,7 @@ export function bump({ comp = "patch" } = {}) {
 /**
  * Returns either the value of a version component, or the whole version.
  * @param {string} [comp] - The component to return. Can be major, minor, patch, channel, prerelease, full or trunc. Defaults to full
- * @return {string | integer} value - The component value requested
+ * @return {string | integer} The component value requested
  */
 export function get(comp) {
   // Version parts
