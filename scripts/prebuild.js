@@ -31,7 +31,6 @@ for (const i in channels) {
   files[channels[i]] = JSON.parse(raw);
 }
 /**
- * @param  {string} [tag] - The tag to use for the release
  * @param  {string} pretag - The previous tag in the repo
  * @param  {string} projectName - The project repo's name
  * @param  {string} projectOwner - The project repo's owner
@@ -41,7 +40,6 @@ for (const i in channels) {
  * @param  {integer} [buildID=270] - The identifier of the build on the CI server
  */
 export default function ({
-  tag = "v0.5.1",
   pretag = "v0.5.0",
   projectName = "projectName",
   projectOwner = "projectOwner",
@@ -91,7 +89,7 @@ export default function ({
   }
 
   // Set Autoupdate config
-
+  const tag = `v${version.get("full")}`; // Set tag at runtime based on version
   for (const i in channels) {
     files[
       channels[i]
