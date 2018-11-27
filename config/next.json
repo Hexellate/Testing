@@ -10,11 +10,17 @@
     "target": [
       {
         "target": "nsis-web",
-        "arch": ["x64", "ia32"]
+        "arch": [
+          "x64",
+          "ia32"
+        ]
       },
       {
         "target": "nsis",
-        "arch": ["x64", "ia32"]
+        "arch": [
+          "x64",
+          "ia32"
+        ]
       }
     ],
     "verifyUpdateCodeSignature": false
@@ -49,7 +55,9 @@
     ]
   },
   "linux": {
-    "target": ["AppImage"]
+    "target": [
+      "AppImage"
+    ]
   },
   "appImage": {
     "category": "Utility"
