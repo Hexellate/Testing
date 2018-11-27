@@ -95,15 +95,33 @@ export function set({
     newProps.channel = semver.prerelease(pkg.version) === []
       ? "stable"
       : semver.prerelease(pkg.version)[1];
+  } else {
+    newProps.channel = channel;
   }
 
-  if (major === undefined) newProps.major = semver.major(pkg.version);
-  if (minor === undefined) newProps.minor = semver.minor(pkg.version);
-  if (patch === undefined) newProps.patch = semver.patch(pkg.version);
-  if (semver.prerelease(pkg.version) != null) {
-    [, newProps.pre] = semver.prerelease(pkg.version);
+  if (major === undefined) {
+    newProps.major = semver.major(pkg.version);
+  } else {
+    newProps.major = major;
   }
-  if (pre === undefined) newProps.pre = 0;
+
+  if (minor === undefined) {
+    newProps.minor = semver.minor(pkg.version);
+  } else {
+    newProps.minor = minor;
+  }
+
+  if (patch === undefined) {
+    newProps.patch = semver.patch(pkg.version);
+  } else {
+    newProps.patch = patch;
+  }
+
+  if (semver.prerelease(pkg.version) != null && pre === undefined) {
+    [, newProps.pre] = semver.prerelease(pkg.version);
+  } else {
+    newProps.pre = pre;
+  }
 
   newProps.full = full;
   if (full !== undefined && coerce) {
@@ -113,7 +131,7 @@ export function set({
   // Truncate if not manually set and channel is stable
   newProps.trunc = trunc;
   if (newProps.trunc === undefined) {
-    newProps.trunc = String.toLower(channel) === "stable";
+    newProps.trunc = channel.toLowerCase() === "stable";
   }
 
   let newver;
