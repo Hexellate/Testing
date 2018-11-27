@@ -25,7 +25,7 @@ let raw;
 raw = fs.readFileSync("./package.json");
 files.pkg = JSON.parse(raw);
 
-const channels = ["canary", "next", "stable", "dev"]; // TODO: Properly implement "dev" channel
+const channels = ["canary", "next", "stable", "dev"];
 for (const i in channels) {
   raw = fs.readFileSync(`./config/${channels[i]}.json`);
   files[channels[i]] = JSON.parse(raw);

@@ -8,7 +8,7 @@ export default function () {
   raw = fs.readFileSync("./package.json.old");
   files.pkg = JSON.parse(raw);
 
-  const channels = ["canary", "next", "stable"];
+  const channels = ["canary", "next", "stable", "dev"];
   for (const i in channels) {
     raw = fs.readFileSync(`./config/${channels[i]}.json.old`);
     files[channels[i]] = JSON.parse(raw);
@@ -21,6 +21,7 @@ export default function () {
       `./config/${channels[i]}.json`,
       JSON.stringify(files[channels[i]], null, 2)
     );
+    fs.unlinkSync(`./config/${channels[i]}.json.old`);
   }
   return 0;
 }
