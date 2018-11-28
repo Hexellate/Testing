@@ -167,78 +167,23 @@ preCleaner.on("close", (code) => {
     console.error(
       "ERROR: Prebuild clean process exited with a non-zero result. Aborting build!"
     );
-    postbuild.default();
     process.exit(1);
   }
-  if (params.channel === "dev") {
-    // Dev server
-    console.log(`Step: Channel is ${params.channel}! Running dev server`);
-    const devTools = childProcess.exec("npm run react-devtools");
-    devTools.unref();
-    console.log(`devTools started with pid ${devTools.pid}`);
-    pids.push(devTools.pid);
-    let devToolsClosed = false;
 
-    const electronServer = childProcess.exec("npm run webpack-dev");
-    electronServer.unref();
-    console.log(`electronServer started with pid ${electronServer.pid}`);
-    pids.push(electronServer.pid);
-    let electronServerClosed = false;
-
-    // Electron server stuffs
-    electronServer.stdout.on("data", (chunk) => {
-      console.log(chunk);
-    });
-    electronServer.stderr.on("data", (chunk) => {
-      console.error(chunk);
-    });
-
-    // React devtools stuffs
-    devTools.stdout.on("data", (chunk) => {
-      console.log(chunk);
-    });
-    devTools.stderr.on("data", (chunk) => {
-      console.error(chunk);
-    });
-
-    devTools.on("close", () => {
-      console.log("React dev tools terminated.");
-      devToolsClosed = true;
-    });
-    electronServer.on("close", () => {
-      console.log("Electron Server terminated.");
-      electronServerClosed = true;
-      if (!devToolsClosed) {
-        console.log(
-          `Electron Server has been closed, but devTools are still running. Terminating devTools on pid ${
-            devTools.pid
-          }...`
-        );
-        process.kill(devTools.pid);
-        try {
-          process.kill(devTools.pid);
-        } catch (e) {
-          console.error(`Unable to kill process! Maybe it's already closed?`);
-          console.log(JSON.stringify(e, null, 2));
-        }
-      }
-    });
-  } else {
-    // Build for channel
-    console.log(`Step: Channel is ${params.channel}! Running electron-builder`);
-    const builder = childProcess.exec(
-      `npx electron-builder -${params.platform} --x64 --ia32 -c config/${
-        params.channel
-      }.json`
-    );
-    pids.push(builder.pid);
-    builder.stdout.on("data", (chunk) => {
-      console.log(chunk);
-    });
-    builder.stderr.on("data", (chunk) => {
-      console.error(chunk);
-    });
-  }
+  // Build for channel
+  console.log(`Step: Channel is ${params.channel}! Running electron-builder`);
+  const builder = childProcess.exec(
+    `npx electron-builder -${params.platform} --x64 --ia32 -c config/${
+      params.channel
+    }.json`
+  );
+  pids.push(builder.pid);
+  builder.stdout.on("data", (chunk) => {
+    console.log(chunk);
+  });
+  builder.stderr.on("data", (chunk) => {
+    console.error(chunk);
+  });
 });
 
 process.on("beforeExit", () => {
