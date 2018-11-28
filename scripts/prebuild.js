@@ -81,30 +81,27 @@ export default function ({
 
   // Set artifact names
   for (const i in channels) {
+    let template;
     // Windows
-    files[channels[i]].nsis.artifactName = `${
-      files.pkg.productName
-    } Setup \${version}.\${ext}`
+    template = `${files.pkg.productName} Setup \${version}.\${ext}`;
+    files[channels[i]].nsis.artifactName = template
       .replace(" ", "-")
       .replace("---", "-");
 
-    files[channels[i]].nsisWeb.artifactName = `${
-      files.pkg.productName
-    } Web Setup \${version}.\${ext}`
+    template = `${files.pkg.productName} Web Setup \${version}.\${ext}`;
+    files[channels[i]].nsisWeb.artifactName = template
       .replace(" ", "-")
       .replace("---", "-");
 
     // Mac
-    files[channels[i]].dmg.artifactName = `${
-      files.pkg.productName
-    } \${version}.\${ext}`
+    template = `${files.pkg.productName} \${version}.\${ext}`;
+    files[channels[i]].dmg.artifactName = template
       .replace(" ", "-")
       .replace("---", "-");
 
     // Linux
-    files[channels[i]].appImage.artifactName = `${
-      files.pkg.productName
-    } \${version}.\${ext}`
+    template = `${files.pkg.productName} \${version}.\${ext}`;
+    files[channels[i]].appImage.artifactName = template
       .replace(" ", "-")
       .replace("---", "-");
   }
