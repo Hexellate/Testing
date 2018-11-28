@@ -147,8 +147,11 @@ console.log("Step: Running prebuild task");
 prebuild.default(params);
 // postbuild.default();
 
+const pids = [];
+
 console.log("Step: Running prebuild clean process");
 const preCleaner = childProcess.exec("npm run clean && npm run pack");
+pids.push(preCleaner.pid);
 
 preCleaner.stdout.on("data", (chunk) => {
   console.log(chunk);
@@ -171,8 +174,15 @@ preCleaner.on("close", (code) => {
     // Dev server
     console.log(`Step: Channel is ${params.channel}! Running dev server`);
     const devTools = childProcess.exec("npm run react-devtools");
-    const electronServer = childProcess.exec("npm run webpack-dev");
+    devTools.unref();
+    console.log(`devTools started with pid ${devTools.pid}`);
+    pids.push(devTools.pid);
     let devToolsClosed = false;
+
+    const electronServer = childProcess.exec("npm run webpack-dev");
+    electronServer.unref();
+    console.log(`electronServer started with pid ${electronServer.pid}`);
+    pids.push(electronServer.pid);
     let electronServerClosed = false;
 
     // Electron server stuffs
@@ -192,19 +202,28 @@ preCleaner.on("close", (code) => {
     });
 
     devTools.on("close", () => {
+      console.log("React dev tools terminated.");
       devToolsClosed = true;
       if (electronServerClosed) {
-        console.log(`Step: Dev server is closed. Running postbuild task.`);
+        console.log(
+          `Step: Dev server is fully closed. Running postbuild task.`
+        );
         postbuild.default();
       }
     });
     electronServer.on("close", () => {
+      console.log("Electron Server terminated.");
       electronServerClosed = true;
       if (devToolsClosed) {
-        console.log(`Step: Dev server is closed. Running postbuild task.`);
+        console.log(
+          `Step: Dev server is fully closed. Running postbuild task.`
+        );
         postbuild.default();
       } else {
-        devTools.kill("SIGINT");
+        console.log(
+          "Electron Server has been closed, but devTools are still running. Terminating devTools..."
+        );
+        process.kill(devTools.pid);
       }
     });
   } else {
@@ -215,6 +234,7 @@ preCleaner.on("close", (code) => {
         params.channel
       }.json`
     );
+    pids.push(builder.pid);
     builder.stdout.on("data", (chunk) => {
       console.log(chunk);
     });
@@ -225,5 +245,17 @@ preCleaner.on("close", (code) => {
       console.log(`Step: Build process is finished. Running postbuild task.`);
       postbuild.default();
     });
+  }
+});
+
+process.on("beforeExit", () => {
+  console.log("Process Exiting. Terminating subprocesses...");
+  for (const i in pids) {
+    console.log(`Terminating process with pid ${pids[i]}`);
+    try {
+      process.kill(pids[i]);
+    } catch (e) {
+      console.log(JSON.stringify(e, null, 2));
+    }
   }
 });
