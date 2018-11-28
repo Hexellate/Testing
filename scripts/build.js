@@ -221,9 +221,17 @@ preCleaner.on("close", (code) => {
         postbuild.default();
       } else {
         console.log(
-          "Electron Server has been closed, but devTools are still running. Terminating devTools..."
+          `Electron Server has been closed, but devTools are still running. Terminating devTools on pid ${
+            devTools.pid
+          }...`
         );
         process.kill(devTools.pid);
+        try {
+          process.kill(devTools.pid);
+        } catch (e) {
+          console.error(`Unable to kill process! Maybe it's already closed?`);
+          console.log(JSON.stringify(e, null, 2));
+        }
       }
     });
   } else {
@@ -255,6 +263,7 @@ process.on("beforeExit", () => {
     try {
       process.kill(pids[i]);
     } catch (e) {
+      console.error(`Unable to kill process! Maybe it's already closed?`);
       console.log(JSON.stringify(e, null, 2));
     }
   }
