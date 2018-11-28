@@ -19,11 +19,11 @@ alts.set("l", ["l", "lin", "linux"]);
 const params = {
   "platform": "",
   "channel": "",
-  "preTag": "v0.5.0",
+  "pretag": "v0.5.0",
   "projectName": "",
   "projectOwner": "",
   "sourceMessage": "",
-  "forcePatch": false,
+  "forcepatch": false,
   "buildID": 0
 };
 /**
@@ -100,12 +100,14 @@ const procEnv = () => {
     "projectName": "projectName",
     "projectOwner": "projectOwner",
     "sourceMessage": "foobar",
-    "buildID": 270
+    "buildID": 270,
+    "forcepatch": false
   };
   if (process.env.git_project_name !== undefined) env.projectName = process.env.git_project_name;
   if (process.env.git_project_owner !== undefined) env.projectOwner = process.env.git_project_owner;
   if (process.env.BUILD_SOURCEVERSIONMESSAGE !== undefined) env.sourceMessage = process.env.BUILD_SOURCEVERSIONMESSAGE;
   if (process.env["Build.BuildId"] !== undefined) env.buildID = process.env["Build.BuildId"];
+  if (process.env.FORCEPATCH !== undefined) env.forcepatch = process.env.FORCEPATCH;
   return env;
 };
 const argv = minimist(process.argv.slice(2));
@@ -117,7 +119,7 @@ if (argv.help || argv.h || argv._.includes("help")) {
   Where [options] are:
   --channel stable - Can be canary, next, stable or dev. Dev will launch the dev environment rather than creating a build. Defaults to canary.
   --platform win - Can be win, mac or lin. No platform will default to current system
-  --preTag v0.5.0 - The tag of the previous release. Defaults to v0.5.0
+  --pretag v0.5.0 - The tag of the previous release. Defaults to v0.5.0
   --forcepatch - Flag will force build to be a patch
 
   NOTE: Do NOT modify package.json or any channel config files while this script is running, as any changes WILL be overridden on exit!
@@ -127,15 +129,15 @@ if (argv.help || argv.h || argv._.includes("help")) {
 console.log("Step: Validating inputs");
 params.channel = procChannel(argv.channel);
 params.platform = procPlatform(argv.platform);
-if (argv.preTag != undefined) params.preTag = argv.preTag;
+if (argv.pretag != undefined) params.pretag = argv.pretag;
 Object.assign(params, procEnv());
-if (argv.forcepatch) params.forcePatch = argv.forcepatch;
+if (argv.forcepatch != undefined) params.forcepatch = argv.forcepatch; // Override env forcepatch if arg is used
 
 console.log(`Calculated parameters to be used:`);
 console.log(`Channel: ${params.channel}`);
 console.log(`Platform: ${params.platform}`);
-console.log(`preTag: ${params.preTag}`);
-console.log(`forcePatch: ${params.forcePatch}`);
+console.log(`pretag: ${params.pretag}`);
+console.log(`forcepatch: ${params.forcepatch}`);
 console.log(`projectName: ${params.projectName}`);
 console.log(`projectOwner: ${params.projectOwner}`);
 console.log(`buildID: ${params.buildID}`);

@@ -10,26 +10,26 @@ steps:
   - bash: npm install
     displayName: "Install npm packages"
 
-  - bash: npm run prebuild
-    displayName: "prebuild"
+  # - bash: npm run prebuild
+  #   displayName: "prebuild"
 
-  - bash: | # Switch channel info if incorrect
-      chmod u+x scripts/updpackagechannel.sh
-      ./scripts/updpackagechannel.sh
-    displayName: "Switch channel info to $(channel)"
+  # - bash: | # Switch channel info if incorrect
+  #     chmod u+x scripts/updpackagechannel.sh
+  #     ./scripts/updpackagechannel.sh
+  #   displayName: "Switch channel info to $(channel)"
 
-    # Bump transient version
-  - bash: |
-      chmod u+x scripts/transientbumpver.sh
-      ./scripts/transientbumpver.sh
-    displayName: "Set transient version"
+  #   # Bump transient version
+  # - bash: |
+  #     chmod u+x scripts/transientbumpver.sh
+  #     ./scripts/transientbumpver.sh
+  #   displayName: "Set transient version"
 
-  - bash: |
-      version=$(node -p 'require("./scripts/getver.js").default("full")')
-      tag=v${version}
-      node -e "require('./scripts/updadjust.js').default({'tag':'${tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
+  # - bash: |
+  #     version=$(node -p 'require("./scripts/getver.js").default("full")')
+  #     tag=v${version}
+  #     node -e "require('./scripts/updadjust.js').default({'tag':'${tag}','projectName':'$(git_project_name)','projectOwner':'$(git_project_owner)','channel':'$(channel)'})"
 
-    displayName: "Set configuration for autoupdate"
+  #   displayName: "Set configuration for autoupdate"
 
   - task: DownloadSecureFile@1
     inputs:
@@ -46,7 +46,7 @@ steps:
         then
           OS="lin"
       fi
-      npm run "build-${OS}:$(channel)" -- -c.buildVersion=$(Build.BuildId)
+      npm run "build" -- --platform ${OS} --channel $(channel) --pretag $(git describe --tags --abbrev=0)
     displayName: "Build binaries"
     env:
       WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
@@ -125,7 +125,7 @@ steps:
       echo ${tag}
       cd "$(Build.SourcesDirectory)"
       branch=${BUILD_SOURCEBRANCHNAME}
-      version=$(node -p 'require("./scripts/getver.js").default("full")')
+      version=$(node -p 'require("./scripts/version.js").get("full")')
       tag=v${version}
       node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)', 'commit':'$(Build.SourceVersion)'})"
     displayName: "Set pipe info"
