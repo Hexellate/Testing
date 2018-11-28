@@ -85,25 +85,25 @@ export default function ({
     // Windows
     template = `${files.pkg.productName} Setup \${version}.\${ext}`;
     files[channels[i]].nsis.artifactName = template
-      .replace(" ", "-")
-      .replace("---", "-");
+      .replace(/ /g, "-")
+      .replace(/---/g, "-");
 
     template = `${files.pkg.productName} Web Setup \${version}.\${ext}`;
     files[channels[i]].nsisWeb.artifactName = template
-      .replace(" ", "-")
-      .replace("---", "-");
+      .replace(/ /g, "-")
+      .replace(/---/g, "-");
 
     // Mac
     template = `${files.pkg.productName} \${version}.\${ext}`;
     files[channels[i]].dmg.artifactName = template
-      .replace(" ", "-")
-      .replace("---", "-");
+      .replace(/ /g, "-")
+      .replace(/---/g, "-");
 
     // Linux
     template = `${files.pkg.productName} \${version}.\${ext}`;
     files[channels[i]].appImage.artifactName = template
-      .replace(" ", "-")
-      .replace("---", "-");
+      .replace(/ /g, "-")
+      .replace(/---/g, "-");
   }
 
   // Set productName
