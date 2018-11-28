@@ -13,7 +13,7 @@
     "url": "git+https://github.com/Hexellate/Electron-React-Template.git"
   },
   "scripts": {
-    "dev": "babel-node scripts/build.js --channel dev",
+    "dev": "npm-run-all --parallel webpack-dev react-devtools",
     "webpack-dev": "electron-webpack dev --remote-debugging-port=9223",
     "react-devtools": "react-devtools",
     "pack": "electron-webpack",
