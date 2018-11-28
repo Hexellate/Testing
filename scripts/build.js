@@ -1,5 +1,3 @@
-// const fs = require("fs");
-// const builder = require("electron-builder");
 const minimist = require("minimist");
 const childProcess = require("child_process");
 const prebuild = require("./prebuild");
@@ -145,7 +143,6 @@ console.log(`sourceMessage: ${params.sourceMessage}`);
 
 console.log("Step: Running prebuild task");
 prebuild.default(params);
-// postbuild.default();
 
 const pids = [];
 

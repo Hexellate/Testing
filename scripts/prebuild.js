@@ -1,23 +1,5 @@
-/*
-  prebuild:
-  Duplicate package.json to package.json.old
-  switch channel info
-  set transient version
-  set autoupdate config
-  Set package.productName to pkgbase.productname+channel
-
-  postbuild:
-  set package.json contents to package.json.old
-  delete package.json.old
-
- */
-
-// append -${branch} to pkg.json
-// Set nsisweb update url
 const fs = require("fs");
 const version = require("./version");
-// const minimist = require("minimist");
-// const yaml = require("js-yaml");
 
 const files = {};
 let raw;
@@ -67,7 +49,7 @@ export default function ({
   version.set({
     "channel": channel
   });
-  // TODO: Ability to pass package object to version script
+
   // Set transient version
   const mergePattern = /^(Merge pull request #[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch 'hotfix\/.*')$/g;
   switch (channel) {
@@ -94,7 +76,7 @@ export default function ({
   for (const i in channels) {
     files[
       channels[i]
-    ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`; // TODO: Use generated tag if not provided
+    ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
   }
 
   raw = fs.readFileSync("./package.json");
@@ -104,20 +86,8 @@ export default function ({
     files.pkg.productName += ` - ${channel}`;
   }
 
-  // if (channel !== "stable") files.pkg.name += `-${channel}`;
-  // This is because even though appId is changed per channel, electron still seems to use a folder based on the project name.
-
-  // console.log(JSON.stringify(files, null, 2));
   fs.writeFileSync("./package.json", JSON.stringify(files.pkg, null, 2));
-  // fs.writeFileSync("./config/next.json", JSON.stringify(files.next, null, 2));
-  // fs.writeFileSync(
-  //   "./config/canary.json",
-  //   JSON.stringify(files.canary, null, 2)
-  // );
-  // fs.writeFileSync(
-  //   "./config/stable.json",
-  //   JSON.stringify(files.stable, null, 2)
-  // );
+
   for (const i in channels) {
     fs.writeFileSync(
       `./config/${channels[i]}.json`,
