@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
+import fs from "fs";
 import * as Path from "path";
 import url from "url";
 import { autoUpdater } from "electron-updater";
@@ -9,51 +10,58 @@ import Log from "electron-log";
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-{
-  // Generate and set application name
-  let tmpName = "Auto Updater Test";
-  if (autoUpdater.currentVersion.prerelease !== []) {
-    switch (autoUpdater.currentVersion.prerelease[0]) {
-      case "canary":
-        tmpName += " - canary";
-        break;
-      case "next":
-        tmpName += " - next";
-        break;
-      default:
-        tmpName += "";
-        break;
-    }
-  }
-  app.setName(tmpName);
+// Set app name if unpackaged
+if (!app.isPackaged) {
+  app.setName("Auto Update Test - dev");
 }
+
+// Set app path based on app name (may be redundant...)
 try {
   app.setPath("userData", Path.join(app.getPath("appData"), app.getName()));
+
+  // Make dir userData
+  try {
+    fs.mkdirSync(app.getPath("userData"));
+  } catch (err) {
+    console.error(`Unable to make directory "${app.getPath("userData")}":`);
+    console.error(`${err.name}: ${err.message}`);
+  }
+
+  // Make dir Logs in userData
+  try {
+    fs.mkdirSync(Path.join(app.getPath("userData"), "Logs"));
+  } catch (err) {
+    console.error(
+      `Unable to make directory "${Path.join(
+        app.getPath("userData"),
+        "Logs"
+      )}":`
+    );
+    console.error(`${err.name}: ${err.message}`);
+  }
+
   app.setPath("logs", Path.join(app.getPath("userData"), "Logs", "latest.log"));
 } catch (err) {
   Log.error(`${err.name}: ${err.message}`);
   app.exit(1);
 }
+
 // initialize log
 autoUpdater.logger = require("electron-log");
 
 Log.transports.file.file = app.getPath("logs");
 autoUpdater.logger.transports.file.level = "debug";
-// Log.transports.file.appName = "test";
 Log.transports.file.level = "debug";
 Log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
-// const logPath = Path.dirname(Log.transports.file.findLogPath());
-// Log.transports.file.file = Path.join(logPath, "latest.log");
 
-// Log.info(`Begin Log`);
-Log.info(`Begin log for application: ${app.getName()}`);
 Log.info(
   `${
     app.isPackaged
       ? "App is packaged, likely a production environment."
-      : "App is NOT packaged!"
+      : "App is NOT packaged! Using dev configuration"
   }`
 );
+Log.info(`Begin log for application: ${app.getName()}`);
 Log.info(`Logging to ${Log.transports.file.file}`);
 
 // initialize updater
