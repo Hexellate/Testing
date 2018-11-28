@@ -204,22 +204,11 @@ preCleaner.on("close", (code) => {
     devTools.on("close", () => {
       console.log("React dev tools terminated.");
       devToolsClosed = true;
-      if (electronServerClosed) {
-        console.log(
-          `Step: Dev server is fully closed. Running postbuild task.`
-        );
-        postbuild.default();
-      }
     });
     electronServer.on("close", () => {
       console.log("Electron Server terminated.");
       electronServerClosed = true;
-      if (devToolsClosed) {
-        console.log(
-          `Step: Dev server is fully closed. Running postbuild task.`
-        );
-        postbuild.default();
-      } else {
+      if (!devToolsClosed) {
         console.log(
           `Electron Server has been closed, but devTools are still running. Terminating devTools on pid ${
             devTools.pid
@@ -249,14 +238,13 @@ preCleaner.on("close", (code) => {
     builder.stderr.on("data", (chunk) => {
       console.error(chunk);
     });
-    builder.on("close", () => {
-      console.log(`Step: Build process is finished. Running postbuild task.`);
-      postbuild.default();
-    });
   }
 });
 
 process.on("beforeExit", () => {
+  console.log(`Step: Build process is finished. Running postbuild task.`);
+  postbuild.default();
+
   console.log("Process Exiting. Terminating subprocesses...");
   for (const i in pids) {
     console.log(`Terminating process with pid ${pids[i]}`);
