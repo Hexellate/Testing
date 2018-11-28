@@ -46,7 +46,7 @@ steps:
         then
           OS="lin"
       fi
-      npm run "build" -- --platform ${OS} --channel $(channel) --pretag $(git describe --tags --abbrev=0)
+      npm run "build" -- --platform ${OS} --channel $(channel) --pretag $(git describe --tags --abbrev=0) --norestore
     displayName: "Build binaries"
     env:
       WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
