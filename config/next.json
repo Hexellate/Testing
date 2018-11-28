@@ -52,15 +52,16 @@
         "type": "link",
         "path": "/Applications"
       }
-    ]
+    ],
+    "artifactName": "${productName} ${version}.${ext}"
   },
   "linux": {
-    "target": [
-      "AppImage"
-    ]
+    "target": ["AppImage"]
   },
   "appImage": {
-    "category": "Utility"
+    "category": "Utility",
+    "systemIntegration": "ask",
+    "artifactName": "${productName} ${version}.${ext}"
   },
   "publish": {
     "provider": "generic",

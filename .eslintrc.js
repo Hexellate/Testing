@@ -25,7 +25,7 @@ module.exports = {
       { "avoidEscape": true, "allowTemplateLiterals": true }
     ],
     "max-len": ["off"],
-    "array-bracket-newline": ["warn", { "multiline": true }],
+    "array-bracket-newline": ["warn", { "consistent": true }],
     "array-bracket-spacing": ["warn", "never"],
     "array-element-newline": ["warn", "consistent"],
     "camelcase": ["error"],

@@ -79,9 +79,39 @@ export default function ({
     ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`;
   }
 
+  // Set artifact names
+  for (const i in channels) {
+    // Windows
+    files[channels[i]].nsis.artifactName = `${
+      files.pkg.productName
+    } Setup \${version}.\${ext}`
+      .replace(" ", "-")
+      .replace("---", "-");
+
+    files[channels[i]].nsisWeb.artifactName = `${
+      files.pkg.productName
+    } Web Setup \${version}.\${ext}`
+      .replace(" ", "-")
+      .replace("---", "-");
+
+    // Mac
+    files[channels[i]].dmg.artifactName = `${
+      files.pkg.productName
+    } \${version}.\${ext}`
+      .replace(" ", "-")
+      .replace("---", "-");
+
+    // Linux
+    files[channels[i]].appImage.artifactName = `${
+      files.pkg.productName
+    } \${version}.\${ext}`
+      .replace(" ", "-")
+      .replace("---", "-");
+  }
+
+  // Set productName
   raw = fs.readFileSync("./package.json");
   files.pkg = JSON.parse(raw);
-  // Set productName
   if (channel !== "stable") {
     files.pkg.productName += ` - ${channel}`;
   }
