@@ -1,15 +1,14 @@
 const semver = require("semver");
 const fs = require("fs");
 
-const raw = fs.readFileSync("./package.json");
-const pkg = JSON.parse(raw);
-
 /**
  * Bump the version in package.json
  * @param {string} [bump=patch] - The component to increment. Can be major, minor, patch or prerelease. Defaults to patch
  * @return {boolean} success - True if function succeeded, false if not
  */
 export function bump({ comp = "patch" } = {}) {
+  const raw = fs.readFileSync("./package.json");
+  const pkg = JSON.parse(raw);
   const newver = semver.inc(pkg.version, comp);
   if (newver === null) {
     throw new TypeError("Expecting a semver string but got null!");
@@ -26,6 +25,8 @@ export function bump({ comp = "patch" } = {}) {
  * @return {string | integer} The component value requested
  */
 export function get(comp) {
+  const raw = fs.readFileSync("./package.json");
+  const pkg = JSON.parse(raw);
   // Version parts
   const major = semver.major(pkg.version);
   const minor = semver.minor(pkg.version);
@@ -89,12 +90,14 @@ export function set({
   trunc = undefined,
   coerce = true
 } = {}) {
+  const raw = fs.readFileSync("./package.json");
+  const pkg = JSON.parse(raw);
   // Version parts
   const newProps = {};
   if (channel === undefined) {
     newProps.channel = semver.prerelease(pkg.version) === []
       ? "stable"
-      : semver.prerelease(pkg.version)[1];
+      : semver.prerelease(pkg.version)[0];
   } else {
     newProps.channel = channel;
   }
@@ -131,7 +134,7 @@ export function set({
   // Truncate if not manually set and channel is stable
   newProps.trunc = trunc;
   if (newProps.trunc === undefined) {
-    newProps.trunc = channel.toLowerCase() === "stable";
+    newProps.trunc = newProps.channel.toLowerCase() === "stable";
   }
 
   let newver;

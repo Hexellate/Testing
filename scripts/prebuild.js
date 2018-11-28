@@ -15,7 +15,7 @@
 // append -${branch} to pkg.json
 // Set nsisweb update url
 const fs = require("fs");
-const version = require("version");
+const version = require("./version");
 // const minimist = require("minimist");
 // const yaml = require("js-yaml");
 
@@ -43,7 +43,7 @@ export default function ({
   pretag = "v0.5.0",
   projectName = "projectName",
   projectOwner = "projectOwner",
-  channel = "stable",
+  channel = "canary",
   sourceMessage = "none",
   forcepatch = false,
   buildID = 270
@@ -63,16 +63,17 @@ export default function ({
     console.log("ERROR: Channel info not set");
     return 0;
   }
+  console.log(`Switching channel to ${channel}`);
   version.set({
     "channel": channel
   });
-  console.log(`Channel switched to ${channel}`);
-
+  // TODO: Ability to pass package object to version script
   // Set transient version
   const mergePattern = /^(Merge pull request #[0-9]{1,4} from .*\/hotfix\/.*)|(Merge branch 'hotfix\/.*')$/g;
   switch (channel) {
     case "next":
     case "canary":
+    case "dev":
       version.set({
         "pre": buildID
       });
@@ -96,6 +97,8 @@ export default function ({
     ].publish.url = `https://github.com/${projectOwner}/${projectName}/releases/download/${tag}`; // TODO: Use generated tag if not provided
   }
 
+  raw = fs.readFileSync("./package.json");
+  files.pkg = JSON.parse(raw);
   // Set productName
   if (channel !== "stable") {
     files.pkg.productName += ` - ${channel}`;
@@ -104,16 +107,22 @@ export default function ({
   // if (channel !== "stable") files.pkg.name += `-${channel}`;
   // This is because even though appId is changed per channel, electron still seems to use a folder based on the project name.
 
-  console.log(JSON.stringify(files, null, 2));
+  // console.log(JSON.stringify(files, null, 2));
   fs.writeFileSync("./package.json", JSON.stringify(files.pkg, null, 2));
-  fs.writeFileSync("./config/next.json", JSON.stringify(files.next, null, 2));
-  fs.writeFileSync(
-    "./config/canary.json",
-    JSON.stringify(files.canary, null, 2)
-  );
-  fs.writeFileSync(
-    "./config/stable.json",
-    JSON.stringify(files.stable, null, 2)
-  );
+  // fs.writeFileSync("./config/next.json", JSON.stringify(files.next, null, 2));
+  // fs.writeFileSync(
+  //   "./config/canary.json",
+  //   JSON.stringify(files.canary, null, 2)
+  // );
+  // fs.writeFileSync(
+  //   "./config/stable.json",
+  //   JSON.stringify(files.stable, null, 2)
+  // );
+  for (const i in channels) {
+    fs.writeFileSync(
+      `./config/${channels[i]}.json`,
+      JSON.stringify(files[channels[i]], null, 2)
+    );
+  }
   return 0;
 }

@@ -34,11 +34,11 @@ const params = {
  * @return {string} The calculated channel value
  */
 const procChannel = (rawChannel) => {
-  let channel = rawChannel;
+  let channel = `${rawChannel}`;
   channel = channel.replace(/undefined/g, "").toLowerCase();
   for (const i in channels) {
     // Replace alt values
-    if (alts.get(channels[i]).contains(channel)) {
+    if (alts.get(channels[i]).includes(channel)) {
       channel = channels[i];
     }
   }
@@ -58,11 +58,11 @@ const procChannel = (rawChannel) => {
  * @return {string} The calculated platform value
  */
 const procPlatform = (rawPlatform) => {
-  let platform = rawPlatform;
+  let platform = `${rawPlatform}`;
   platform = platform.replace(/undefined/g, "").toLowerCase();
   for (const i in platforms) {
     // Replace alt values
-    if (alts.get(platforms[i]).contains(platform)) {
+    if (alts.get(platforms[i]).includes(platform)) {
       platform = platforms[i];
     }
   }
@@ -110,7 +110,6 @@ const procEnv = () => {
   if (process.env["Build.BuildId"] !== undefined) env.buildID = process.env["Build.BuildId"];
   return env;
 };
-
 const argv = minimist(process.argv.slice(2));
 
 // Help printout
@@ -121,7 +120,8 @@ if (argv.help || argv.h || argv._.includes("help")) {
   --channel stable - Can be canary, next, stable or dev. Dev will launch the dev environment rather than creating a build. Defaults to canary.
   --platform win - Can be win, mac or lin. No platform will default to current system
   --preTag v0.5.0 - The tag of the previous release. Defaults to v0.5.0
-  --forcePatch false - Whether to force the build to be a patch
+  --forcepatch - Flag will force build to be a patch
+
   NOTE: Do NOT modify package.json or any channel config files while this script is running, as any changes WILL be overridden on exit!
   `);
   process.exit(0);
@@ -129,22 +129,23 @@ if (argv.help || argv.h || argv._.includes("help")) {
 console.log("Step: Validating inputs");
 params.channel = procChannel(argv.channel);
 params.platform = procPlatform(argv.platform);
-if (argv.preTag !== "") params.preTag = argv.preTag;
+if (argv.preTag != undefined) params.preTag = argv.preTag;
 Object.assign(params, procEnv());
-params.forcePatch = argv.forcePatch;
+if (argv.forcepatch) params.forcePatch = argv.forcepatch;
 
 console.log(`Calculated parameters to be used:`);
-console.log(`Channel:${params.channel}`);
-console.log(`Platform:${params.platform}`);
-console.log(`preTag:${params.preTag}`);
-console.log(`forcePatch:${params.forcePatch}`);
-console.log(`projectName:${params.projectName}`);
-console.log(`projectOwner:${params.projectOwner}`);
-console.log(`buildID:${params.buildID}`);
-console.log(`sourceMessage:${params.sourceMessage}`);
+console.log(`Channel: ${params.channel}`);
+console.log(`Platform: ${params.platform}`);
+console.log(`preTag: ${params.preTag}`);
+console.log(`forcePatch: ${params.forcePatch}`);
+console.log(`projectName: ${params.projectName}`);
+console.log(`projectOwner: ${params.projectOwner}`);
+console.log(`buildID: ${params.buildID}`);
+console.log(`sourceMessage: ${params.sourceMessage}`);
 
 console.log("Step: Running prebuild task");
 prebuild.default(params);
+// postbuild.default();
 
 console.log("Step: Running prebuild clean process");
 const preCleaner = childProcess.exec("npm run clean && npm run pack");
@@ -203,13 +204,12 @@ preCleaner.on("close", (code) => {
         console.log(`Step: Dev server is closed. Running postbuild task.`);
         postbuild.default();
       } else {
-        devTools.kill("SIGSTOP");
+        devTools.kill("SIGINT");
       }
     });
   } else {
     // Build for channel
     console.log(`Step: Channel is ${params.channel}! Running electron-builder`);
-
     const builder = childProcess.exec(
       `npx electron-builder -${params.platform} --x64 --ia32 -c config/${
         params.channel
@@ -221,7 +221,6 @@ preCleaner.on("close", (code) => {
     builder.stderr.on("data", (chunk) => {
       console.error(chunk);
     });
-
     builder.on("close", () => {
       console.log(`Step: Build process is finished. Running postbuild task.`);
       postbuild.default();
