@@ -13,12 +13,11 @@
     "url": "git+https://github.com/Hexellate/Electron-React-Template.git"
   },
   "scripts": {
-    "dev": "node scripts/build.js --channel dev",
+    "dev": "babel-node scripts/build.js --channel dev",
     "webpack-dev": "electron-webpack dev --remote-debugging-port=9223",
     "react-devtools": "react-devtools",
     "pack": "electron-webpack",
-    "prebuild": "node scripts/prebuild.js && npm run clean && npm run pack",
-    "build": "node scripts/build.js",
+    "build": "babel-node scripts/build.js",
     "clean": "rimraf \"dist\" && rimraf \"compiled\"",
     "clean-npm": "rimraf \"package-lock.json\" && rimraf \"node_modules\"",
     "rebuild-npm": "npm run clean-npm && npm install",
