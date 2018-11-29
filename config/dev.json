@@ -39,7 +39,7 @@
   },
   "mac": {
     "category": "public.app-category.utility",
-    "artifactName": "${productName} ${version}.${ext}"
+    "artifactName": "${productName} ${version}-mac.${ext}"
   },
   "dmg": {
     "contents": [
@@ -64,7 +64,7 @@
   "appImage": {
     "category": "Utility",
     "systemIntegration": "ask",
-    "artifactName": "${productName} ${version-${arch}.${ext}"
+    "artifactName": "${productName} ${version}-${arch}.${ext}"
   },
   "publish": {
     "provider": "generic",

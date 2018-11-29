@@ -98,6 +98,10 @@ export default function ({
     files[channels[i]].dmg.artifactName = template
       .replace(/ /g, "-")
       .replace(/---/g, "-");
+    template = `${files.pkg.productName} \${version}-mac.\${ext}`;
+    files[channels[i]].mac.artifactName = template
+      .replace(/ /g, "-")
+      .replace(/---/g, "-");
 
     // Linux
     template = `${files.pkg.productName} \${version}-\${arch}.\${ext}`;
