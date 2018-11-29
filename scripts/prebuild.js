@@ -100,7 +100,7 @@ export default function ({
       .replace(/---/g, "-");
 
     // Linux
-    template = `${files.pkg.productName} \${version}.\${ext}`;
+    template = `${files.pkg.productName} \${version}-\${arch}.\${ext}`;
     files[channels[i]].appImage.artifactName = template
       .replace(/ /g, "-")
       .replace(/---/g, "-");
