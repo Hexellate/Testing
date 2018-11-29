@@ -38,7 +38,8 @@
     "artifactName": "${productName} Web Setup ${version}.${ext}"
   },
   "mac": {
-    "category": "public.app-category.utility"
+    "category": "public.app-category.utility",
+    "artifactName": "${productName} ${version}.${ext}"
   },
   "dmg": {
     "contents": [
