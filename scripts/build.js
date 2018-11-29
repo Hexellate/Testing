@@ -185,7 +185,7 @@ preCleaner.on("close", (code) => {
     console.log(chunk);
   });
   builder.stderr.on("data", (chunk) => {
-    console.error(chunk);
+    console.error(`Error: ${chunk}`);
   });
 });
 
