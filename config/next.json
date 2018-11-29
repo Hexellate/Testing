@@ -51,8 +51,7 @@
     "artifactName": "${productName} ${version}.${ext}"
   },
   "linux": {
-    "target": ["AppImage"],
-    "artifactName": "${productName} ${version} ${arch}.${ext}"
+    "target": ["AppImage"]
   },
   "appImage": {
     "category": "Utility",
