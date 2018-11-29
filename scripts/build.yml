@@ -116,6 +116,10 @@ steps:
       mv *x86_64.AppImage "linux/"
       mv *i386.AppImage "linux-ia32/"
 
+      # delete icon files
+      rm -rf .icon-ico/
+      rm -rf .icon-icns/
+
       cd "$(Build.SourcesDirectory)"
       # correct path mappings
       node -e "require('./scripts/setdistpaths.js').default({'directory':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}/release', 'author':'$(git_project_owner)', 'projectname':'$(git_project_name)'})"
