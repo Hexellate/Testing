@@ -122,7 +122,7 @@ steps:
 
       cd "$(Build.SourcesDirectory)"
       # correct path mappings
-      node -e "require('./scripts/setdistpaths.js').default({'directory':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}/release', 'author':'$(git_project_owner)', 'projectname':'$(git_project_name)'})"
+      npx babel-node -e "require('./scripts/setdistpaths.js').default({'directory':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}/release', 'author':'$(git_project_owner)', 'projectname':'$(git_project_name)'})"
     displayName: "Move artifact files and correct mappings"
 
   - bash: |
@@ -130,9 +130,9 @@ steps:
       echo ${tag}
       cd "$(Build.SourcesDirectory)"
       branch=${BUILD_SOURCEBRANCHNAME}
-      version=$(node -p 'require("./scripts/version.js").get("full")')
+      version=$(npx babel-node -p 'require("./scripts/version.js").get("full")')
       tag=v${version}
-      node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)', 'commit':'$(Build.SourceVersion)'})"
+      npx babel-node -e "require('./scripts/setpipe.js').default({'dir':'${BUILD_ARTIFACTSTAGINGDIRECTORY//\\//}', 'version':'${version}', 'branch':'${branch}', 'tag':'${tag}', 'channel':'$(channel)', 'commit':'$(Build.SourceVersion)'})"
     displayName: "Set pipe info"
 
   - task: PublishBuildArtifacts@1
