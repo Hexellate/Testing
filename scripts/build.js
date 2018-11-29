@@ -17,22 +17,22 @@ alts.set("l", ["l", "lin", "linux"]);
 
 // Parameters object to be used for prebuild and build
 const params = {
-  platform: "",
-  channel: "",
-  pretag: "v0.5.0",
-  projectName: "",
-  projectOwner: "",
-  sourceMessage: "",
-  forcepatch: false,
-  norestore: false,
-  buildID: 0
+  "platform": "",
+  "channel": "",
+  "pretag": "v0.5.0",
+  "projectName": "",
+  "projectOwner": "",
+  "sourceMessage": "",
+  "forcepatch": false,
+  "norestore": false,
+  "buildID": 0
 };
 /**
  * Validates a channel input, and exits program if it cannot be processed
  * @param  {string} rawChannel - The raw input for channel parameter
  * @return {string} The calculated channel value
  */
-const procChannel = rawChannel => {
+const procChannel = (rawChannel) => {
   let channel = `${rawChannel}`;
   channel = channel.replace(/undefined/g, "").toLowerCase();
   for (const i in channels) {
@@ -56,7 +56,7 @@ const procChannel = rawChannel => {
  * @param  {string} rawPlatform - The raw input for platform parameter
  * @return {string} The calculated platform value
  */
-const procPlatform = rawPlatform => {
+const procPlatform = (rawPlatform) => {
   let platform = `${rawPlatform}`;
   platform = platform.replace(/undefined/g, "").toLowerCase();
   for (const i in platforms) {
@@ -98,22 +98,17 @@ const procPlatform = rawPlatform => {
  */
 const procEnv = () => {
   const env = {
-    projectName: "projectName",
-    projectOwner: "projectOwner",
-    sourceMessage: "foobar",
-    buildID: 270,
-    forcepatch: false
+    "projectName": "projectName",
+    "projectOwner": "projectOwner",
+    "sourceMessage": "foobar",
+    "buildID": 270,
+    "forcepatch": false
   };
-  if (process.env.git_project_name !== undefined)
-    env.projectName = process.env.git_project_name;
-  if (process.env.git_project_owner !== undefined)
-    env.projectOwner = process.env.git_project_owner;
-  if (process.env.BUILD_SOURCEVERSIONMESSAGE !== undefined)
-    env.sourceMessage = process.env.BUILD_SOURCEVERSIONMESSAGE;
-  if (process.env["Build.BuildId"] !== undefined)
-    env.buildID = process.env["Build.BuildId"];
-  if (process.env.FORCEPATCH !== undefined)
-    env.forcepatch = process.env.FORCEPATCH;
+  if (process.env.git_project_name !== undefined) env.projectName = process.env.git_project_name;
+  if (process.env.git_project_owner !== undefined) env.projectOwner = process.env.git_project_owner;
+  if (process.env.BUILD_SOURCEVERSIONMESSAGE !== undefined) env.sourceMessage = process.env.BUILD_SOURCEVERSIONMESSAGE;
+  if (process.env["Build.BuildId"] !== undefined) env.buildID = process.env["Build.BuildId"];
+  if (process.env.FORCEPATCH !== undefined) env.forcepatch = process.env.FORCEPATCH;
   return env;
 };
 const argv = minimist(process.argv.slice(2));
@@ -161,15 +156,15 @@ console.log("Step: Running prebuild clean process");
 const preCleaner = childProcess.exec("npm run clean && npm run pack");
 pids.push(preCleaner.pid);
 
-preCleaner.stdout.on("data", chunk => {
+preCleaner.stdout.on("data", (chunk) => {
   console.log(chunk);
 });
 
-preCleaner.stderr.on("data", chunk => {
+preCleaner.stderr.on("data", (chunk) => {
   console.error(chunk);
 });
 
-preCleaner.on("close", code => {
+preCleaner.on("close", (code) => {
   // preCleaner.removeAllListeners();
   if (code !== 0) {
     console.error(
@@ -186,10 +181,10 @@ preCleaner.on("close", code => {
     }.json`
   );
   pids.push(builder.pid);
-  builder.stdout.on("data", chunk => {
+  builder.stdout.on("data", (chunk) => {
     console.log(chunk);
   });
-  builder.stderr.on("data", chunk => {
+  builder.stderr.on("data", (chunk) => {
     console.error(chunk);
   });
 });
@@ -210,7 +205,7 @@ process.on("beforeExit", () => {
     try {
       process.kill(pids[i]);
     } catch (e) {
-      console.error(`Unable to kill process! Maybe it's already closed?`);
+      console.log(`Unable to kill process! Maybe it's already closed?`);
       console.log(JSON.stringify(e, null, 2));
     }
   }
