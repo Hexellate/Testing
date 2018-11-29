@@ -48,7 +48,7 @@ steps:
       fi
       npm run "build" -- --platform ${OS} --channel $(channel) --pretag $(git describe --tags --abbrev=0) --norestore
     displayName: "Build binaries"
-    failOnStderr: true
+    # failOnStderr: true
     env:
       WIN_CSC_KEY_PASSWORD: $(WIN_CSC_KEY_PASSWORD)
       WIN_CSC_LINK: $(WIN_CSC_LINK)
