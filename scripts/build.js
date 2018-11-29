@@ -107,7 +107,7 @@ const procEnv = () => {
   if (process.env.git_project_name !== undefined) env.projectName = process.env.git_project_name;
   if (process.env.git_project_owner !== undefined) env.projectOwner = process.env.git_project_owner;
   if (process.env.BUILD_SOURCEVERSIONMESSAGE !== undefined) env.sourceMessage = process.env.BUILD_SOURCEVERSIONMESSAGE;
-  if (process.env["Build.BuildId"] !== undefined) env.buildID = process.env["Build.BuildId"];
+  if (process.env.BUILD_BUILDID !== undefined) env.buildID = process.env.BUILD_BUILDID;
   if (process.env.FORCEPATCH !== undefined) env.forcepatch = process.env.FORCEPATCH;
   return env;
 };
