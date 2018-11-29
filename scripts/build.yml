@@ -36,6 +36,7 @@ steps:
       secureFile: "Hexellate_codesign.p12"
 
   - bash: |
+      printenv
       if [[ "${AGENT_OS}" == "Darwin" ]]
         then
           OS="mac"
