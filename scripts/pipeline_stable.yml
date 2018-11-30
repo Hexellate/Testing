@@ -27,7 +27,6 @@ variables:
   channel: "stable"
 
 jobs:
-
   - job: win_build
     pool:
       vmImage: "vs2017-win2016"
