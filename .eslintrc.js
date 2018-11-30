@@ -1,17 +1,16 @@
-// prettier-ignore
 module.exports = {
   "env": {
     "browser": true,
-    "node": true,
-    "es6": true
+    "node": true
   },
   "extends": ["airbnb", "plugin:react/recommended"],
   "parserOptions": {
+    "ecmaVersion": 9,
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
+      "impliedStrict": true
     }
   },
-  "plugins": ["react"],
   "rules": {
     "linebreak-style": ["warn", "unix"],
     "semi": ["error", "always"],
