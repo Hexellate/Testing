@@ -65,5 +65,20 @@
     "renderer": {
       "webpackConfig": "webpack.renderer.additions.js"
     }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js, jsx, json}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{css, scss, md, html, yml, yaml}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
