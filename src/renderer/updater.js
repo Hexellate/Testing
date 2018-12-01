@@ -1,10 +1,18 @@
 import { ipcRenderer } from "electron";
 import React, { Component } from "react";
+import styled from "styled-components";
 // import logo from "./logo.svg";
-import "./app.scss";
-import "./updater.scss";
 
-export default class App extends Component {
+const MessageBody = styled.div`
+  height: calc(100vh - 27px);
+  overflow-x: scroll;
+  `;
+
+const Pre = styled.pre`
+  text-align: left;
+  `;
+
+export default class Updater extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,9 +63,9 @@ export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <div id="messagebody">
-          <pre>{JSON.stringify(this.state.versionDetails, null, 2)}</pre>
-        </div>
+        <MessageBody>
+          <Pre>{JSON.stringify(this.state.versionDetails, null, 2)}</Pre>
+        </MessageBody>
         <div id="buttonbar">
           <button type="button" onClick={this.goToApp}>
             Go To App
