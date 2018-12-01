@@ -13,13 +13,13 @@ const Logo = styled.img`
   height: 40vmin;
 
   @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
 `;
 
 const Header = styled.header`

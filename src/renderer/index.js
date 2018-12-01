@@ -7,17 +7,25 @@ import ReactDOM from "react-dom";
 import "./index.scss";
 import App from "./app";
 import Updater from "./updater";
+import ErrorBoundary from "./components/appErrorBoundary";
 
 const { windowType } = require("electron").remote.getCurrentWindow();
+
+function WindowType() {
+  if (windowType === "updater") {
+    return <Updater />;
+  }
+  return <App />;
+}// Should use router rather than this...
 
 // Render either main app or updater
 function render() {
   console.log(windowType);
-  if (windowType === "updater") {
-    ReactDOM.render(<Updater />, document.getElementById("app"));
-  } else {
-    ReactDOM.render(<App />, document.getElementById("app"));
-  }
+  ReactDOM.render(
+    <ErrorBoundary>
+      <WindowType />
+    </ErrorBoundary>, document.getElementById("app")
+  );
   // ReactDOM.render(
   //   {if (windowType === "updater") {
   //     <App/>
