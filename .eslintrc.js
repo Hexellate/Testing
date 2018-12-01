@@ -1,9 +1,9 @@
 module.exports = {
+  "extends": ["airbnb", "plugin:react/recommended", "./config/eslint/styling.js", "./config/eslint/react.js"],
   "env": {
     "browser": true,
     "node": true
   },
-  "extends": ["airbnb", "plugin:react/recommended", "./config/eslint/styling.js", "./config/eslint/react.js"],
   "parserOptions": {
     "ecmaVersion": 9,
     "ecmaFeatures": {
@@ -23,6 +23,7 @@ module.exports = {
     "no-restricted-syntax": ["off"],
     "no-plusplus": ["off"],
     "func-names": ["off"],
-    "no-shadow": ["warn", { "builtinGlobals": true }]
+    "no-shadow": ["warn", { "builtinGlobals": true }],
+    "no-console": ["off"]
   }
 };
