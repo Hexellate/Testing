@@ -2,7 +2,6 @@
 import React from "react";
 import "react-devtools";
 import ReactDOM from "react-dom";
-// import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import "./index.scss";
 import App from "./app";
@@ -16,7 +15,7 @@ function WindowType() {
     return <Updater />;
   }
   return <App />;
-}// Should use router rather than this...
+}
 
 // Render either main app or updater
 function render() {
@@ -26,21 +25,6 @@ function render() {
       <WindowType />
     </ErrorBoundary>, document.getElementById("app")
   );
-  // ReactDOM.render(
-  //   {if (windowType === "updater") {
-  //     <App/>
-  //   } else {
-  //     <Updater />
-  //   }},
-  //   // <BrowserRouter>
-  //   //   <Switch>
-  //   //     {console.log(windowType)}
-  //   //     <Route path="/" component={App} />
-  //   //     <Route path="/updater/" component={Updater} />
-  //   //   </Switch>
-  //   // </BrowserRouter>,
-  //   document.getElementById("app")
-  // );
 }
 render();
 
