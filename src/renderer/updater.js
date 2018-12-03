@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import styled from "styled-components";
 // import logo from "./logo.svg";
 
+// TODO: Unsubscribe on unmount
+
 const MessageBody = styled.div`
   height: calc(100vh - 27px);
   overflow-x: scroll;
@@ -19,17 +21,26 @@ export default class Updater extends Component {
       "versionDetails": {}
       // "channelBox": ""
     };
-
-    ipcRenderer.on("getVer", (event, arg) => {
-      this.setState({ "versionDetails": arg });
-    });
-
-    ipcRenderer.on("updaterChangeStatus", () => {
-      ipcRenderer.send("getVer");
-    });
+    this.onRecVer = this.onRecVer.bind(this);
   }
 
   componentDidMount() {
+    ipcRenderer.on("getVer", this.onRecVer);
+
+    ipcRenderer.on("updaterChangeStatus", this.getVersion);
+    ipcRenderer.send("getVer");
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener("updaterChangeStatus", this.getVersion);
+    ipcRenderer.removeListener("getVer", this.onRecVer);
+  }
+
+  onRecVer(event, arg) {
+    this.setState({ "versionDetails": arg });
+  }
+
+  getVersion() {
     ipcRenderer.send("getVer");
   }
 
