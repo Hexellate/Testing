@@ -19,7 +19,10 @@
 		"shinnn.stylelint",
 		"wayou.vscode-todo-highlight",
 		"jpoissonnier.vscode-styled-components",
-		"redhat.vscode-yaml"
+		"redhat.vscode-yaml",
+		"eg2.vscode-npm-script",
+		"christian-kohler.path-intellisense",
+		"xabikos.reactsnippets"
 	],
 	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
 	"unwantedRecommendations": [
