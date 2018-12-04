@@ -16,7 +16,7 @@
     "TODO": {
       "icon": "check",
       "iconColour": "#fdd835",
-      "type": "line",
+      "type": "text",
       "foreground": "#FFF",
       "background": "#c68400",
     },
