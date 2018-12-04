@@ -53,59 +53,7 @@ All commands are run with `npm run commandname` (i.e. `npm run dev`)
 
 ## Path Structure
 
-(Structure subject to change)
-
-```
-project-folder/
-├─ dist/
-├─ compiled/
-├─ src/
-│  ├─ main/
-│  │  └─ index.js
-│  ├─ renderer/
-│  │  └─ index.js
-│  └─ common/
-├─ config/
-│  ├─ canary.json
-│  ├─ next.json
-│  └─ stable.json
-├─ build/
-└─ static/
-```
-
-### Main Process ( `src/main/` )
-
-Main process code (i.e. electron stuff)\
-Entry point for electron is `index.js`
-
-### Renderer Process ( `src/renderer/` )
-
-Renderer code (i.e. react stuff)\
-Entry point for react is `index.js`
-
-### Common scripts ( `src/common/` )
-
-Common scripts that may be used for both processes
-
-### Components used for distribution ( `build/` )
-
-Things like application icons used in release builds
-
-### Assets that are not packed with webpack ( `static/` )
-
-Files in this folder will not be compressed with webpack, and are accessible with the `_static` variable ([see here](https://webpack.electron.build/using-static-assets))
-
-### Configurations ( `config/` )
-
-Extra configurations for some things are placed here (e.g. build configs for different channels)
-
-### Project build directory ( `dist/` )
-
-Where stuff produced by webpack goes
-
-### Project compile directory ( `compiled/` )
-
-When the project is compiled into a distributable format, then that goes here
+Moved. (See [docs/DIRECTORY_STRUCTURE.md](docs/DIRECTORY_STRUCTURE.md))
 
 # Credits
 

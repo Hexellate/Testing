@@ -3,24 +3,26 @@
 This document will outline the guidelines for contributing to this project, including styleguides for Git commits, docs, JavaScript, and also bug reports and pull requests. If you see something that should be changed in this document, feel free to make a pull request.
 
 #### Table Of Contents
+
 [Code of conduct](#code-of-conduct)
 
 [Contribution Guides](#contribution-guides)
-* [Bug Reports](#bug-reports)
-* [Suggesting Enhancements](#suggesting-enhancements)
-* [Pull Requests](#pull-requests)
+
+- [Bug Reports](#bug-reports)
+- [Suggesting Enhancements](#suggesting-enhancements)
+- [Pull Requests](#pull-requests)
 
 [Styleguides](#styleguides)
 
-* [Git Commit Messages](git-commit-messages)
-* [JavaScript](javascript)
-* [Documentation](documentation)
+- [Git Commit Messages](git-commit-messages)
+- [JavaScript](javascript)
+- [Documentation](documentation)
 
 [Additional Notes](#additional-notes)
 
-* [Channels](#channels)
-* [Version Numbers](#version_numbers)
-* [Issue and Pull Request Labels](#issue_and_pull_request_labels)
+- [Channels](#channels)
+- [Version Numbers](#version_numbers)
+- [Issue and Pull Request Labels](#issue_and_pull_request_labels)
 
 ## Code of Conduct
 
@@ -32,41 +34,41 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
 Bug tracking for this project is done via GitHub issues. If you encounter a bug, create an issue on the repository and provide the following information:
 
-* Explain the problem:
-    * **Use a clear and descriptive title**
-    * **Describe how to reproduce the problem** in as much detail as possible.
-    * **Explain what you expected to happen instead and why**
-    * **Include screenshots** if they assist in describing the problem or how to reproduce it.
-    * **If it's a crash report** then include the actual crash report.
-    * **If you don't know why the problem occurred** then describe what you were doing before the crash.
-* Provide more details of the problem:
-    * **Has this problem occurred before** or has it always been a problem.
-    * **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
-* Include details about environment:
-    * **App version and channel**
-    * **Name and version of operating system**
+- Explain the problem:
+  - **Use a clear and descriptive title**
+  - **Describe how to reproduce the problem** in as much detail as possible.
+  - **Explain what you expected to happen instead and why**
+  - **Include screenshots** if they assist in describing the problem or how to reproduce it.
+  - **If it's a crash report** then include the actual crash report.
+  - **If you don't know why the problem occurred** then describe what you were doing before the crash.
+- Provide more details of the problem:
+  - **Has this problem occurred before** or has it always been a problem.
+  - **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
+- Include details about environment:
+  - **App version and channel**
+  - **Name and version of operating system**
 
 ### Suggesting Enhancements
 
 #### Before Submitting an Enhancement Suggestion
 
-* Make sure the feature or enhancement doesns't already exist in the application
-* Check if someone else has already submitted a suggestion
+- Make sure the feature or enhancement doesns't already exist in the application
+- Check if someone else has already submitted a suggestion
 
 #### Submitting an Enhancement Suggestion
 
-* **Use a clear and descriptive title** for the issue to identify the suggestion
-* **Include a clear description of the suggestion**
-* **Describe the current behavior** and **explain which behavior you expect to see instead**
-* **Explain the benefits of your suggestion**
+- **Use a clear and descriptive title** for the issue to identify the suggestion
+- **Include a clear description of the suggestion**
+- **Describe the current behavior** and **explain which behavior you expect to see instead**
+- **Explain the benefits of your suggestion**
 
 ### Pull Requests
 
 The process described here has several goals:
 
-* Maintain Project quality
-* Maintain the Git branching model
-* Fix problems that are important to users
+- Maintain Project quality
+- Maintain the Git branching model
+- Fix problems that are important to users
 
 Please follow these steps to have your contribution considered by the maintainers:
 
@@ -79,28 +81,43 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ## Styleguides
 
+### Naming scheme
+
+#### Javascript
+
+- **Use PascalCase for classes and components** (also for constructors)
+- **Use camelCase for everything else** e.g. functions and variables
+- **Private methods and variables should start with an underscore**
+- **Do not use underscores or dashes for anything ese** where applicable
+
+#### General
+
+- **Use lowercase for all filenames** excluding some exceptions (e.g. this document). This also means no camelCase
+- **Use dashes instead of spaces in filenames**
+- **Avoid underscores in filenames** where possible. Use dashes instead.
+
 ### Git Commit Messages
 
-* Use present tense
-* **Prefix commit with type of change** being made (i.e. `fix: fix some problem`)
-* **Separate commits into their constituent parts** (i.e. do not include a fix and a feat type in the same commit)
-* **Do not include debug statements** (i.e. printing debug output to console)
+- Use present tense
+- **Prefix commit with type of change** being made (i.e. `fix: fix some problem`)
+- **Separate commits into their constituent parts** (i.e. do not include a fix and a feat type in the same commit)
+- **Do not include debug statements** (i.e. printing debug output to console)
 
 Common change Prefixes
 
-* `fix` : Something has been fixed
-* `feat` : Added a feature or improved something
-* `sec` : Security improvements
-* `style` : Changes to code formatting
-* `mem` : Fixing memory leaks
-* `refactor` : Any sort of code refactoring
-* `docs` : Updated docs, commenting etc
-* `build` : Changes related to project compile and build process
-* `ci` : Continuous Integration related changes
-* `perf` : Improvements to performance
-* `deps` : Changes to dependencies
-* `test` : When adding or changing tests
-* `dev` : Changes to the dev environment
+- `fix` : Something has been fixed
+- `feat` : Added a feature or improved something
+- `sec` : Security improvements
+- `style` : Changes to code formatting
+- `mem` : Fixing memory leaks
+- `refactor` : Any sort of code refactoring
+- `docs` : Updated docs, commenting etc
+- `build` : Changes related to project compile and build process
+- `ci` : Continuous Integration related changes
+- `perf` : Improvements to performance
+- `deps` : Changes to dependencies
+- `test` : When adding or changing tests
+- `dev` : Changes to the dev environment
 
 ### JavaScript
 
@@ -112,16 +129,16 @@ The ESLint config in repository is already configured to use this styleguide. An
 
 #### General JS guidelines:
 
-* **Use ES6 features wherever possible**, such as destructuring, template strings, block scoping and arrow functions.
-* **Always use `const` for variables**, unless you expect it to change, in which case `let` should be used. Under no circumstances should `var` be used.
-* **Do not use function prototypes as classes**, instead use an actual class
-* **Use promises instead of callbacks** for asynchronous requests where possible
-* **Classes should use uppercase** for the first letter (i.e. `ClassName`, not `className`)
-* **Use unix style line endings** (i.e. cr or \n, instead of cr lf or \r\n)
+- **Use ES6 features wherever possible**, such as destructuring, template strings, block scoping and arrow functions.
+- **Always use `const` for variables**, unless you expect it to change, in which case `let` should be used. Under no circumstances should `var` be used.
+- **Do not use function prototypes as classes**, instead use an actual class
+- **Use promises instead of callbacks** for asynchronous requests where possible
+- **Classes should use uppercase** for the first letter (i.e. `ClassName`, not `className`)
+- **Use unix style line endings** (i.e. cr or \n, instead of cr lf or \r\n)
 
 ### Documentation
 
-* Use [Markdown](https://daringfireball.net/projects/markdown/)
+- Use [Markdown](https://daringfireball.net/projects/markdown/)
 
 ## Additional Notes
 
