@@ -1,5 +1,5 @@
 module.exports = {
-  "extends": ["airbnb", "plugin:react/recommended", "./config/eslint/styling.js", "./config/eslint/react.js"],
+  "extends": ["airbnb", "./config/eslint/styling.js", "./config/eslint/react.js"],
   "env": {
     "browser": true,
     "node": true
@@ -24,6 +24,7 @@ module.exports = {
     "no-plusplus": ["off"],
     "func-names": ["off"],
     "no-shadow": ["warn", { "builtinGlobals": true }],
-    "no-console": ["off"]
+    "no-console": ["off"],
+    "no-underscore-dangle": ["off"]
   }
 };
