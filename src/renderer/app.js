@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import styled from "styled-components";
 import logo from "./logo.svg";
 // import "./app.scss";
@@ -37,25 +37,21 @@ const Link = styled.a`
   color: #61dafb;
   `;
 
-export default class App extends Component {
-  render() {
-    return (
-      <AppWrapper>
-        <Header>
-          <Logo src={logo} alt="logo" />
-          <p>
+export default () => (
+  <AppWrapper>
+    <Header>
+      <Logo src={logo} alt="logo" />
+      <p>
             Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <Link
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+      </p>
+      <Link
+        className="App-link"
+        href="https://reactjs.org"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
             Learn React
-          </Link>
-        </Header>
-      </AppWrapper>
-    );
-  }
-}
+      </Link>
+    </Header>
+  </AppWrapper>
+);
