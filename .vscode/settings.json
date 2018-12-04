@@ -7,5 +7,26 @@
   "javascript.validate.enable": false,
   "scss.validate": false,
   "css.validate": false,
-  "less.validate": false
+  "less.validate": false,
+  "todo-tree.tags": [
+    "TODO",
+    "FIXME"
+  ],
+  "todo-tree.customHighlight": {
+    "TODO": {
+      "icon": "check",
+      "iconColour": "#fdd835",
+      "type": "line",
+      "foreground": "#FFF",
+      "background": "#c68400",
+    },
+    "FIXME": {
+      "icon": "alert",
+      "iconColour": "#ea0000",
+      "type": "line",
+      "foreground": "#FFF",
+      "background": "#8e0000",
+    }
+  },
+  "todohighlight.isEnable": false
 }
