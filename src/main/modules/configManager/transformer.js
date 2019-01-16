@@ -1,24 +1,16 @@
 import _ from "lodash";
-import Ajv from "ajv";
+import Ajv from "ajv"; // JSON verification library
 import * as Transformers from "./transformers";
-
-// Import transformer functions from ./transformers
-/*
-   Calculate transformer chain
-   At end of each transformation, validate config
-   Final config should validate as latest
-*/
 
 /**
  * Used for transforming and validating config objects
  */
-export default class transformer {
+export default class ConfigTransformer {
   /**
    * Constructs a new transformer
-   * @param {string} type The type of config to be transformed. Can be main, backend or render
    */
-  constructor(type) {
-    this._type = type;
+  constructor() {
+    this._type = "main";
     this.ajv = new Ajv({ "allErrors": true });
   }
 
@@ -30,6 +22,9 @@ export default class transformer {
     return Transformers.schemaMatrix[this._type][`v${version}`];
   }
 
+  /**
+   * @return {number} The latest available config version
+   */
   get latest() {
     return _.max(Transformers.versions[this._type]);
   }
@@ -38,13 +33,13 @@ export default class transformer {
    * Transforms the given configuration to the latest version
    * @param {object} config The config object to transform
    */
-  async transform(config) {
+  transform(config) { // TODO: Implement checksum stuff
     const cVer = config.version;
     let newConfig = config;
     if (cVer < this.latest) {
       for (let i = cVer + 1; i <= this.latest; i++) {
         newConfig = Transformers.converterMatrix[this._type][`v${i}`](newConfig);
-        if (!this.validate(newConfig, i)) {
+        if (!this.validateSync(newConfig, i)) {
           throw new SyntaxError(`Config file ${this._type} failed to validate after transformation from ${i - 1} to ${i}`);
         }
       }
@@ -59,6 +54,16 @@ export default class transformer {
    */
   async validate(config, version) {
     const test = await this.ajv.compileAsync(this._getSchema(version));
+    return test(config);
+  }
+
+  /**
+   * Performs a synchronous non-mutating validation on the given config
+   * @param {object} config The configuration object to validate
+   * @param {number} version The schema version to validate against
+   */
+  validateSync(config, version) {
+    const test = this.ajv.compile(this._getSchema(version));
     return test(config);
   }
 }

@@ -13,8 +13,6 @@ import * as v1 from "./v1";
  */
 export const versions = {
   "main": [1],
-  "render": [1],
-  "backend": [1],
 };
 
 /**
