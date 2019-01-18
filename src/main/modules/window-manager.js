@@ -1,6 +1,9 @@
 import { BrowserWindow, app, ipcMain } from "electron";
 import url from "url";
 import * as Path from "path";
+import log4js from "log4js";
+
+const log = log4js.getLogger("window-man");
 
 /**
  * @typedef windowSet
@@ -184,11 +187,11 @@ export default class windowManager {
       case "setMinimize":
       case "setFullScreen":
       case "setAspectRatio":
-        console.error("ERROR: The referenced action has not yet been implemented.");
+        log.error("ERROR: The referenced action has not yet been implemented.");
         break;
       case "default":
       default:
-        console.error("ERROR: attempting to call update window with unrecognized action");
+        log.error("ERROR: attempting to call update window with unrecognized action");
         break;
     }
     win.send("");

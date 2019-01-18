@@ -1,6 +1,9 @@
 import { autoUpdater } from "electron-updater";
 import { ipcMain } from "electron";
+// import log4js from "log4js";
 import { ipcBroadcast } from "./ipc";
+
+// const log = log4js.getLogger("updater");
 
 // TODO: Lotsa docs
 

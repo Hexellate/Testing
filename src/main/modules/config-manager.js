@@ -4,7 +4,10 @@ import fs from "fs";
 // import ajv from "ajv";
 import lock from "proper-lockfile";
 import { sync as atomicWriteSync } from "write-file-atomic";
+import log4js from "log4js";
 import ConfigTransformer from "./configManager/transformer";
+
+const log = log4js.getLogger("config");
 
 // NOTE: Reimplementing manager for main only, other configs can be introduced later as needed
 
@@ -27,9 +30,9 @@ export default class configManager {
     try { // TODO: Test this with non-existant config file
       lock.lockSync(Path.join(this._configPath, this._mainConfig));
     } catch (err) {
-      console.error("ERROR: Unable to attain lock on config file:");
-      console.error(`${err.name}: ${err.message}`);
-      console.error("Exiting...");
+      log.error("ERROR: Unable to attain lock on config file:");
+      log.error(`${err.name}: ${err.message}`);
+      log.error("Exiting...");
       app.exit(1);
     }
 
@@ -37,8 +40,8 @@ export default class configManager {
     try {
       fs.mkdirSync(this._configPath, { "recursive": true });
     } catch (err) {
-      console.error(`Unable to make directory "${this._configPath}":`);
-      console.error(`${err.name}: ${err.message}`);
+      log.error(`Unable to make directory "${this._configPath}":`);
+      log.error(`${err.name}: ${err.message}`);
       app.exit(1);
     }
 
@@ -63,14 +66,14 @@ export default class configManager {
 
         cfg = this._transformer.transform(cfg);
       } catch (err) {
-        console.error("ERROR: Failed to parse config file:");
-        console.error(`${err.name}: ${err.message}`);
-        console.error("Exiting...");
+        log.error("ERROR: Failed to parse config file:");
+        log.error(`${err.name}: ${err.message}`);
+        log.error("Exiting...");
         app.exit(1);
       }
     } else {
-      console.error("ERROR: Lock on config file is not active!");
-      console.error("Exiting...");
+      log.error("ERROR: Lock on config file is not active!");
+      log.error("Exiting...");
       app.exit(1);
     }
     return cfg;
@@ -81,8 +84,8 @@ export default class configManager {
       atomicWriteSync(JSON.stringify(this._config, null, 2), Path.join(this._configPath, this._mainConfig));
       // atomicWriteSync(JSON.stringify(this._config, null, 2), Path.join(this._configPath, "backups", this._mainConfig)); // TODO: Write backup file. Need to decide on naming convention that can be used to sequentially test all backups and purge old backups (keep max 2?). Do not create multiple backups per session (maybe move to init?)
     } catch (err) {
-      console.error("Failed to write config file:");
-      console.error(`${err.name}: ${err.message}`);
+      log.error("Failed to write config file:");
+      log.error(`${err.name}: ${err.message}`);
     }
   }
 

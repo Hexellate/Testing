@@ -1,12 +1,13 @@
 import { app, BrowserWindow } from "electron";
 import { autoUpdater } from "electron-updater";
-import Log from "electron-log";
+import log4js from "log4js";
 // import Path from "path";
+
 
 import WindowManager from "./modules/window-manager";
 import UpdateManager from "./modules/update-manager";
 import MainConfig from "./modules/config-manager";
-// import logger from "./modules/logger"; // TODO: Need a logger that will work for render processes as well (maybe a seperate log?)
+
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -33,13 +34,46 @@ if (!app.isPackaged) {
 //   app.exit(1);
 // }
 
+log4js.configure({
+  "appenders": {
+    "console": {
+      "type": "console",
+    },
+    "main": {
+      "type": "file",
+      "filename": "main.log",
+      "numBackups": 5,
+    },
+    "errorFile": {
+      "type": "file",
+      "filename": "error.log",
+    },
+    "errors": {
+      "type": "logLevelFilter",
+      "level": "ERROR",
+      "appender": "errorFile",
+    },
+  },
+  "categories": {
+    "default": {
+      "appenders": [
+        "console",
+        "main",
+        "errors",
+      ],
+      "level": "debug",
+    },
+  },
+});
+
+const Log = log4js.getLogger("main");
 
 const configManager = new MainConfig(isDevelopment);
 
-// initialize log
-Log.transports.file.file = app.getPath("logs");
-Log.transports.file.level = "debug";
-Log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
+// // initialize log
+// Log.transports.file.file = app.getPath("logs");
+// Log.transports.file.level = "debug";
+// Log.transports.file.format = "{h}:{i}:{s}:{ms} {text}";
 Log.info(
   `${
     app.isPackaged
