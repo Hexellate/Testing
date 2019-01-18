@@ -63,9 +63,9 @@
   "dependencies": {
     "ajv": "^6.6.1",
     "chokidar": "^2.0.4",
-    "electron-log": "^2.2.17",
     "electron-updater": "^4.0.5",
     "lodash": "^4.17.11",
+    "log4js": "^3.0.6",
     "minimist": "^1.2.0",
     "prop-types": "^15.6.2",
     "proper-lockfile": "^3.2.0",
