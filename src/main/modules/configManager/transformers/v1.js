@@ -1,14 +1,18 @@
 // V1 is used to convert an V0 (empty) config to a V1 config
 
 function MainToV1(config) {
-  return config;
+  const converted = { ...config };
+  converted.configVersion = 1;
+  converted.body = {};
+  converted.revised = new Date();
+  return converted;
 }
 
 
 const SchemaMainV1 = {
   "type": "object",
-  "additionalProperties": false,
-  "required": ["configVersion", "checksum", "body"],
+  // "additionalProperties": false,
+  "required": ["configVersion", "revised", "body"],
   "items": {
     "configVersion": {
       "type": "number",
@@ -17,7 +21,7 @@ const SchemaMainV1 = {
       "type": "string",
     },
     "revised": {
-      "type": "date",
+      "type": "string",
     },
     "body": {
       "type": "object",

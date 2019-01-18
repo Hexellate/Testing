@@ -1,6 +1,9 @@
 import _ from "lodash";
 import Ajv from "ajv"; // JSON verification library
+import log4js from "log4js";
 import * as Transformers from "./transformers";
+
+const log = log4js.getLogger("config-transformers");
 
 /**
  * Used for transforming and validating config objects
@@ -34,13 +37,19 @@ export default class ConfigTransformer {
    * @param {object} config The config object to transform
    */
   transform(config) { // TODO: Implement checksum stuff
-    const cVer = config.version;
+    const cVer = config.configVersion;
     let newConfig = config;
+    log.info(`Config is version ${cVer}, latest is ${this.latest}`);
     if (cVer < this.latest) {
+      log.info("Converting config to latest version");
       for (let i = cVer + 1; i <= this.latest; i++) {
         newConfig = Transformers.converterMatrix[this._type][`v${i}`](newConfig);
-        if (!this.validateSync(newConfig, i)) {
-          throw new SyntaxError(`Config file ${this._type} failed to validate after transformation from ${i - 1} to ${i}`);
+        log.info(`Config transformed from ${cVer} to ${cVer + 1}`);
+        log.debug(`New config:`);
+        log.debug(JSON.stringify(newConfig, null, 2));
+        const validated = this.validateSync(newConfig, i);
+        if (validated !== true) {
+          throw new SyntaxError(`Config file ${this._type} failed to validate after transformation from ${i - 1} to ${i}: ${JSON.stringify(validated, null, 2)}`);
         }
       }
     }
@@ -64,6 +73,11 @@ export default class ConfigTransformer {
    */
   validateSync(config, version) {
     const test = this.ajv.compile(this._getSchema(version));
-    return test(config);
+    if (test(config)) {
+      return true;
+    }
+    return test.errors;
+
+    // return test(config);
   }
 }
