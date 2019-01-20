@@ -14,12 +14,12 @@
   },
   "scripts": {
     "dev": "npm-run-all --parallel webpack-dev react-devtools",
-    "webpack-dev": "electron-webpack dev --remote-debugging-port=9223",
+    "webpack-dev": "rimraf \"dist\" && electron-webpack dev --remote-debugging-port=9223",
     "react-devtools": "react-devtools",
     "pack": "electron-webpack",
     "build": "babel-node scripts/build.js",
     "clean": "rimraf \"dist\" && rimraf \"compiled\"",
-    "clean-npm": "rimraf \"package-lock.json\" && rimraf \"node_modules\"",
+    "clean-npm": "echo This previously used rimraf but seemed to be causing issues... Please perform manually",
     "rebuild-npm": "npm run clean-npm && npm install",
     "clean-all": "npm run clean && npm run clean-npm",
     "test": "echo no tests set up"
@@ -31,7 +31,7 @@
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
     "electron": "^3.0.10",
-    "electron-builder": "^20.38.1",
+    "electron-builder": "^20.38.5",
     "electron-webpack": "^2.6.2",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "^17.1.0",
