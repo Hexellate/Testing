@@ -6,15 +6,20 @@ import ReactDOM from "react-dom";
 import "./index.scss";
 import App from "./app";
 import Updater from "./updater";
+import Splash from "./splash";
 import ErrorBoundary from "./components/appErrorBoundary";
 
 const { windowType } = require("electron").remote.getCurrentWindow();
 
 function WindowType() {
-  if (windowType === "updater") {
-    return <Updater />;
+  switch (windowType) {
+    case ("updater"):
+      return <Updater />;
+    case ("splash"):
+      return <Splash />;
+    default:
+      return <App />;
   }
-  return <App />;
 }
 
 // Render either main app or updater
