@@ -86,8 +86,8 @@ While the prerequisites above must be satisfied prior to having your pull reques
 #### Javascript
 
 - **Use PascalCase for classes and components** (also for constructors)
-- **Use camelCase for everything else** e.g. functions and variables
-- **Private methods and variables should start with an underscore**
+- **Use camelCase for everything else** e.g. functions, variables and class instances
+- **Private methods and variables should start with an underscore** or a hash, to support the upcoming es10 (assuming the proposal makes it in time)
 - **Do not use underscores or dashes for anything ese** where applicable
 
 #### General
