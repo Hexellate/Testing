@@ -2,8 +2,11 @@ import { BrowserWindow, app, ipcMain } from "electron";
 import url from "url";
 import * as Path from "path";
 import log4js from "log4js";
+import ConfigManager from "./config-manager";
 
 const log = log4js.getLogger("window-man");
+
+const managers = {};
 
 /**
  * @typedef windowSet
@@ -18,14 +21,14 @@ const log = log4js.getLogger("window-man");
  * Manages storage and creation of windows.
  * BrowserWindows should only be stored here.
  */
-export default class windowManager {
+class Manager {
   /**
    * @param {boolean} isDev Whether the environment is dev or production
-   * @param {require("./config-manager").configManager} configMan The application config manager
+   * @param {require("./config-manager")} configMan The application config manager
    */
-  constructor(isDev, configMan) {
+  constructor(isDev, type) {
     this._isDev = isDev;
-    this._configManager = configMan;
+    this._type = type;
     this._windows = {
       "startsplash": null,
       "background": null,
@@ -33,36 +36,66 @@ export default class windowManager {
       "modal": [],
     };
     this._bgStarted = false;
+    this._configManager = ConfigManager.getManager("main");
     this._registerListeners();
   }
 
-  // Getters and setters
-  /**
-   * @return {windowSet} The windowSet of the windowManager instance
-   */
-  get windows() {
-    return this._windows;
+  // Initializers
+  async init() {
+    log.info("Start window-manager initialization.");
+    this._createSplash();
   }
-
-  /**
-   * Registers the ipc listeners for windowManager functions. Should only be called once
-   */
-
 
   /**
    * Starts the program background process, which reports load progress to the splash
    */
   start() {
     /*
-    Updater will already be checking
-    Open splash
-    Splash will show update progress etc...
-    When there are no updates available, open background process
+    Called after updater is finished
     Report background load progress to splash
     Once background is loaded, open a main window as hidden
     Once main window reports ready, show it and close the splash
     App is now ready to use
     */
+  }
+
+  // Creators
+
+  /**
+   * @private
+   * Create splash window for startup
+   */
+  _createSplash() {
+    const win = this._createWindow({ "type": "splash", "show": false });
+    this._windows.splash = win;
+
+
+    win.once("ready-to-show", () => {
+      win.setTitle("splash window");
+      win.show();
+    });
+
+    win.on("closed", () => {
+      this.windows.splash = null; // Dereference windows on close to enable deletion
+    });
+    win.start();
+  }
+
+  /**
+   * @private
+   * Creates the background process
+   */
+  _createBackground() {
+    const win = this._createWindow({ "type": "background", "show": false });
+    this._windows.background = win;
+    win.setTitle("background process");
+
+    // TODO: Add tray icon and stuff
+
+    win.on("closed", () => {
+      this.windows.background = null; // Dereference windows on close to enable deletion
+      // TODO: Send shutdown message to main
+    });
   }
 
   /**
@@ -85,23 +118,6 @@ export default class windowManager {
 
     win.once("ready-to-show", () => {
       win.show(); // Need to do more complex loading for main window
-    });
-  }
-
-  /**
-   * @private
-   * Creates the background process
-   */
-  _createBackground() {
-    const win = this._createWindow({ "type": "background", "show": false });
-    this._windows.background = win;
-    win.setTitle("background process");
-
-    // TODO: Add tray icon and stuff
-
-    win.on("closed", () => {
-      this.windows.background = null; // Dereference windows on close to enable deletion
-      // TODO: Send shutdown message to main
     });
   }
 
@@ -135,12 +151,85 @@ export default class windowManager {
   }
 
   /**
-   * Closes a browserwindow
-   * @param {BrowserWindow} win The window to be closed
+   * @private
+   * Creates a window and returns it
+   * @param {object} windowParams
+   * @param {number} windowParams.width The width
+   * @param {number} windowParams.height The height
+   * @param {string} windowParams.type The window type
+   * @param {boolean} windowParams.transparent Whether the window is transparent
+   * @param {boolean} windowParams.show Whether the window is hidden
+   * @return {BrowserWindow} The window created
    */
-  closeWindow(win) {
-    win.close();
-    // TODO: Extra handling for some window types?
+  _createWindow({
+    width = 800,
+    height = 600,
+    type = "main",
+    content = "ndef",
+    transparent = false,
+    show = false,
+    owner = null,
+    disable = "none",
+  }) {
+    log.info(`Creating new window of type "${type}".`);
+    const win = new BrowserWindow({
+      width, height, transparent, show,
+    });
+    win.windowType = type;
+    win.content = content;
+    win.owner = owner;
+    win.disable = disable;
+
+    win.start = () => {
+      log.info(`Starting window of type "${type}".`);
+      if (this._isDev) {
+        win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+      } else {
+        win.loadURL(
+          url.format({
+            "pathname": Path.join(__dirname, `index.html`),
+            "protocol": "file",
+            "slashes": true,
+          })
+        );
+      }
+    };
+    return win;
+  }
+
+  // Manipulators
+
+  /**
+   * Sends a status change to the splash window
+   * @param {object} status - Object containing details sent to splash window
+   * @param {string} status.mode - Display mode. Can be "text" or "progressIndicator"
+   * @param {string} status.text - Text to be displayed alongside any progress indicator, or exclusively
+   * @param {string} status.form - Used to indicate type of progress indicator. Can be "bar" or "wheel"
+   * @param {boolean} status.determined - Used to indicate if progress amount is known.false
+   * @param {number} status.completed - The number of progress units that have been completed
+   * @param {number} status.total - The total number of progress units
+   * @param {string} status.suffix - A suffix to be displayed after progress units
+   */
+  splashStatus({
+    mode = "text",
+    text = null,
+    form = "bar",
+    determined = false,
+    completed = NaN,
+    total = NaN,
+    suffix = "",
+  }) {
+    this._windows.splash.send("splashStatus", {
+      "mode": mode,
+      "text": text,
+      "indicator": {
+        "form": form,
+        "determined": determined,
+        "completed": completed,
+        "total": total,
+        "suffix": suffix,
+      },
+    });
   }
 
   /**
@@ -187,70 +276,74 @@ export default class windowManager {
       case "setMinimize":
       case "setFullScreen":
       case "setAspectRatio":
-        log.error("ERROR: The referenced action has not yet been implemented.");
+        log.error("The referenced action has not yet been implemented.");
         break;
       case "default":
       default:
-        log.error("ERROR: attempting to call update window with unrecognized action");
+        log.error("Attempting to perform window update with unrecognized action");
         break;
     }
     win.send("");
   }
 
-
   /**
-   * @private
-   * Creates a window and returns it
-   * @param {object} windowParams
-   * @param {number} windowParams.width The width
-   * @param {number} windowParams.height The height
-   * @param {string} windowParams.type The window type
-   * @param {boolean} windowParams.transparent Whether the window is transparent
-   * @param {boolean} windowParams.show Whether the window is hidden
-   * @return {BrowserWindow} The window created
+   * Closes a browserwindow
+   * @param {BrowserWindow} win The window to be closed
    */
-  _createWindow({
-    width = 800,
-    height = 600,
-    type = "main",
-    content = "ndef",
-    transparent = false,
-    show = false,
-    owner = null,
-    disable = "none",
-  }) {
-    const win = new BrowserWindow({
-      width, height, transparent, show,
-    });
-    win.windowType = type;
-    win.content = content;
-    win.owner = owner;
-    win.disable = disable;
-
-    win.start = () => {
-      if (this._isDev) {
-        win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
-      } else {
-        win.loadURL(
-          url.format({
-            "pathname": Path.join(__dirname, `index.html`),
-            "protocol": "file",
-            "slashes": true,
-          })
-        );
-      }
-      return win;
-    };
+  closeWindow(win) {
+    win.close();
+    // TODO: Send close event to window rather than closing here, then window can close itself(?). This will need handling for frozen windows
   }
 
+  // Utility
+  /**
+   * @return {windowSet} The windowSet of the windowManager instance
+   */
+  get windows() {
+    return this._windows;
+  }
+
+  /**
+   * Registers default listeners
+   */
   _registerListeners() {
+    // Swap to a different window (Ideally should not be used or even useful. Better to create a modal. Therefore considered deprecated!)
     ipcMain.on("changeWindow", (event) => {
       this.createMain();
       this.closeWindow(BrowserWindow.fromWebContents(event.sender));
     });
 
+    // Modify window properties
     ipcMain.on("updateWindow", (event, arg) => {
       this.updateWindow(BrowserWindow.fromWebContents(event.sender), arg);
     });
   }
 }
+
+/**
+ * returns the specified update manager
+ * @param {string} type - The identifier for the update manager
+ * @returns {Manager}
+ */
+function getManager(type) {
+  if (type !== null) {
+    return managers[type];
+  }
+  return managers.main;
+}
+
+/**
+ * Creates a new update manager
+ * @param {boolean} isDev - Whether in a development environment
+ * @param {string} type - The identifier for the update manager
+ * @returns {Manager}
+ */
+function createManager(isDev, type) {
+  managers[type] = new Manager(isDev, type);
+  return managers[type];
+}
+
+export default {
+  "getManager": getManager,
+  "createManager": createManager,
+};
