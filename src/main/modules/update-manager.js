@@ -1,18 +1,30 @@
 import { autoUpdater } from "electron-updater";
-import { ipcMain } from "electron";
-// import log4js from "log4js";
-import { ipcBroadcast } from "./ipc";
+// import { ipcMain, app } from "electron";
+import { app } from "electron";
+import log4js from "log4js";
+import ConfigManager from "./config-manager";
+import WindowManager from "./window-manager";
+// import { ipcBroadcast } from "./ipc";
 
-// const log = log4js.getLogger("updater");
+const log = log4js.getLogger("updater");
+
+const managers = {};
+
 
 // TODO: Lotsa docs
 
-export default class updateManager {
-  constructor(windowMan, configMan) {
-    this._windowManager = windowMan;
-    this._configManager = configMan;
+class Manager {
+  /**
+   *
+   */
+  constructor(isDev, type) {
+    this._isDev = isDev;
+    this._type = type;
+    this._started = false; // Will be set to true when there are no updates available
+    this._tries = 0;
+    this._maxTries = 3;
 
-    this.versionDetails = {
+    this._versionDetails = {
       "versions": process.versions,
       "nodeVersion": process.version,
       "os": process.platform,
@@ -20,7 +32,7 @@ export default class updateManager {
       "appVersion": autoUpdater.currentVersion,
     };
 
-    this.updateDetails = {
+    this._updateDetails = {
       "status": "",
       "hasUpdate": false,
       "isDownloaded": false,
@@ -38,8 +50,39 @@ export default class updateManager {
       "useMultipleRangeRequest": false,
     };
 
-    this._registerListeners();
+    this._windowManager = WindowManager.getManager("main");
+    this._configManager = ConfigManager.getManager("main");
+
+    // this._registerListeners();
   }
+
+  // Initializers
+  init() {
+    // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
+    log.info("Starting update manager init.");
+    autoUpdater.autoDownload = false;
+    autoUpdater.setFeedURL(this.provider);
+    if (this._isDev && !this._configManager.config.updates.autoUpdate) {
+      this._windowManager.splashStatus({ "mode": "text", "text": "Starting updater." });
+      autoUpdater.checkForUpdates();
+      /*
+        - Register listeners for startup
+          - Check for updates
+            - If updates
+              - Download updates
+              - Restart
+            - If no updates
+              - Deregister startup listeners
+            - If error
+              - Retry 3 times, before acting as no updates
+        - Deregister startup listeners
+        - Register main listeners
+        - Call windowman.start()
+      */
+    }
+  }
+
+  // Utility
 
   /**
    *
@@ -53,11 +96,11 @@ export default class updateManager {
    * @return {import("builder-util-runtime").GenericServerOptions} The configured provider
    */
   get provider() {
-    const provider = this.providerBase;
+    const provider = this._providerBase;
     if (this.versionDetails.appVersion.prerelease === []) {
-      provider.url = `${this.providerBase.url}/stable`;
+      provider.url = `${this._providerBase.url}/stable`;
     } else {
-      provider.url = `${this.providerBase.url}/${
+      provider.url = `${this._providerBase.url}/${
         this.versionDetails.appVersion.prerelease[0]
       }`;
     }
@@ -72,77 +115,166 @@ export default class updateManager {
     return this._versionDetails;
   }
 
-  initialize() {
-    // eslint-disable-next-line global-require
-    autoUpdater.logger = require("electron-log");
-
-    autoUpdater.logger.transports.file.level = "debug";
-    autoUpdater.autoDownload = false;
-    autoUpdater.setFeedURL(this.provider);
+  /**
+   * Call when updateDetails is modified. Will do stuff
+   */
+  _onUpdStatusChange() {
+    /*
+      - If init stage
+        - Alert splash
+      - If running stage
+        - Alert all windows
+    */
+    switch (this._updateDetails.status) {
+      case ("checking"):
+        if (!this._started) {
+          this._windowManager.splashStatus({ "mode": "text", "text": "Checking for updates." });
+        } else {
+        // Send to main windows
+        }
+        break;
+      case ("available"):
+        if (!this._started) {
+          this._windowManager.splashStatus({ "mode": "text", "text": "Update available." });
+          autoUpdater.downloadUpdate();
+        } else {
+        // Send to main windows
+        }
+        break;
+      case ("notAvailable"):
+        if (!this._started) {
+          this._windowManager.splashStatus({ "mode": "text", "text": "No update available." });
+          this._started = true;
+          this._windowManager.start();
+        } else {
+        // Send to main windows
+        }
+        break;
+      case ("error"):
+        if (!this._started) {
+          if (this._tries < this._maxTries) {
+            this._windowManager.splashStatus({ "mode": "text", "text": "Something went wrong, retrying..." });
+            this._maxTries++;
+          } else {
+            // Skip updates
+          }
+        } else {
+        // Send to main windows
+        }
+        break;
+      case ("progressing"):
+        if (!this._started) {
+          this._windowManager.splashStatus({ "mode": "text", "text": "Downloading update, please wait." });
+        } else {
+        // Send to main windows
+        }
+        break;
+      case ("downloaded"):
+        if (!this._started) {
+          this._windowManager.splashStatus({ "mode": "text", "text": "Update downloaded. Will restart and install." });
+          autoUpdater.quitAndInstall(true, true);
+        } else {
+        // Send to main windows
+        }
+        break;
+      default:
+        log.error(`Update status "${this._updateDetails.status}" is not supported.`);
+        log.error("Exiting...");
+        app.exit(1);
+        break;
+    }
   }
 
   _registerListeners() {
-    ipcMain.on("getVer", (event) => {
-      this.ipcSendVer(event.sender);
-    });
-
-    ipcMain.on("getUpd", (event) => {
-      autoUpdater.checkForUpdates().then((prom) => {
-        this.updateDetails.promise = prom;
-        this.updateDetails.cancellationToken = this.updateDetails.promise.cancellationToken;
-        this.ipcSendVer(event.sender);
-      });
-    });
-
-    ipcMain.on("dlUpd", () => {
-      autoUpdater.downloadUpdate().then((prom) => {
-        this.updateDetails.promise = prom;
-        this.updateDetails.hasdlpromisereturned = true;
-      });
-      this.updateDetails.status = "progressing";
-      ipcBroadcast({ "channel": "updaterChangeStatus", "windows": this._windowManager.windows });
-    });
-
-    ipcMain.on("installUpdate", () => {
-      autoUpdater.quitAndInstall();
-    });
-
     autoUpdater.on("checking-for-update", () => {
-      this.updateDetails.status = "checking";
-      ipcBroadcast({ "channel": "updaterChangeStatus", "windows": this._windowManager.windows });
+      this._updateDetails.status = "checking";
+      this._onUpdStatusChange();
     });
 
     autoUpdater.on("update-available", (info) => {
-      this.updateDetails.status = "available";
-      this.updateDetails.updateInfo = info;
-      this.updateDetails.hasUpdate = true;
-      ipcBroadcast({ "channel": "updaterChangeStatus" });
+      this._updateDetails.status = "available";
+      this._updateDetails.updateInfo = info;
+      this._updateDetails.hasUpdate = true;
+      this._onUpdStatusChange();
     });
 
     autoUpdater.on("update-not-available", (info) => {
-      this.updateDetails.status = "notAvailable";
-      this.updateDetails.updateInfo = info;
-      this.updateDetails.hasUpdate = false;
-      ipcBroadcast({ "channel": "updaterChangeStatus" });
+      this._updateDetails.status = "notAvailable";
+      this._updateDetails.updateInfo = info;
+      this._updateDetails.hasUpdate = false;
+      this._onUpdStatusChange();
     });
 
     autoUpdater.on("error", (error) => {
-      this.updateDetails.status = "error";
-      this.updateDetails.error = error;
-      ipcBroadcast({ "channel": "updaterChangeStatus" });
+      this._updateDetails.status = "error";
+      this._updateDetails.error = error;
+      this._onUpdStatusChange();
     });
 
     autoUpdater.on("download-progress", (progressObj) => {
-      this.updateDetails.status = "progressing";
-      this.updateDetails.progressInfo = progressObj;
-      ipcBroadcast({ "channel": "updaterChangeStatus" });
+      this._updateDetails.status = "progressing";
+      this._updateDetails.progressInfo = progressObj;
+      this._onUpdStatusChange();
     });
 
     autoUpdater.on("update-downloaded", (info) => {
-      this.updateDetails.isDownloaded = true;
-      this.updateDetails.updateInfo = info;
-      this.updateDetails.status = "downloaded";
-      ipcBroadcast({ "channel": "updaterChangeStatus" });
+      this._updateDetails.isDownloaded = true;
+      this._updateDetails.updateInfo = info;
+      this._updateDetails.status = "downloaded";
+      this._onUpdStatusChange();
     });
+
+    // ipcMain.on("getVer", (event) => {
+    //   this.ipcSendVer(event.sender);
+    // });
+
+    // ipcMain.on("getUpd", (event) => {
+    //   autoUpdater.checkForUpdates().then((prom) => {
+    //     this.updateDetails.promise = prom;
+    //     this.updateDetails.cancellationToken = this.updateDetails.promise.cancellationToken;
+    //     this.ipcSendVer(event.sender);
+    //   });
+    // });
+
+    // ipcMain.on("dlUpd", () => {
+    //   autoUpdater.downloadUpdate().then((prom) => {
+    //     this.updateDetails.promise = prom;
+    //     this.updateDetails.hasdlpromisereturned = true;
+    //   });
+    //   this.updateDetails.status = "progressing";
+    //   ipcBroadcast({ "channel": "updaterChangeStatus", "windows": this._windowManager.windows });
+    // });
+
+    // ipcMain.on("installUpdate", () => {
+    //   autoUpdater.quitAndInstall();
+    // });
   }
 }
+
+/**
+ * returns the specified update manager
+ * @param {string} type - The identifier for the update manager
+ * @returns {Manager}
+ */
+function getManager(type) {
+  if (type !== null) {
+    return managers[type];
+  }
+  return managers.main;
+}
+
+/**
+ * Creates a new update manager
+ * @param {boolean} isDev - Whether in a development environment
+ * @param {string} type - The identifier for the update manager
+ * @returns {Manager}
+ */
+function createManager(isDev, type) {
+  managers[type] = new Manager(isDev, type);
+  return managers[type];
+}
+
+export default {
+  "getManager": getManager,
+  "createManager": createManager,
+};
