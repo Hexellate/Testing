@@ -7,6 +7,8 @@ const log = log4js.getLogger("config-transformers");
 const type = "main";
 const ajv = new Ajv({ "allErrors": true, "useDefaults": true });
 
+// TODO: Change back to class to support multiple config types (currently though there is only one config type in use)
+
 /**
    * Returns the config schema for the given version
    * @param {number} version The schema version to get

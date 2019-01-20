@@ -1,29 +1,27 @@
 import { app } from "electron";
 import * as Path from "path";
 import fs from "fs";
-// import ajv from "ajv";
 import { sync as atomicWriteSync } from "write-file-atomic";
 import log4js from "log4js";
-import ConfigTransformer from "./configManager/transformer";
+import * as transformer from "./configManager/transformer";
 
 const log = log4js.getLogger("config");
-
-// NOTE: Reimplementing manager for main only, other configs can be introduced later as needed
+const managers = {};
 
 /**
  * Manages configuration stuff
  */
-export default class configManager {
+class Manager {
   /**
    *
    * @param {boolean} isDev Whether running in a dev environment
    */
-  constructor(isDev) {
+  constructor(isDev, type) {
     this._isDev = isDev;
-    // this._config = {};
+    this._type = type;
     this._configPath = Path.join(app.getPath("userData"), "config");
     this._mainConfig = "config.json";
-    this._transformer = new ConfigTransformer();
+    // transformer = new ConfigTransformer();
   }
 
   /**
@@ -31,9 +29,7 @@ export default class configManager {
    */
   async preinit() {
     log.info("preinitializing config manager.");
-    /*
 
-    */
     // Make config directories
     try {
       fs.mkdirSync(this._configPath, { "recursive": true }); // Use sync because async uses callback instead of promise, and gets messy
@@ -93,7 +89,7 @@ export default class configManager {
       log.warn("Config has been reset.");
     }
     try {
-      cfg = this._transformer.transform(cfg);
+      cfg = transformer.transformSync(cfg);
     } catch (err) {
       log.error("Failed to parse config file:");
       log.error(`${err.name}: ${err.message}`);
@@ -106,7 +102,7 @@ export default class configManager {
   _writeConfigSync() {
     try {
       atomicWriteSync(Path.join(this._configPath, this._mainConfig), JSON.stringify(this._config, null, 2));
-      // atomicWriteSync(JSON.stringify(this._config, null, 2), Path.join(this._configPath, "backups", this._mainConfig)); // TODO: Write backup file. Need to decide on naming convention that can be used to sequentially test all backups and purge old backups (keep max 2?). Do not create multiple backups per session (maybe move to init?)
+      // atomicWriteSync(Path.join(this._configPath, "backups", this._mainConfig, JSON.stringify(this._config, null, 2))); // TODO: Write backup file. Need to decide on naming convention that can be used to sequentially test all backups and purge old backups (keep max 2?). Do not create multiple backups per session (maybe move to init?)
     } catch (err) {
       log.error("Failed to write config file:");
       log.error(`${err.name}: ${err.message}`);
@@ -122,7 +118,7 @@ export default class configManager {
   //   // Takes a config object, validates it, and merges it into the tree
   //   let tempcfg = this._config;
   //   tempcfg = { ...changes };
-  //   if (this._transformer.validateSync(tempcfg)) {
+  //   if (transformer.validateSync(tempcfg)) {
   //     this._config = tempcfg;
   //     // Save config, file watcher should pickup on change and send events etc
   //     await this._writeConfig(); // TODO: asynchronous write (need to implement backup system first, as well as simultaneous access)
@@ -132,6 +128,31 @@ export default class configManager {
   // }
 
   get config() {
-    return this._config.config;
+    return this._config.body;
   }
 }
+
+/**
+ * returns the specified config manager
+ * @param {string} type - The identifier for the config manager
+ * @returns {Manager}
+ */
+function getManager(type) {
+  return managers[type];
+}
+
+/**
+ * Creates a new config manager
+ * @param {boolean} isDev - Whether in a development environment
+ * @param {string} type - The identifier for the config manager
+ * @returns {Manager}
+ */
+function createManager(isDev, type) {
+  managers[type] = new Manager(isDev, type);
+  return managers[type];
+}
+
+export default {
+  "getManager": getManager,
+  "createManager": createManager,
+};
