@@ -1,14 +1,15 @@
 // V1 is used to convert an V0 (empty) config to a V1 config
 
 function MainToV1(config) {
-  const converted = { ...config };
+  let converted = {};
+  converted = { ...config };
   converted.configVersion = 1;
   converted.body = {
     "updates": {
       "autoUpdate": false,
     },
   };
-  converted.revised = new Date();
+  converted.revised = new Date().toISOString();
   return converted;
 }
 
@@ -27,7 +28,7 @@ const SchemaMainV1 = {
     },
     "revised": {
       "type": "string",
-      "default": new Date(),
+      "default": new Date().toISOString(),
     },
     "body": {
       "type": "object",
