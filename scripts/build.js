@@ -25,7 +25,7 @@ const params = {
   "sourceMessage": "",
   "forcepatch": false,
   "norestore": false,
-  "buildID": 0
+  "buildID": 0,
 };
 /**
  * Validates a channel input, and exits program if it cannot be processed
@@ -102,7 +102,7 @@ const procEnv = () => {
     "projectOwner": "projectOwner",
     "sourceMessage": "foobar",
     "buildID": 270,
-    "forcepatch": false
+    "forcepatch": false,
   };
   if (process.env.git_project_name !== undefined) env.projectName = process.env.git_project_name;
   if (process.env.git_project_owner !== undefined) env.projectOwner = process.env.git_project_owner;
@@ -131,10 +131,12 @@ if (argv.help || argv.h || argv._.includes("help")) {
 console.log("Step: Validating inputs");
 params.channel = procChannel(argv.channel);
 params.platform = procPlatform(argv.platform);
+/* eslint-disable eqeqeq */
 if (argv.pretag != undefined) params.pretag = argv.pretag;
 Object.assign(params, procEnv());
 if (argv.forcepatch != undefined) params.forcepatch = argv.forcepatch; // Override env forcepatch if arg is used
 if (argv.norestore != undefined) params.norestore = argv.norestore;
+/* eslint-enable eqeqeq */
 
 console.log(`Calculated parameters to be used:`);
 console.log(`Channel: ${params.channel}`);
@@ -170,6 +172,7 @@ preCleaner.on("close", (code) => {
     console.error(
       "ERROR: Prebuild clean process exited with a non-zero result. Aborting build!"
     );
+    postbuild.default();
     process.exit(1);
   }
 
