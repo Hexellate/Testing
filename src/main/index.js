@@ -8,6 +8,8 @@ import WindowManager from "./modules/window-manager";
 import UpdateManager from "./modules/update-manager";
 import ConfigManager from "./modules/config-manager";
 
+let log;
+
 app.on("ready", () => {
   const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -53,20 +55,20 @@ app.on("ready", () => {
   });
 
   // Init logger
-  const Log = log4js.getLogger("main");
+  log = log4js.getLogger("main");
   autoUpdater.logger = log4js.getLogger("updater");
 
   // Log startup info
-  Log.info(
+  log.info(
     `${
       app.isPackaged
         ? "App is packaged, likely a production environment."
         : "App is NOT packaged! Using dev configuration"
     }`
   );
-  Log.info(`Begin log for application: ${app.getName()}`);
-  Log.info(`Working directory: ${app.getPath("userData")}`);
-  Log.info(`Logging to ${app.getPath("logs")}`);
+  log.info(`Begin log for application: ${app.getName()}`);
+  log.info(`Working directory: ${app.getPath("userData")}`);
+  log.info(`Logging to ${app.getPath("logs")}`);
 
   // Initialization sequence
   const config = ConfigManager.createManager(isDevelopment, "main");
@@ -93,8 +95,8 @@ configManager.init()
   const { updateDetails, versionDetails } = updateManager;
 // */
 
-// Log.info(`Environment:`);
-// Log.info(versionDetails);
+// log.info(`Environment:`);
+// log.info(versionDetails);
 
 
 // const windowManager = new WindowManager(isDevelopment, configManager);
@@ -108,12 +110,13 @@ configManager.init()
 //   windowManager.start();
 // });
 
-// // Quit when all windows are closed.
-// app.on("window-all-closed", () => {
-//   if (process.platform !== "darwin") {
-//     app.quit();
-//   }
-// });
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  log.info("Exiting...");
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
 
 // // If no windows are open but app is still running (mac os)
 // app.on("activate", () => {

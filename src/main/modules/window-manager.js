@@ -68,7 +68,7 @@ class Manager {
   _createSplash() {
     const win = this._createWindow({ "type": "splash", "show": false });
     this._windows.splash = win;
-
+    // win.webContents.openDevTools();
 
     win.once("ready-to-show", () => {
       win.setTitle("splash window");
@@ -185,6 +185,13 @@ class Manager {
       if (this._isDev) {
         win.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
       } else {
+        log.debug("Launching window in non-dev mode");
+        log.debug(`Window load url: "${
+          url.format({
+            "pathname": Path.join(__dirname, `index.html`),
+            "protocol": "file",
+            "slashes": true,
+          })}"`);
         win.loadURL(
           url.format({
             "pathname": Path.join(__dirname, `index.html`),
