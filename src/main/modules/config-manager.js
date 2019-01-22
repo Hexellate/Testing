@@ -17,6 +17,7 @@ class Manager extends EventEmitter {
   /**
    *
    * @param {boolean} isDev Whether running in a dev environment
+   * @param {string} type The type of config being managed by this config manager
    */
   constructor(isDev, type) {
     super();
@@ -29,7 +30,7 @@ class Manager extends EventEmitter {
 
   /**
    * Creates config directory if non-existant and loads config file for startup
-   * @emits ConfigManager#preinitialized
+   * @emits Manager#preinitialized
    */
   async preinit() {
     log.info("Preinitializing config manager.");
@@ -59,7 +60,7 @@ class Manager extends EventEmitter {
 
   /**
    * Registers config watcher
-   * @emits ConfigManager#postinitialized
+   * @emits Manager#postinitialized
    */
   async postinit() {
     log.info("Postinitializing config manager.");

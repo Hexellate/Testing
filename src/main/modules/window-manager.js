@@ -24,8 +24,8 @@ const managers = {};
  */
 class Manager extends EventEmitter {
   /**
-   * @param {boolean} isDev Whether the environment is dev or production
-   * @param {require("./config-manager")} configMan The application config manager
+   * @param {boolean} isDev Whether the environment is dev or production manager
+   * @param {string} type I dunno what this was for... consider it deprecated XD
    */
   constructor(isDev, type) {
     super();
@@ -42,7 +42,10 @@ class Manager extends EventEmitter {
     this._registerListeners();
   }
 
-  // Initializers
+  /**
+  * Preinitialization stage for windowManager
+  * @emits Manager#preinitialized
+  */
   async preinit() {
     log.info("Start window-manager preinitialization.");
     this._createSplash(() => {
@@ -51,7 +54,8 @@ class Manager extends EventEmitter {
   }
 
   /**
-   * Starts the program background process, which reports load progress to the splash
+   * Starts the program background process
+   * @emits Manager#initialized
    */
   async init() {
     log.info("Running startup procedure");
@@ -68,8 +72,8 @@ class Manager extends EventEmitter {
   // Creators
 
   /**
-   * @private
    * Create splash window for startup
+   * @param {function} callback Function to call when splash has been shown
    */
   _createSplash(callback) {
     const win = this._createWindow({ "type": "splash", "show": false });
@@ -89,7 +93,6 @@ class Manager extends EventEmitter {
   }
 
   /**
-   * @private
    * Creates the background process
    */
   _createBackground() {
@@ -108,7 +111,6 @@ class Manager extends EventEmitter {
 
   /**
    * Creates a new main window process
-   * @return {boolean} Returns true if succeeded, or false if failed
    */
   createMain() {
     // TODO: Check if allowed to create main, if so, then create main
@@ -129,7 +131,13 @@ class Manager extends EventEmitter {
     });
   }
 
+  // TODO: Properly document modal options
+  /**
+   * Creates a modal with the specified options
+   * @param {object} modalOptions A set of parameters to be used for the modal
+   */
   createModal({ content = "ndef", owner = null, disable = "owner" }) {
+    // TODO: Properly flesh out modals and ownership etc...
     const win = this._createWindow({
       "type": "modal", "show": false, "content": content, "owner": owner, "disable": disable,
     });
@@ -159,7 +167,6 @@ class Manager extends EventEmitter {
   }
 
   /**
-   * @private
    * Creates a window and returns it
    * @param {object} windowParams
    * @param {number} windowParams.width The width
@@ -262,8 +269,9 @@ class Manager extends EventEmitter {
    * @property {string} title Used for setting window title
    */
 
+  // TODO: windowUpdateParams should not be in its own typedef
   /**
-   *
+   * Changes a windows properties
    * @param {BrowserWindow} win The window to update
    * @param {windowUpdateParams} params Object containing parameters
    */

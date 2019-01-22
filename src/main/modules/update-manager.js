@@ -14,9 +14,13 @@ const managers = {};
 
 // TODO: Lotsa docs
 
+/**
+ * Manages checking for and downloading updates
+ */
 class Manager extends EventEmitter {
   /**
-   *
+   * @param {boolean} isDev Whether the environment is dev or production manager
+   * @param {string} type I dunno what this was for... consider it deprecated XD
    */
   constructor(isDev, type) {
     super();
@@ -59,6 +63,9 @@ class Manager extends EventEmitter {
   }
 
   // Initializers
+  /**
+   * Starts the preinit stage for update manager, which will check for updates, or skip autoupdating completely
+   */
   async preinit() {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
@@ -122,7 +129,7 @@ class Manager extends EventEmitter {
   }
 
   /**
-   * Call when updateDetails is modified. Will do stuff
+   * Handles status changes from the autoupdater
    */
   _onUpdStatusChange() {
     /*
@@ -191,6 +198,9 @@ class Manager extends EventEmitter {
     }
   }
 
+  /**
+   * Registers listeners for events from the autoupdater
+   */
   _registerListeners() {
     autoUpdater.on("checking-for-update", () => {
       this._updateDetails.status = "checking";
