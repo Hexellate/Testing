@@ -2,6 +2,7 @@ import { BrowserWindow, app, ipcMain } from "electron";
 import url from "url";
 import * as Path from "path";
 import log4js from "log4js";
+import { EventEmitter } from "events";
 import ConfigManager from "./config-manager";
 
 const log = log4js.getLogger("window-man");
@@ -21,12 +22,13 @@ const managers = {};
  * Manages storage and creation of windows.
  * BrowserWindows should only be stored here.
  */
-class Manager {
+class Manager extends EventEmitter {
   /**
    * @param {boolean} isDev Whether the environment is dev or production
    * @param {require("./config-manager")} configMan The application config manager
    */
   constructor(isDev, type) {
+    super();
     this._isDev = isDev;
     this._type = type;
     this._windows = {
@@ -41,15 +43,18 @@ class Manager {
   }
 
   // Initializers
-  async init() {
-    log.info("Start window-manager initialization.");
-    this._createSplash();
+  async preinit() {
+    log.info("Start window-manager preinitialization.");
+    this._createSplash(() => {
+      this.emit("preinitialized");
+    });
   }
 
   /**
    * Starts the program background process, which reports load progress to the splash
    */
-  start() {
+  async init() {
+    log.info("Running startup procedure");
     /*
     Called after updater is finished
     Report background load progress to splash
@@ -57,6 +62,7 @@ class Manager {
     Once main window reports ready, show it and close the splash
     App is now ready to use
     */
+    this.emit("initialized");
   }
 
   // Creators
@@ -65,7 +71,7 @@ class Manager {
    * @private
    * Create splash window for startup
    */
-  _createSplash() {
+  _createSplash(callback) {
     const win = this._createWindow({ "type": "splash", "show": false });
     this._windows.splash = win;
     // win.webContents.openDevTools();
@@ -73,6 +79,7 @@ class Manager {
     win.once("ready-to-show", () => {
       win.setTitle("splash window");
       win.show();
+      callback();
     });
 
     win.on("closed", () => {
@@ -86,6 +93,7 @@ class Manager {
    * Creates the background process
    */
   _createBackground() {
+    // TODO: This should be reimplemented using a child process in order to achieve proper parallelism
     const win = this._createWindow({ "type": "background", "show": false });
     this._windows.background = win;
     win.setTitle("background process");
@@ -226,6 +234,11 @@ class Manager {
     total = NaN,
     suffix = "",
   }) {
+    log.info(`Sending message to splash: ${mode}, "${text}"${
+      mode === "progressIndicator" ? ` ${
+        determined ? `${completed}/${total}${suffix}` : ""
+      }` : ""
+    }`);
     this._windows.splash.send("splashStatus", {
       "mode": mode,
       "text": text,

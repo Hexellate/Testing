@@ -11,7 +11,7 @@ import ConfigManager from "./modules/config-manager";
 
 let log;
 
-app.on("ready", () => {
+app.once("ready", () => {
   const isDevelopment = process.env.NODE_ENV !== "production";
 
   if (isDevelopment) {
@@ -78,45 +78,50 @@ app.on("ready", () => {
   log.info(`Working directory: ${app.getPath("userData")}`);
   log.info(`Logging to ${app.getPath("logs")}`);
 
-  // Initialization sequence
+  // Create managers
   const config = ConfigManager.createManager(isDevelopment, "main");
   const windowManager = WindowManager.createManager(isDevelopment, "main");
   const updateManager = UpdateManager.createManager(isDevelopment, "main");
-  config.preinit().then(() => {
-    windowManager.init();
-  }).then(() => {
-    updateManager.init();
+
+  const { versionDetails } = updateManager;
+  log.info(`Environment:`);
+  log.info(versionDetails);
+
+
+  // TODO: Formalize init stages (so all are called from here, rather than the previous event)
+  /*
+    Init order:
+    >> preinit configs >> preinit windows >> preinit updates
+    >> init windows
+    >> postinit configs
+  */
+
+  // Register initialization listeners
+  config.once("preinitialized", () => {
+    windowManager.preinit();
   });
+  windowManager.once("preinitialized", () => {
+    updateManager.preinit();
+  });
+  updateManager.once("preinitialized", () => {
+    log.info("Preinitialization finished.");
+    log.info("Starting initialization.");
+    windowManager.init();
+  });
+
+  windowManager.once("initialized", () => {
+    log.info("Initialization finished.");
+    log.info("Starting post-initialization.");
+    config.postinit();
+  });
+  config.once("postinitialized", () => {
+    log.info("Postinitialization finished.");
+  });
+
+
+  // Begin initialization
+  config.preinit();
 });
-
-/*
-
-
-configManager.init()
-  .then(() => {
-    windowManager.init();
-  }).then(() => {
-    updateManager.init();
-  }).then(() => {
-    // More app start stuff
-  });
-  const { updateDetails, versionDetails } = updateManager;
-// */
-
-// log.info(`Environment:`);
-// log.info(versionDetails);
-
-
-// const windowManager = new WindowManager(isDevelopment, configManager);
-// const updateManager = new UpdateManager(windowManager);
-
-// // Runs autoupdater and then launches app
-// app.on("ready", () => {
-//   if (!isDevelopment) {
-//     autoUpdater.checkForUpdates();
-//   }
-//   windowManager.start();
-// });
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -125,6 +130,8 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+// TODO: Move following to window-manager
 
 // // If no windows are open but app is still running (mac os)
 // app.on("activate", () => {

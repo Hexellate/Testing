@@ -2,6 +2,7 @@ import { autoUpdater } from "electron-updater";
 // import { ipcMain, app } from "electron";
 import { app } from "electron";
 import log4js from "log4js";
+import { EventEmitter } from "events";
 import ConfigManager from "./config-manager";
 import WindowManager from "./window-manager";
 // import { ipcBroadcast } from "./ipc";
@@ -13,11 +14,12 @@ const managers = {};
 
 // TODO: Lotsa docs
 
-class Manager {
+class Manager extends EventEmitter {
   /**
    *
    */
   constructor(isDev, type) {
+    super();
     this._isDev = isDev;
     this._type = type;
     this._started = false; // Will be set to true when there are no updates available
@@ -53,16 +55,17 @@ class Manager {
     this._windowManager = WindowManager.getManager("main");
     this._configManager = ConfigManager.getManager("main");
 
-    // this._registerListeners();
+    this._registerListeners();
   }
 
   // Initializers
-  init() {
+  async preinit() {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
     autoUpdater.autoDownload = false;
     autoUpdater.setFeedURL(this.provider);
-    if (this._isDev && !this._configManager.config.updates.autoUpdate) {
+    if (!this._isDev && !this._configManager.config.updates.autoUpdate) {
+      log.info("Starting autoupdater");
       this._windowManager.splashStatus({ "mode": "text", "text": "Starting updater." });
       autoUpdater.checkForUpdates();
       /*
@@ -79,6 +82,9 @@ class Manager {
         - Register main listeners
         - Call windowman.start()
       */
+    } else {
+      log.info("Skipping autoupdate");
+      this.emit("preinitialized");
     }
   }
 
@@ -145,7 +151,7 @@ class Manager {
         if (!this._started) {
           this._windowManager.splashStatus({ "mode": "text", "text": "No update available." });
           this._started = true;
-          this._windowManager.start();
+          this._windowManager.init();
         } else {
         // Send to main windows
         }

@@ -3,6 +3,8 @@ import * as Path from "path";
 import fs from "fs";
 import { sync as atomicWriteSync } from "write-file-atomic";
 import log4js from "log4js";
+import { EventEmitter } from "events";
+import chokidar from "chokidar";
 import * as transformer from "./configManager/transformer";
 
 const log = log4js.getLogger("config");
@@ -11,12 +13,13 @@ const managers = {};
 /**
  * Manages configuration stuff
  */
-class Manager {
+class Manager extends EventEmitter {
   /**
    *
    * @param {boolean} isDev Whether running in a dev environment
    */
   constructor(isDev, type) {
+    super();
     this._isDev = isDev;
     this._type = type;
     this._configPath = Path.join(app.getPath("userData"), "config");
@@ -29,7 +32,7 @@ class Manager {
    * @emits ConfigManager#preinitialized
    */
   async preinit() {
-    log.info("preinitializing config manager.");
+    log.info("Preinitializing config manager.");
 
     // Make config directories
     try {
@@ -50,7 +53,48 @@ class Manager {
     // Load the config
     this._config = this._loadConfigSync();
     this._writeConfigSync();
-    log.info("Config preinitialized successfully");
+    log.info("Config preinitialized successfully.");
+    this.emit("preinitialized");
+  }
+
+  /**
+   * Registers config watcher
+   * @emits ConfigManager#postinitialized
+   */
+  async postinit() {
+    log.info("Postinitializing config manager.");
+    this._watcher = chokidar.watch(Path.join(this._configPath, this._mainConfig));
+    this._watcher.on("change", (path) => { this._handleConfigChange(path); });
+    log.info("Config postinitializing successfully.");
+    this.emit("postinitialized");
+  }
+
+  /**
+   * Called when file watcher on config file detects a change
+   * @param {string} path - The path to the file that was changed
+   */
+  _handleConfigChange(path) {
+    // Check if path matches config path and then load config
+    if (path !== Path.join(this._configPath, this._mainConfig)) {
+      return false;
+    }
+    const newConfig = this._loadConfigSync();
+    log.info("Config watcher has registered a change");
+
+    // Check if config has actually changed
+    if (newConfig !== this._config && newConfig.revised !== this._config.revised) {
+      const newDate = Date.parse(newConfig.revised);
+      const oldDate = Date.parse(this._config.revised);
+      if (newDate > oldDate) {
+        this._config = newConfig;
+        this.emit("configChange");
+        log.info("Config has changed and is newer than current config.");
+        return true;
+      }
+      log.warn("New config is older than current config. Using current config.");
+    }
+    log.info("Config has not changed.");
+    return false;
   }
 
   /**
@@ -73,6 +117,7 @@ class Manager {
         default:
           log.error("Failed to load config file:");
           log.error(`${err.name}: ${err.message}`);
+          log.error("Please report this to the developer.");
           log.error("Exiting...");
           app.exit(1);
       }
@@ -137,6 +182,12 @@ class Manager {
 
   get config() {
     return this._config.body;
+  }
+
+  _registerListeners() {
+    /*
+      ipc from renderer processes
+    */
   }
 }
 
