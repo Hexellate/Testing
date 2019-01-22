@@ -25,7 +25,8 @@ class Manager {
   }
 
   /**
-   * Loads config file for startup (file is reloaded later in postinit stage, after watcher is applied)
+   * Creates config directory if non-existant and loads config file for startup
+   * @emits ConfigManager#preinitialized
    */
   async preinit() {
     log.info("preinitializing config manager.");
@@ -46,6 +47,7 @@ class Manager {
       }
     }
 
+    // Load the config
     this._config = this._loadConfigSync();
     this._writeConfigSync();
     log.info("Config preinitialized successfully");
@@ -57,6 +59,8 @@ class Manager {
   _loadConfigSync() { // TODO: On parse fail, try to read from backup instead of crashing (and then crash). Backup system needs to exist first
     let cfg;
     let raw;
+
+    // Load config file
     try {
       raw = fs.readFileSync(Path.join(this._configPath, this._mainConfig));
       log.info("Config file loaded.");
@@ -88,6 +92,7 @@ class Manager {
       cfg = { "configVersion": 0 };
       log.warn("Config has been reset.");
     }
+
     try {
       cfg = transformer.transformSync(cfg);
     } catch (err) {
@@ -99,6 +104,9 @@ class Manager {
     return cfg;
   }
 
+  /**
+   * Writes current config to file
+   */
   _writeConfigSync() {
     try {
       atomicWriteSync(Path.join(this._configPath, this._mainConfig), JSON.stringify(this._config, null, 2));

@@ -18,6 +18,7 @@ function getSchema(version) {
 }
 
 /**
+ * Returns the latest config version
    * @return {number} The latest available config version
    */
 function getLatest() {
@@ -59,10 +60,12 @@ export function transformSync(config) { // TODO: Implement checksum stuff
   const latest = getLatest();
   log.info(`Config is version ${cVer}, latest is ${latest}`);
 
+  // Check if config version is lower than latest
   if (cVer < latest) {
     let newConfig = config;
     log.info("Converting config to latest version");
 
+    // Incrementally transform config through each version
     for (let i = cVer + 1; i <= latest; i++) {
       newConfig = Transformers.converterMatrix[type][`v${i}`](newConfig);
 
@@ -70,6 +73,7 @@ export function transformSync(config) { // TODO: Implement checksum stuff
       log.debug(`New config:`);
       log.debug(JSON.stringify(newConfig, null, 2));
 
+      // Validate config
       const validated = validateSync(newConfig, i);
       if (validated !== true) {
         throw new SyntaxError(`Config file ${type} failed to validate after transformation from ${i - 1} to ${i}: ${JSON.stringify(validated, null, 2)}`);
@@ -77,6 +81,8 @@ export function transformSync(config) { // TODO: Implement checksum stuff
     }
     return newConfig;
   }
+
+  // Validates config if no transform is needed
   const validated = validateSync(config, cVer);
   if (validated !== true) {
     throw new SyntaxError(`Config file ${type} failed to validate: ${JSON.stringify(validated, null, 2)}`);
@@ -84,6 +90,4 @@ export function transformSync(config) { // TODO: Implement checksum stuff
     log.info("Config file validated successfully.");
   }
   return config;
-
-  // return newConfig;
 }

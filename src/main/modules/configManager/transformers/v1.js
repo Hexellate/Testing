@@ -1,4 +1,4 @@
-// V1 is used to convert an V0 (empty) config to a V1 config
+// v1 is used to convert a v0 (empty) config to a v1 config
 
 function MainToV1(config) {
   let converted = {};
@@ -14,6 +14,7 @@ function MainToV1(config) {
 }
 
 
+// Should put schemas in separate files as they will likely get very large...
 const SchemaMainV1 = {
   "type": "object",
   "default": {},

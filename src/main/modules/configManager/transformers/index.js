@@ -16,7 +16,7 @@ export const versions = {
 };
 
 /**
- * Call with ConverterMatrix[type][vnumbertarget] (configtoconvert)\
+ * Call with ConverterMatrix[type][vnumbertarget] (configtoconvert)
  * e.g. ConverterMatrix[main][v2] (config)
  */
 export const converterMatrix = {
