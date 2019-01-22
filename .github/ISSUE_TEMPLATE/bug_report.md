@@ -1,21 +1,18 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-
 ---
 
 <!--
 
-Have you read Atom's Code of Conduct? By filing an Issue, you are expected to comply with it, including treating everyone with respect: https://github.com/atom/atom/blob/master/CODE_OF_CONDUCT.md
-
-Do you want to ask a question? Are you looking for support? The Atom message board is the best place for getting support: https://discuss.atom.io
+Have you read the Code of Conduct? By filing an Issue, you are expected to comply with it, including treating everyone with respect.
 
 -->
 
 ### Prerequisites
 
-* Please do all of the following before submitting your issue:
-    * Check that your issue isn't already submitted
+- Please do all of the following before submitting your issue:
+  - Check that your issue isn't already submitted
 
 ### Description
 
