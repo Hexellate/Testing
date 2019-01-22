@@ -2,6 +2,7 @@ import { app /* BrowserWindow */ } from "electron";
 import { autoUpdater } from "electron-updater";
 import log4js from "log4js";
 import Path from "path";
+import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
 
 import WindowManager from "./modules/window-manager";
@@ -12,6 +13,13 @@ let log;
 
 app.on("ready", () => {
   const isDevelopment = process.env.NODE_ENV !== "production";
+
+  if (isDevelopment) {
+    installExtension(REACT_DEVELOPER_TOOLS).then((name) => { log.info(`Added chrome dev extension: ${name}`); })
+      .catch((err) => { log.error("Unable to install chrome dev extension: ", err); });
+    installExtension(REDUX_DEVTOOLS).then((name) => { log.info(`Added chrome dev extension: ${name}`); })
+      .catch((err) => { log.error("Unable to install chrome dev extension: ", err); });
+  }
 
   // Set app name if unpackaged
   if (!app.isPackaged) {

@@ -13,7 +13,7 @@
     "url": "git+https://github.com/Hexellate/Electron-React-Template.git"
   },
   "scripts": {
-    "dev": "npm-run-all --parallel webpack-dev react-devtools",
+    "dev": "rimraf \"dist\" && electron-webpack dev",
     "webpack-dev": "rimraf \"dist\" && electron-webpack dev --remote-debugging-port=9223",
     "react-devtools": "react-devtools",
     "pack": "electron-webpack",
@@ -61,6 +61,7 @@
   "dependencies": {
     "ajv": "^6.7.0",
     "chokidar": "^2.0.4",
+    "electron-devtools-installer": "^2.2.4",
     "electron-updater": "^4.0.6",
     "lodash": "^4.17.11",
     "log4js": "^3.0.6",
