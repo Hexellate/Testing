@@ -27,7 +27,7 @@ class Manager extends EventEmitter {
    * @param {boolean} isDev Whether the environment is dev or production manager
    * @param {string} type I dunno what this was for... consider it deprecated XD
    */
-  constructor(isDev, type) {
+  constructor(isDev, type, logPort) {
     super();
     this._isDev = isDev;
     this._type = type;
@@ -38,6 +38,7 @@ class Manager extends EventEmitter {
       "modal": [],
     };
     this._bgStarted = false;
+    this._logPort = logPort;
     this._configManager = ConfigManager.getManager("main");
     this._registerListeners();
   }
@@ -194,6 +195,7 @@ class Manager extends EventEmitter {
     win.content = content;
     win.owner = owner;
     win.disable = disable;
+    win.logPort = this._logPort;
 
     win.start = () => {
       log.info(`Starting window of type "${type}".`);
@@ -366,8 +368,8 @@ function getManager(type) {
  * @param {string} type - The identifier for the update manager
  * @returns {Manager}
  */
-function createManager(isDev, type) {
-  managers[type] = new Manager(isDev, type);
+function createManager(isDev, type, logPort) {
+  managers[type] = new Manager(isDev, type, logPort);
   return managers[type];
 }
 

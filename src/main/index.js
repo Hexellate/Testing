@@ -4,6 +4,7 @@ import log4js from "log4js";
 import Path from "path";
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
+import { pickPort } from "../lib";
 
 import WindowManager from "./modules/window-manager";
 import UpdateManager from "./modules/update-manager";
@@ -11,7 +12,7 @@ import ConfigManager from "./modules/config-manager";
 
 let log;
 
-app.once("ready", () => {
+app.once("ready", async () => {
   const isDevelopment = process.env.NODE_ENV !== "production";
 
   if (isDevelopment) {
@@ -26,8 +27,9 @@ app.once("ready", () => {
     app.setName("Auto Update Test - dev");
   }
   app.setPath("userData", Path.join(app.getPath("appData"), app.getName()));
-
   app.setPath("logs", Path.join(app.getPath("userData"), "logs"));
+
+  const logPort = await pickPort();
 
   // Configure logger
   log4js.configure({
@@ -49,6 +51,11 @@ app.once("ready", () => {
         "level": "ERROR",
         "appender": "errorFile",
       },
+      "server": {
+        "type": "tcp-server",
+        "host": "localhost",
+        "port": logPort,
+      },
     },
     "categories": {
       "default": {
@@ -64,7 +71,7 @@ app.once("ready", () => {
 
   // Init logger
   log = log4js.getLogger("main");
-  autoUpdater.logger = log4js.getLogger("updater");
+  autoUpdater.logger = log4js.getLogger("autoUpdater");
 
   // Log startup info
   log.info(
@@ -77,11 +84,13 @@ app.once("ready", () => {
   log.info(`Begin log for application: ${app.getName()}`);
   log.info(`Working directory: ${app.getPath("userData")}`);
   log.info(`Logging to ${app.getPath("logs")}`);
+  log.info(`Logger listening on port ${logPort}`);
 
   // Create managers
   const config = ConfigManager.createManager(isDevelopment, "main");
-  const windowManager = WindowManager.createManager(isDevelopment, "main");
+  const windowManager = WindowManager.createManager(isDevelopment, "main", logPort);
   const updateManager = UpdateManager.createManager(isDevelopment, "main");
+  // TODO: Rewrite this section to only pass around one class instance (singleton pattern)
 
   const { versionDetails } = updateManager;
   log.info(`Environment:`);
@@ -147,3 +156,7 @@ app.on("window-all-closed", () => {
 //     autoUpdater.quitAndInstall(true, false);
 //   }
 // });
+
+app.on("will-quit", () => {
+  log4js.shutdown();
+});
