@@ -7,7 +7,7 @@ import ConfigManager from "./config-manager";
 
 const log = log4js.getLogger("window-man");
 
-const managers = {};
+// const managers = {};
 
 /**
  * @typedef windowSet
@@ -23,14 +23,9 @@ const managers = {};
  * BrowserWindows should only be stored here.
  */
 class Manager extends EventEmitter {
-  /**
-   * @param {boolean} isDev Whether the environment is dev or production manager
-   * @param {string} type I dunno what this was for... consider it deprecated XD
-   */
-  constructor(isDev, type, logPort) {
+  constructor() {
     super();
-    this._isDev = isDev;
-    this._type = type;
+
     this._windows = {
       "startsplash": null,
       "background": null,
@@ -38,17 +33,21 @@ class Manager extends EventEmitter {
       "modal": [],
     };
     this._bgStarted = false;
-    this._logPort = logPort;
+
     this._configManager = ConfigManager.getManager("main");
     this._registerListeners();
   }
 
   /**
   * Preinitialization stage for windowManager
+  * @param {boolean} isDev Whether the environment is dev or production manager
+  * @param {integer} logPort The logging port to pass to new windows
   * @emits Manager#preinitialized
   */
-  async preinit() {
+  async preinit(isDev, logPort) {
     log.info("Start window-manager preinitialization.");
+    this._isDev = isDev;
+    this._logPort = logPort;
     this._createSplash(() => {
       this.emit("preinitialized");
     });
@@ -354,30 +353,32 @@ class Manager extends EventEmitter {
   }
 }
 
-/**
- * returns the specified update manager
- * @param {string} type - The identifier for the update manager
- * @returns {Manager}
- */
-function getManager(type) {
-  if (type !== null) {
-    return managers[type];
-  }
-  return managers.main;
-}
+// /**
+//  * returns the specified update manager
+//  * @param {string} type - The identifier for the update manager
+//  * @returns {Manager}
+//  */
+// function getManager(type) {
+//   if (type !== null) {
+//     return managers[type];
+//   }
+//   return managers.main;
+// }
 
-/**
- * Creates a new update manager
- * @param {boolean} isDev - Whether in a development environment
- * @param {string} type - The identifier for the update manager
- * @returns {Manager}
- */
-function createManager(isDev, type, logPort) {
-  managers[type] = new Manager(isDev, type, logPort);
-  return managers[type];
-}
+// /**
+//  * Creates a new update manager
+//  * @param {boolean} isDev - Whether in a development environment
+//  * @param {string} type - The identifier for the update manager
+//  * @returns {Manager}
+//  */
+// function createManager(isDev, type, logPort) {
+//   managers[type] = new Manager(isDev, type, logPort);
+//   return managers[type];
+// }
 
-export default {
-  "getManager": getManager,
-  "createManager": createManager,
-};
+// export default {
+//   "getManager": getManager,
+//   "createManager": createManager,
+// };
+
+export default new Manager();

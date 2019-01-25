@@ -4,28 +4,21 @@ import { app } from "electron";
 import log4js from "log4js";
 import { EventEmitter } from "events";
 import ConfigManager from "./config-manager";
-import WindowManager from "./window-manager";
+import windowManager from "./window-manager";
 // import { ipcBroadcast } from "./ipc";
 
 const log = log4js.getLogger("updater");
 
-const managers = {};
+// const managers = {};
 
-
-// TODO: Lotsa docs
 
 /**
  * Manages checking for and downloading updates
  */
 class Manager extends EventEmitter {
-  /**
-   * @param {boolean} isDev Whether the environment is dev or production manager
-   * @param {string} type I dunno what this was for... consider it deprecated XD
-   */
-  constructor(isDev, type) {
+  constructor() {
     super();
-    this._isDev = isDev;
-    this._type = type;
+
     this._started = false; // Will be set to true when there are no updates available
     this._tries = 0;
     this._maxTries = 3;
@@ -56,7 +49,7 @@ class Manager extends EventEmitter {
       "useMultipleRangeRequest": false,
     };
 
-    this._windowManager = WindowManager.getManager("main");
+    // this._windowManager = WindowManager.getManager("main");
     this._configManager = ConfigManager.getManager("main");
 
     this._registerListeners();
@@ -64,16 +57,18 @@ class Manager extends EventEmitter {
 
   // Initializers
   /**
+   * @param {boolean} isDev Whether the environment is dev or production manager
    * Starts the preinit stage for update manager, which will check for updates, or skip autoupdating completely
    */
-  async preinit() {
+  async preinit(isDev) {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
+    this._isDev = isDev;
     autoUpdater.autoDownload = false;
     autoUpdater.setFeedURL(this.provider);
     if (!this._isDev && !this._configManager.config.updates.autoUpdate) {
       log.info("Starting autoupdater");
-      this._windowManager.splashStatus({ "mode": "text", "text": "Starting updater." });
+      windowManager.splashStatus({ "mode": "text", "text": "Starting updater." });
       autoUpdater.checkForUpdates();
       /*
         - Register listeners for startup
@@ -141,14 +136,14 @@ class Manager extends EventEmitter {
     switch (this._updateDetails.status) {
       case ("checking"):
         if (!this._started) {
-          this._windowManager.splashStatus({ "mode": "text", "text": "Checking for updates." });
+          windowManager.splashStatus({ "mode": "text", "text": "Checking for updates." });
         } else {
         // Send to main windows
         }
         break;
       case ("available"):
         if (!this._started) {
-          this._windowManager.splashStatus({ "mode": "text", "text": "Update available." });
+          windowManager.splashStatus({ "mode": "text", "text": "Update available." });
           autoUpdater.downloadUpdate();
         } else {
         // Send to main windows
@@ -156,9 +151,9 @@ class Manager extends EventEmitter {
         break;
       case ("notAvailable"):
         if (!this._started) {
-          this._windowManager.splashStatus({ "mode": "text", "text": "No update available." });
+          windowManager.splashStatus({ "mode": "text", "text": "No update available." });
           this._started = true;
-          this._windowManager.init();
+          windowManager.init();
         } else {
         // Send to main windows
         }
@@ -166,7 +161,7 @@ class Manager extends EventEmitter {
       case ("error"):
         if (!this._started) {
           if (this._tries < this._maxTries) {
-            this._windowManager.splashStatus({ "mode": "text", "text": "Something went wrong, retrying..." });
+            windowManager.splashStatus({ "mode": "text", "text": "Something went wrong, retrying..." });
             this._maxTries++;
           } else {
             // Skip updates
@@ -177,14 +172,14 @@ class Manager extends EventEmitter {
         break;
       case ("progressing"):
         if (!this._started) {
-          this._windowManager.splashStatus({ "mode": "text", "text": "Downloading update, please wait." });
+          windowManager.splashStatus({ "mode": "text", "text": "Downloading update, please wait." });
         } else {
         // Send to main windows
         }
         break;
       case ("downloaded"):
         if (!this._started) {
-          this._windowManager.splashStatus({ "mode": "text", "text": "Update downloaded. Will restart and install." });
+          windowManager.splashStatus({ "mode": "text", "text": "Update downloaded. Will restart and install." });
           autoUpdater.quitAndInstall(true, true);
         } else {
         // Send to main windows
@@ -267,30 +262,32 @@ class Manager extends EventEmitter {
   }
 }
 
-/**
- * returns the specified update manager
- * @param {string} type - The identifier for the update manager
- * @returns {Manager}
- */
-function getManager(type) {
-  if (type !== null) {
-    return managers[type];
-  }
-  return managers.main;
-}
+// /**
+//  * returns the specified update manager
+//  * @param {string} type - The identifier for the update manager
+//  * @returns {Manager}
+//  */
+// function getManager(type) {
+//   if (type !== null) {
+//     return managers[type];
+//   }
+//   return managers.main;
+// }
 
-/**
- * Creates a new update manager
- * @param {boolean} isDev - Whether in a development environment
- * @param {string} type - The identifier for the update manager
- * @returns {Manager}
- */
-function createManager(isDev, type) {
-  managers[type] = new Manager(isDev, type);
-  return managers[type];
-}
+// /**
+//  * Creates a new update manager
+//  * @param {boolean} isDev - Whether in a development environment
+//  * @param {string} type - The identifier for the update manager
+//  * @returns {Manager}
+//  */
+// function createManager(isDev, type) {
+//   managers[type] = new Manager(isDev, type);
+//   return managers[type];
+// }
 
-export default {
-  "getManager": getManager,
-  "createManager": createManager,
-};
+// export default {
+//   "getManager": getManager,
+//   "createManager": createManager,
+// };
+
+export default new Manager();

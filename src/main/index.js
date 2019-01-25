@@ -6,8 +6,8 @@ import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electro
 
 import { pickPort } from "../lib";
 
-import WindowManager from "./modules/window-manager";
-import UpdateManager from "./modules/update-manager";
+import windowManager from "./modules/window-manager";
+import updateManager from "./modules/update-manager";
 import ConfigManager from "./modules/config-manager";
 
 let log;
@@ -86,18 +86,15 @@ app.once("ready", async () => {
   log.info(`Logging to ${app.getPath("logs")}`);
   log.info(`Logger listening on port ${logPort}`);
 
-  // Create managers
+  // Create config manager
   const config = ConfigManager.createManager(isDevelopment, "main");
-  const windowManager = WindowManager.createManager(isDevelopment, "main", logPort);
-  const updateManager = UpdateManager.createManager(isDevelopment, "main");
-  // TODO: Rewrite this section to only pass around one class instance (singleton pattern)
+  // const windowManager = WindowManager.createManager(isDevelopment, "main", logPort);
+  // const updateManager = UpdateManager.createManager(isDevelopment, "main");
 
   const { versionDetails } = updateManager;
   log.info(`Environment:`);
   log.info(versionDetails);
 
-
-  // TODO: Formalize init stages (so all are called from here, rather than the previous event)
   /*
     Init order:
     >> preinit configs >> preinit windows >> preinit updates
@@ -107,10 +104,10 @@ app.once("ready", async () => {
 
   // Register initialization listeners
   config.once("preinitialized", () => {
-    windowManager.preinit();
+    windowManager.preinit(isDevelopment, logPort);
   });
   windowManager.once("preinitialized", () => {
-    updateManager.preinit();
+    updateManager.preinit(isDevelopment);
   });
   updateManager.once("preinitialized", () => {
     log.info("Preinitialization finished.");
