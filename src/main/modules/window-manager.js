@@ -67,7 +67,9 @@ class Manager extends EventEmitter {
     Once main window reports ready, show it and close the splash
     App is now ready to use
     */
+    // this._createBackground(() => {
     this.emit("initialized");
+    // });
   }
 
   // Creators
@@ -96,13 +98,15 @@ class Manager extends EventEmitter {
   /**
    * Creates the background process
    */
-  _createBackground() {
+  _createBackground(callback) {
     // TODO: This should be reimplemented using a child process in order to achieve proper parallelism
     const win = this._createWindow({ "type": "background", "show": false });
     this._windows.background = win;
     win.setTitle("background process");
 
     // TODO: Add tray icon and stuff
+
+    win.once("ready-to-show", callback);
 
     win.on("closed", () => {
       this.windows.background = null; // Dereference windows on close to enable deletion

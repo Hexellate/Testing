@@ -9,6 +9,7 @@ import App from "./app";
 import Updater from "./updater";
 import Splash from "./splash";
 import ErrorBoundary from "./components/appErrorBoundary";
+import Background from "../background/index";
 
 const { windowType, logPort } = require("electron").remote.getCurrentWindow();
 
@@ -33,6 +34,8 @@ function WindowType() {
       return <Updater />;
     case ("splash"):
       return <Splash />;
+    case ("background"):
+      return <Background />;
     default:
       return <App />;
   }
