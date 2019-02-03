@@ -33,9 +33,6 @@ class Manager extends EventEmitter {
       "modal": [],
     };
     this._bgStarted = false;
-
-    this._configManager = ConfigManager.getManager("main");
-    this._registerListeners();
   }
 
   /**
@@ -46,6 +43,9 @@ class Manager extends EventEmitter {
   */
   async preinit(isDev, logPort) {
     log.info("Start window-manager preinitialization.");
+    this._configManager = ConfigManager.getManager("main");
+    this._registerListeners();
+
     this._isDev = isDev;
     this._logPort = logPort;
     this._createSplash(() => {
@@ -281,7 +281,12 @@ class Manager extends EventEmitter {
    * @param {windowUpdateParams} params Object containing parameters
    */
   updateWindow(win, {
-    action = "default", width = 800, height = 600, resizable = true, title = app.getName(), enabled = true,
+    action = "default",
+    width = 800,
+    height = 600,
+    resizable = true,
+    title = app.getName(),
+    enabled = true,
   }) {
     switch (action) {
       case "resize":

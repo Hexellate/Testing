@@ -6,9 +6,10 @@ import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electro
 
 import { pickPort } from "../lib";
 
+import ConfigManager from "./modules/config-manager";
 import windowManager from "./modules/window-manager";
 import updateManager from "./modules/update-manager";
-import ConfigManager from "./modules/config-manager";
+
 
 let log;
 

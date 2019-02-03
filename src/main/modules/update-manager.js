@@ -13,7 +13,7 @@ const log = log4js.getLogger("updater");
 
 
 /**
- * Manages checking for and downloading updates
+ * Manages checking for and downloading of updates
  */
 class Manager extends EventEmitter {
   constructor() {
@@ -48,11 +48,6 @@ class Manager extends EventEmitter {
     "https://raw.githubusercontent.com/Hexellate/tracking/master/autoupdate-test/updates",
       "useMultipleRangeRequest": false,
     };
-
-    // this._windowManager = WindowManager.getManager("main");
-    this._configManager = ConfigManager.getManager("main");
-
-    this._registerListeners();
   }
 
   // Initializers
@@ -63,9 +58,13 @@ class Manager extends EventEmitter {
   async preinit(isDev) {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
+    this._configManager = ConfigManager.getManager("main");
+    this._registerListeners();
+
     this._isDev = isDev;
     autoUpdater.autoDownload = false;
     autoUpdater.setFeedURL(this.provider);
+    log.debug(this._configManager);
     if (!this._isDev && !this._configManager.config.updates.autoUpdate) {
       log.info("Starting autoupdater");
       windowManager.splashStatus({ "mode": "text", "text": "Starting updater." });
