@@ -1,3 +1,7 @@
+/**
+  * @module
+  * @ignore
+  */
 // Exports all transformer functions
 // Also exports an object with valid versions
 // Every version MUST have a transformer function from prev version
@@ -5,6 +9,7 @@
 /*
  Exports a versions object and a transform matrix, as well as schemas
  */
+
 
 import * as v1 from "./v1";
 

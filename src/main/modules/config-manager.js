@@ -1,3 +1,6 @@
+/**
+ * @module config-manager
+ */
 import { app } from "electron";
 import * as Path from "path";
 import fs from "fs";
@@ -9,6 +12,7 @@ import * as transformer from "./configManager/transformer";
 
 const log = log4js.getLogger("config");
 const managers = {};
+
 
 /**
  * Manages configuration stuff

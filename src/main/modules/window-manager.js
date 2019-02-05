@@ -1,3 +1,7 @@
+/**
+ * @module window-manager
+ */
+
 import { BrowserWindow, app, ipcMain } from "electron";
 import url from "url";
 import * as Path from "path";
@@ -6,6 +10,7 @@ import { EventEmitter } from "events";
 import ConfigManager from "./config-manager";
 
 const log = log4js.getLogger("window-man");
+
 
 // const managers = {};
 
@@ -22,7 +27,7 @@ const log = log4js.getLogger("window-man");
  * Manages storage and creation of windows.
  * BrowserWindows should only be stored here.
  */
-class Manager extends EventEmitter {
+class WindowManager extends EventEmitter {
   constructor() {
     super();
 
@@ -385,4 +390,4 @@ class Manager extends EventEmitter {
 //   "createManager": createManager,
 // };
 
-export default new Manager();
+export default new WindowManager();

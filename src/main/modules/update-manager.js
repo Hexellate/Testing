@@ -1,3 +1,7 @@
+/**
+ * @module update-manager
+ */
+
 import { autoUpdater } from "electron-updater";
 // import { ipcMain, app } from "electron";
 import { app } from "electron";
@@ -15,7 +19,7 @@ const log = log4js.getLogger("updater");
 /**
  * Manages checking for and downloading of updates
  */
-class Manager extends EventEmitter {
+class UpdateManager extends EventEmitter {
   constructor() {
     super();
 
@@ -92,14 +96,14 @@ class Manager extends EventEmitter {
 
   /**
    *
-   * @param {import("electron").BrowserWindow} recipient The target of the version info
+   * @param {BrowserWindow} recipient The target of the version info
    */
   ipcSendVer(recipient) {
     recipient.send("getVer", this.versionDetails);
   }
 
   /**
-   * @return {import("builder-util-runtime").GenericServerOptions} The configured provider
+   * @return {GenericServerOptions} The configured provider
    */
   get provider() {
     const provider = this._providerBase;
@@ -288,4 +292,4 @@ class Manager extends EventEmitter {
 //   "createManager": createManager,
 // };
 
-export default new Manager();
+export default new UpdateManager();

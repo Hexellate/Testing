@@ -1,7 +1,13 @@
+/**
+ * Config validation and conversion
+ * @module configTransformer
+ */
+
 import _ from "lodash";
 import Ajv from "ajv"; // JSON verification library
 import log4js from "log4js";
 import * as Transformers from "./transformers";
+
 
 const log = log4js.getLogger("config-transformers");
 const type = "main";

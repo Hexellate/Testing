@@ -1,4 +1,7 @@
-// A bunch of random library functions
+/**
+ * A bunch of random library functions
+ * @module lib
+ */
 import Chance from "chance";
 import detectPort from "detect-port";
 

@@ -1,6 +1,12 @@
+/**
+ *
+ * @module IPC
+ */
+
 // import { BrowserWindow } from "electron";
 // import { ipcMain } from "electron";
 import _ from "lodash";
+
 
 /**
  * @typedef broadcastParam
@@ -10,7 +16,7 @@ import _ from "lodash";
  * @property {string} [message.title] The title of the message
  * @property {object} message.body The contents of the message
  * @property {string[]} [targets] The recipients of the broadcast
- * @property {import("./window-manager").windowSet} windows The set of windows to broadcast to
+ * @property {windowSet} windows The set of windows to broadcast to
  */
 
 /**
