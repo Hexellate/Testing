@@ -37,16 +37,15 @@ class Manager extends EventEmitter {
 
   /**
   * Preinitialization stage for windowManager
-  * @param {boolean} isDev Whether the environment is dev or production manager
   * @param {integer} logPort The logging port to pass to new windows
   * @emits Manager#preinitialized
   */
-  async preinit(isDev, logPort) {
+  async preinit(logPort) {
     log.info("Start window-manager preinitialization.");
     this._configManager = ConfigManager.getManager("main");
     this._registerListeners();
 
-    this._isDev = isDev;
+    this._isDev = global.isDev;
     this._logPort = logPort;
     this._createSplash(() => {
       this.emit("preinitialized");

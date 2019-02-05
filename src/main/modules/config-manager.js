@@ -13,15 +13,14 @@ const managers = {};
 /**
  * Manages configuration stuff
  */
-class Manager extends EventEmitter {
+class ConfigManager extends EventEmitter {
   /**
    *
-   * @param {boolean} isDev Whether running in a dev environment
    * @param {string} type The type of config being managed by this config manager
    */
-  constructor(isDev, type) {
+  constructor(type) {
     super();
-    this._isDev = isDev;
+    this._isDev = global.isDev;
     this._type = type;
     this._configPath = Path.join(app.getPath("userData"), "config");
     this._mainConfig = "config.json";
@@ -195,7 +194,7 @@ class Manager extends EventEmitter {
 /**
  * returns the specified config manager
  * @param {string} type - The identifier for the config manager
- * @returns {Manager}
+ * @returns {ConfigManager}
  */
 function getManager(type) {
   return managers[type];
@@ -203,12 +202,11 @@ function getManager(type) {
 
 /**
  * Creates a new config manager
- * @param {boolean} isDev - Whether in a development environment
  * @param {string} type - The identifier for the config manager
- * @returns {Manager}
+ * @returns {ConfigManager}
  */
-function createManager(isDev, type) {
-  managers[type] = new Manager(isDev, type);
+function createManager(type) {
+  managers[type] = new ConfigManager(type);
   return managers[type];
 }
 

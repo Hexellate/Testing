@@ -52,16 +52,15 @@ class Manager extends EventEmitter {
 
   // Initializers
   /**
-   * @param {boolean} isDev Whether the environment is dev or production manager
    * Starts the preinit stage for update manager, which will check for updates, or skip autoupdating completely
    */
-  async preinit(isDev) {
+  async preinit() {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
     this._configManager = ConfigManager.getManager("main");
     this._registerListeners();
 
-    this._isDev = isDev;
+    this._isDev = global.isDev;
     autoUpdater.autoDownload = false;
     autoUpdater.setFeedURL(this.provider);
     log.debug(this._configManager);
