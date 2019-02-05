@@ -1,0 +1,24 @@
+{
+  "source": {
+    "include": [
+      "src"
+    ],
+    "exclude": [],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "sourceType": "module",
+  "opts": {
+    "template": "node_modules/tui-jsdoc-template",
+    "recurse": true,
+    "destination": "./docs/"
+  },
+  "templates": {
+    "name": "autoupdate-test docs",
+    "footerText": "Copyright 2018-2019 Daniel Nichols",
+    "logo": {
+      "width": "0px",
+      "height": "0px"
+    }
+  }
+}
