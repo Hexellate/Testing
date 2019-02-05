@@ -1,6 +1,7 @@
 /**
  * @module config-manager
  */
+// TODO: Better module name
 import { app } from "electron";
 import * as Path from "path";
 import fs from "fs";
@@ -14,12 +15,9 @@ const log = log4js.getLogger("config");
 const managers = {};
 
 
-/**
- * Manages configuration stuff
- */
 class ConfigManager extends EventEmitter {
   /**
-   *
+   * Manages configuration stuff
    * @param {string} type The type of config being managed by this config manager
    */
   constructor(type) {
@@ -33,7 +31,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Creates config directory if non-existant and loads config file for startup
-   * @emits Manager#preinitialized
+   * @emits {@link module:config-manager~ConfigManager.preinitialized|event:preinitialized}
    */
   async preinit() {
     log.info("Preinitializing config manager.");
@@ -63,7 +61,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Registers config watcher
-   * @emits Manager#postinitialized
+   * @emits {@link module:config-manager~ConfigManager.postinitialized|event:postinitialized}
    */
   async postinit() {
     log.info("Postinitializing config manager.");
@@ -75,7 +73,9 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Called when file watcher on config file detects a change
+   * @private
    * @param {string} path - The path to the file that was changed
+   * @emits {@link module:config-manager~ConfigManager.configChange|event:configChange}
    */
   _handleConfigChange(path) {
     // Check if path matches config path and then load config
@@ -103,6 +103,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Loads config file and performs all necessary migrations
+   * @private
    */
   _loadConfigSync() { // TODO: On parse fail, try to read from backup instead of crashing (and then crash). Backup system needs to exist first
     let cfg;
@@ -155,6 +156,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Writes current config to file
+   * @private
    */
   _writeConfigSync() {
     try {
@@ -198,7 +200,7 @@ class ConfigManager extends EventEmitter {
 /**
  * returns the specified config manager
  * @param {string} type - The identifier for the config manager
- * @returns {ConfigManager}
+ * @returns {module:config-manager~ConfigManager}
  */
 function getManager(type) {
   return managers[type];
@@ -207,7 +209,7 @@ function getManager(type) {
 /**
  * Creates a new config manager
  * @param {string} type - The identifier for the config manager
- * @returns {ConfigManager}
+ * @returns {module:config-manager~ConfigManager}
  */
 function createManager(type) {
   managers[type] = new ConfigManager(type);
@@ -218,3 +220,21 @@ export default {
   "getManager": getManager,
   "createManager": createManager,
 };
+
+/**
+ * Fired once preinitialization is complete
+ * @event preinitialized
+ * @memberof module:config-manager~ConfigManager
+ */
+
+/**
+ * Fired once postinitialization is complete
+ * @event postinitialized
+ * @memberof module:config-manager~ConfigManager
+ */
+
+/**
+ * Fired when config has changed
+ * @event configChange
+ * @memberof module:config-manager~ConfigManager
+ */
