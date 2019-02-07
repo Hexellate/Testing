@@ -1,5 +1,5 @@
 /**
- * @module window-manager
+ * @file Manages application windows
  */
 
 import { BrowserWindow, app, ipcMain } from "electron";
@@ -7,22 +7,22 @@ import url from "url";
 import * as Path from "path";
 import log4js from "log4js";
 import { EventEmitter } from "events";
-import ConfigManager from "./config-manager";
+import Config from "../config";
 
 const log = log4js.getLogger("window-man");
+
+// const windows = {
+//   "startsplash": null,
+//   "main": [],
+//   "modal": [],
+// };
 
 
 // const managers = {};
 
-/**
- * @typedef windowSet
- * @type {object}
- * @property {BrowserWindow} startsplash
- * @property {BrowserWindow} background
- * @property {BrowserWindow[]} main
- * @property {BrowserWindow[]} modal
- */
-
+// TODO: Separate all functions possible from class (all events from windows should come from ipc (?))
+// TODO: Maybe events should come from a single EventEmitter class, which is the default export?
+// TODO: Separate background into separate file
 /**
  * Manages storage and creation of windows.
  * BrowserWindows should only be stored here.
@@ -43,23 +43,26 @@ class WindowManager extends EventEmitter {
   /**
   * Preinitialization stage for windowManager
   * @param {integer} logPort The logging port to pass to new windows
-  * @emits Manager#preinitialized
+  * @emits WindowManager#preinitialized
   */
   async preinit(logPort) {
     log.info("Start window-manager preinitialization.");
-    this._configManager = ConfigManager.getManager("main");
+    this._configManager = Config.getManager("main");
     this._registerListeners();
 
     this._isDev = global.isDev;
     this._logPort = logPort;
-    this._createSplash(() => {
-      this.emit("preinitialized");
-    });
+
+    // this._createSplash(() => {
+    //   this.emit("preinitialized");
+    // });
+    await this._createSplash();
+    this.emit("preinitialized");
   }
 
   /**
    * Starts the program background process
-   * @emits Manager#initialized
+   * @emits WindowManager#initialized
    */
   async init() {
     log.info("Running startup procedure");
@@ -79,27 +82,32 @@ class WindowManager extends EventEmitter {
 
   /**
    * Create splash window for startup
-   * @param {function} callback Function to call when splash has been shown
+   * @private
    */
-  _createSplash(callback) {
+  async _createSplash() {
     const win = this._createWindow({ "type": "splash", "show": false });
     this._windows.splash = win;
     // win.webContents.openDevTools();
 
-    win.once("ready-to-show", () => {
-      win.setTitle("splash window");
-      win.show();
-      callback();
-    });
-
     win.on("closed", () => {
       this.windows.splash = null; // Dereference windows on close to enable deletion
     });
-    win.start();
+
+    // Wait for window ready-to-show event before resolving createSplash promise
+    /* eslint-disable-next-line */
+    const promise = await new Promise((resolve) => {
+      win.once("ready-to-show", () => {
+        win.setTitle("splash window");
+        win.show();
+        resolve();
+      });
+      win.start();
+    });
   }
 
   /**
    * Creates the background process
+   * @private
    */
   _createBackground(callback) {
     // TODO: This should be reimplemented using a child process in order to achieve proper parallelism
@@ -176,6 +184,7 @@ class WindowManager extends EventEmitter {
 
   /**
    * Creates a window and returns it
+   * @private
    * @param {object} windowParams
    * @param {number} windowParams.width The width
    * @param {number} windowParams.height The height
@@ -268,21 +277,12 @@ class WindowManager extends EventEmitter {
     });
   }
 
-  /**
-   * @typedef windowUpdateParams
-   * @type {object}
-   * @property {string} action Action to perform on given window
-   * @property {number} width Used for setting window size
-   * @property {number} height Used for setting window height
-   * @property {boolean} resizable Used for setting if window is resizable
-   * @property {string} title Used for setting window title
-   */
 
   // TODO: windowUpdateParams should not be in its own typedef
   /**
    * Changes a windows properties
    * @param {BrowserWindow} win The window to update
-   * @param {windowUpdateParams} params Object containing parameters
+   * @param {WindowManager.windowUpdateParams} params Object containing parameters
    */
   updateWindow(win, {
     action = "default",
@@ -339,7 +339,9 @@ class WindowManager extends EventEmitter {
 
   // Utility
   /**
-   * @return {windowSet} The windowSet of the windowManager instance
+   * The windowSet of the windowManager instance
+   * @readonly
+   * @type {WindowManager.windowSet}
    */
   get windows() {
     return this._windows;
@@ -347,6 +349,7 @@ class WindowManager extends EventEmitter {
 
   /**
    * Registers default listeners
+   * @private
    */
   _registerListeners() {
     // Swap to a different window (Ideally should not be used or even useful. Better to create a modal. Therefore considered deprecated!)
@@ -362,32 +365,42 @@ class WindowManager extends EventEmitter {
   }
 }
 
-// /**
-//  * returns the specified update manager
-//  * @param {string} type - The identifier for the update manager
-//  * @returns {Manager}
-//  */
-// function getManager(type) {
-//   if (type !== null) {
-//     return managers[type];
-//   }
-//   return managers.main;
-// }
-
-// /**
-//  * Creates a new update manager
-//  * @param {boolean} isDev - Whether in a development environment
-//  * @param {string} type - The identifier for the update manager
-//  * @returns {Manager}
-//  */
-// function createManager(isDev, type, logPort) {
-//   managers[type] = new Manager(isDev, type, logPort);
-//   return managers[type];
-// }
-
-// export default {
-//   "getManager": getManager,
-//   "createManager": createManager,
-// };
-
 export default new WindowManager();
+
+
+/**
+ * Fired once preinitialization is complete
+ * @event WindowManager#preinitialized
+ */
+
+/**
+ * Fired once initialization is complete
+ * @event WindowManager#initialized
+ */
+
+/**
+ * Fired once postinitialization is complete
+ * @event WindowManager#postinitialized
+ */
+
+/**
+ * An object containing a set of windows
+ * @typedef windowSet
+ * @memberof WindowManager
+ * @type {object}
+ * @property {external:electron#BrowserWindow} startsplash The start splash if it exists
+ * @property {BrowserWindow} background The background window if it exists
+ * @property {BrowserWindow[]} main An array of main windows
+ * @property {BrowserWindow[]} modal An array of modal windows (Note that modals don't use the os modal type)
+ */
+
+/**
+ * @typedef windowUpdateParams
+ * @memberof WindowManager
+ * @type {object}
+ * @property {string} action Action to perform on given window
+ * @property {number} width Used for setting window size
+ * @property {number} height Used for setting window height
+ * @property {boolean} resizable Used for setting if window is resizable
+ * @property {string} title Used for setting window title
+ */

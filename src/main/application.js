@@ -3,20 +3,22 @@
  * @module application
  */
 
-import { app /* BrowserWindow */ } from "electron";
+import { app } from "electron";
 import { autoUpdater } from "electron-updater";
 import log4js from "log4js";
 import Path from "path";
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electron-devtools-installer";
 
-import { pickPort } from "../lib";
+import { pickPort } from "../util";
 
-import ConfigManager from "./modules/config-manager";
-import windowManager from "./modules/window-manager";
-import UpdateManager from "./modules/update-manager";
+import Config from "./lib/config";
+import WindowManager from "./lib/windows";
+import UpdateManager from "./lib/updater";
 
 
 let log;
+let logPort;
+let config;
 
 global.isDev = process.env.NODE_ENV !== "production" || !app.isPackaged;
 
@@ -34,6 +36,7 @@ function setPaths() {
   app.setPath("logs", Path.join(app.getPath("userData"), "logs"));
 }
 
+// TODO: Move logger to module
 async function startLogger() {
   const logPort = await pickPort();
 
@@ -80,27 +83,24 @@ async function startLogger() {
   return logPort;
 }
 
-function registerStartSequence(config, logPort) {
-  config.once("preinitialized", () => {
-    windowManager.preinit(logPort);
-  });
-  windowManager.once("preinitialized", () => {
-    UpdateManager.preinit();
-  });
-  UpdateManager.once("preinitialized", () => {
-    log.info("Preinitialization finished.");
-    log.info("Starting initialization.");
-    windowManager.init();
-  });
+async function preinit() {
+  log.info("Starting preinitialization.");
+  await config.preinit();
+  await WindowManager.preinit(logPort);
+  await UpdateManager.preinit();
+  log.info("Preinitialization finished.");
+}
 
-  windowManager.once("initialized", () => {
-    log.info("Initialization finished.");
-    log.info("Starting post-initialization.");
-    config.postinit();
-  });
-  config.once("postinitialized", () => {
-    log.info("Postinitialization finished.");
-  });
+async function init() {
+  log.info("Starting initialization.");
+  await WindowManager.init();
+  log.info("Initialization finished.");
+}
+
+async function postinit() {
+  log.info("Starting post-initialization.");
+  await config.postinit();
+  log.info("Postinitialization finished.");
 }
 
 async function handleReady() {
@@ -111,8 +111,11 @@ async function handleReady() {
   setPaths();
 
   // Logger init
-  const logPort = await startLogger();
+  logPort = await startLogger();
   autoUpdater.logger = log4js.getLogger("autoUpdater");
+
+  // Create config manager
+  config = Config.createManager("main");
 
   installDevTools();
 
@@ -129,15 +132,14 @@ async function handleReady() {
   log.info(`Logging to ${app.getPath("logs")}`);
   log.info(`Logger listening on port ${logPort}`);
 
-  // Create config manager
-  const config = ConfigManager.createManager("main");
-
   const { versionDetails } = UpdateManager;
   log.info(`Environment:`);
   log.info(versionDetails);
 
-  registerStartSequence(config, logPort);
-  config.preinit();
+  // Initialization sequence
+  await preinit();
+  await init();
+  await postinit();
 }
 
 async function handleWindowAllClosed() {
@@ -152,36 +154,45 @@ async function handleWillQuit() {
 }
 
 /**
- * @typedef application:appOptions
+ * @typedef appOptions
+ * @global
  * @type {object}
  * @property {string} devName The application name to use if in development mode
  * @property {boolean} multiWindow Whether the application should allow multiple instance windows
  * @property {boolean} background Whether to run the background task for the application
  * @property {object} tray Options for tray icon
+ * @property {boolean} tray.enabled Whether to use a tray icon
  */
 
-const application = {};
 
 // TODO: Figure out how to do stuff for recent files in windows jumplist (And where to expose the api)
 
 // TODO: Add more options, set defaults and separate related options into nested objects
 /**
  * Starts the application
-//  * @param {appOptions} options The set of options and settings to run the application with
-//  * @param {string} options.devName The application name to use if in development mode
-//  * @param {boolean} options.multiWindow Whether the application should allow multiple instance windows
-//  * @param {boolean} options.background Whether to run the background task for the application
-//  * @param {object} options.tray Options for tray icon
+ * @param {appOptions} appOptions The set of options and settings to run the application with
  */
-application.start = async (options) => {
-// TODO: Separate startup sequence into multiple functions, and move all event listener registrations here
-/**
+async function start(appOptions) {
+  const opts = {
+    "devName": "devName",
+    "multiWindow": false,
+    "background": false,
+    "tray": {
+      "enabled": true,
+    },
+    ...appOptions,
+  };
+
+  /**
+   * Contains all the application options as defined in the entry module
  * @global
  * @type {appOptions}
  */
-  global.appOpts = options;
+  global.appOpts = opts;
   app.once("ready", handleReady);
   app.on("window-all-closed", handleWindowAllClosed);
   app.on("will-quit", handleWillQuit);
+}
+export default {
+  "start": start,
 };
-export default application;

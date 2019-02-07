@@ -1,7 +1,3 @@
-/**
- * A bunch of random library functions
- * @module lib
- */
 import Chance from "chance";
 import detectPort from "detect-port";
 
@@ -9,7 +5,7 @@ const chance = new Chance();
 
 /* eslint-disable import/prefer-default-export */
 /**
- * Picks a random number within the dynamic port range. Does NOT check or bind port.
+ * Picks a random open port within the dynamic port range. Does NOT check or bind port.
  * @param {number} start The minimum port value
  * @param {number} end The maximum port value
  */

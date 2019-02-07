@@ -4,15 +4,15 @@ Basically just random notes and docs on stuff to be done...
 
 ## Ordered todo
 
-- remove classes from managers
-- rename managers to not managers
+- ~~remove classes from managers~~ They actually need to stay as classes as long as they're event emitters. (it's fine with the singleton pattern)
+- ~~rename managers to not managers~~ DONE!
 - change folder structure of project
 - split big files into multiple
 - jsdocs should be on functions and classes only
-- see if possible to remove event based loading sequence
+- ~~see if possible to remove event based loading sequence~~ DONE!
   - remove stage based loading?
 - redo config manager with a better structure
-- split window manager on tray, background and splash (windowmanager should only do main windows and modals(?))
+- split window manager on background and splash (windowmanager should only do main windows and modals(?))
 - prepare to be used as a library (HexLib)
 - design renderside interfaces to be solution agnostic (don't require redux)
 
@@ -24,8 +24,13 @@ Basically just random notes and docs on stuff to be done...
 
 ## Random notes
 
+This repo will eventually be moved/renamed under the new name of HexLib
+
+HexLib will handle a variety of menial tasks that are important in an electron application (i.e. configs, window management etc...)
+It will be an internally used lib, although in future it may be cleaned up for general use
+
 Should background be a renderer or a child process???
-tray should be a renderer because then it has access to browserwindow stuff... unless it can be done without?
+~~tray should be a renderer because then it has access to browserwindow stuff... unless it can be done without?~~ - Tray is actually not separate process XD
 
 Probs stay with js, although ts needs proper consideration
 Maybe introduce flowtype? need flowtype for eslint then

@@ -1,14 +1,10 @@
-/**
- * @module update-manager
- */
-
 import { autoUpdater } from "electron-updater";
 // import { ipcMain, app } from "electron";
 import { app } from "electron";
 import log4js from "log4js";
 import { EventEmitter } from "events";
-import ConfigManager from "./config-manager";
-import windowManager from "./window-manager";
+import Config from "./config";
+import windowManager from "./windows";
 // import { ipcBroadcast } from "./ipc";
 
 const log = log4js.getLogger("updater");
@@ -61,7 +57,7 @@ class UpdateManager extends EventEmitter {
   async preinit() {
     // Starts autoupdate process. When no updates are available or autoupdate is disabled, call windowman.start()
     log.info("Starting update manager init.");
-    this._configManager = ConfigManager.getManager("main");
+    this._configManager = Config.getManager("main");
     this._registerListeners();
 
     this._isDev = global.isDev;
@@ -264,32 +260,14 @@ class UpdateManager extends EventEmitter {
   }
 }
 
-// /**
-//  * returns the specified update manager
-//  * @param {string} type - The identifier for the update manager
-//  * @returns {Manager}
-//  */
-// function getManager(type) {
-//   if (type !== null) {
-//     return managers[type];
-//   }
-//   return managers.main;
-// }
-
-// /**
-//  * Creates a new update manager
-//  * @param {boolean} isDev - Whether in a development environment
-//  * @param {string} type - The identifier for the update manager
-//  * @returns {Manager}
-//  */
-// function createManager(isDev, type) {
-//   managers[type] = new Manager(isDev, type);
-//   return managers[type];
-// }
-
-// export default {
-//   "getManager": getManager,
-//   "createManager": createManager,
-// };
-
 export default new UpdateManager();
+
+/**
+ * Fired once preinitialization is complete
+ * @event UpdateManager#preinitialized
+ */
+
+/**
+ * Fired once postinitialization is complete
+ * @event UpdateManager#postinitialized
+ */

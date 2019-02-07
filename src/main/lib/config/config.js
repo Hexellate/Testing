@@ -1,5 +1,5 @@
 /**
- * @module config-manager
+ * @module config
  */
 // TODO: Better module name
 import { app } from "electron";
@@ -9,13 +9,13 @@ import { sync as atomicWriteSync } from "write-file-atomic";
 import log4js from "log4js";
 import { EventEmitter } from "events";
 import chokidar from "chokidar";
-import * as transformer from "./configManager/transformer";
+import * as transformer from "./transformer";
 
 const log = log4js.getLogger("config");
 const managers = {};
 
 
-class ConfigManager extends EventEmitter {
+class Config extends EventEmitter {
   /**
    * Manages configuration stuff
    * @param {string} type The type of config being managed by this config manager
@@ -31,7 +31,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Creates config directory if non-existant and loads config file for startup
-   * @emits {@link module:config-manager~ConfigManager.preinitialized|event:preinitialized}
+   * @emits {@link module:config~ConfigManager#preinitialized|event:preinitialized}
    */
   async preinit() {
     log.info("Preinitializing config manager.");
@@ -61,7 +61,7 @@ class ConfigManager extends EventEmitter {
 
   /**
    * Registers config watcher
-   * @emits {@link module:config-manager~ConfigManager.postinitialized|event:postinitialized}
+   * @emits {@link module:config~ConfigManager#postinitialized|event:postinitialized}
    */
   async postinit() {
     log.info("Postinitializing config manager.");
@@ -75,7 +75,7 @@ class ConfigManager extends EventEmitter {
    * Called when file watcher on config file detects a change
    * @private
    * @param {string} path - The path to the file that was changed
-   * @emits {@link module:config-manager~ConfigManager.configChange|event:configChange}
+   * @emits {@link module:config~ConfigManager#configChange|event:configChange}
    */
   _handleConfigChange(path) {
     // Check if path matches config path and then load config
@@ -200,7 +200,7 @@ class ConfigManager extends EventEmitter {
 /**
  * returns the specified config manager
  * @param {string} type - The identifier for the config manager
- * @returns {module:config-manager~ConfigManager}
+ * @returns {module:config~ConfigManager}
  */
 function getManager(type) {
   return managers[type];
@@ -209,10 +209,10 @@ function getManager(type) {
 /**
  * Creates a new config manager
  * @param {string} type - The identifier for the config manager
- * @returns {module:config-manager~ConfigManager}
+ * @returns {module:config~ConfigManager}
  */
 function createManager(type) {
-  managers[type] = new ConfigManager(type);
+  managers[type] = new Config(type);
   return managers[type];
 }
 
@@ -223,18 +223,17 @@ export default {
 
 /**
  * Fired once preinitialization is complete
- * @event preinitialized
- * @memberof module:config-manager~ConfigManager
+ * @event module:config~ConfigManager#preinitialized
  */
 
 /**
  * Fired once postinitialization is complete
- * @event postinitialized
- * @memberof module:config-manager~ConfigManager
+ * @event module:config~ConfigManager#postinitialized
  */
 
 /**
- * Fired when config has changed
- * @event configChange
- * @memberof module:config-manager~ConfigManager
+ * Fired when config has changed <br/>
+ * <b>Full Namespace:</b> module:config~ConfigManager#configChange
+ * @event module:config~ConfigManager#configChange
+ * @testtag A test tag that would be useful if it showed
  */

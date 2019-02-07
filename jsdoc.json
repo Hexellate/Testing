@@ -15,10 +15,17 @@
   },
   "templates": {
     "name": "autoupdate-test docs",
-    "footerText": "Copyright 2018-2019 Daniel Nichols",
+    "footerText": "<b>Copyright &copy;</b> 2018-2019 Daniel Nichols",
     "logo": {
       "width": "0px",
       "height": "0px"
     }
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
   }
 }
