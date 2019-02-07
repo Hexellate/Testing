@@ -2,6 +2,46 @@
 
 Basically just random notes and docs on stuff to be done...
 
+## Ordered todo
+
+- remove classes from managers
+- rename managers to not managers
+- change folder structure of project
+- split big files into multiple
+- jsdocs should be on functions and classes only
+- see if possible to remove event based loading sequence
+  - remove stage based loading?
+- redo config manager with a better structure
+- split window manager on tray, background and splash (windowmanager should only do main windows and modals(?))
+- prepare to be used as a library (HexLib)
+- design renderside interfaces to be solution agnostic (don't require redux)
+
+## Someday todo
+
+- Cleanup project as whole
+- Replace electron-webpack with just webpack
+- Clean up build script
+
+## Random notes
+
+Should background be a renderer or a child process???
+tray should be a renderer because then it has access to browserwindow stuff... unless it can be done without?
+
+Probs stay with js, although ts needs proper consideration
+Maybe introduce flowtype? need flowtype for eslint then
+
+docs:
+
+- jsdocs for functions and classes
+- need to create a good site for docs
+- maybe use jsdoc for internals with custom template?
+
+  - should have:
+    - api docs and developer docs
+    - option to see docs for different versions
+    - good reactive interface
+    - user docs
+
 - GIT:
 - Go through gitattributes file to properly set up stuff (i.e. do not include app driver script in merges, or keep branch specific stuff)
 
