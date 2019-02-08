@@ -12,9 +12,8 @@ import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from "electro
 import { pickPort } from "../util";
 
 import Config from "./lib/config";
-import WindowManager from "./lib/windows";
-import UpdateManager from "./lib/updater";
-
+import Windows from "./lib/windows";
+import Updater from "./lib/updater";
 
 let log;
 let logPort;
@@ -86,14 +85,14 @@ async function startLogger() {
 async function preinit() {
   log.info("Starting preinitialization.");
   await config.preinit();
-  await WindowManager.preinit(logPort);
-  await UpdateManager.preinit();
+  await Windows.preinit(logPort);
+  await Updater.preinit();
   log.info("Preinitialization finished.");
 }
 
 async function init() {
   log.info("Starting initialization.");
-  await WindowManager.init();
+  await Windows.init();
   log.info("Initialization finished.");
 }
 
@@ -132,7 +131,7 @@ async function handleReady() {
   log.info(`Logging to ${app.getPath("logs")}`);
   log.info(`Logger listening on port ${logPort}`);
 
-  const { versionDetails } = UpdateManager;
+  const { versionDetails } = Updater;
   log.info(`Environment:`);
   log.info(versionDetails);
 
